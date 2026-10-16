@@ -109,7 +109,7 @@ window.Game = window.Game || {};
 
     const logs = Array.isArray(snapshot.logEntries)
       ? snapshot.logEntries.slice(0, LOG_LIMIT)
-      : ["Сохранение загружено."];
+      : [];
 
     const infos = Array.isArray(snapshot.infoEntries)
       ? snapshot.infoEntries.filter(Game.isInfoEntry).slice(0, INFO_LIMIT)

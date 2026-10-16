@@ -40,7 +40,7 @@ window.Game = window.Game || {};
 
   const LOG_LIMIT = 10;
   const INFO_LIMIT = 6;
-  const INITIAL_LOG = ["Ты просыпаешься дома. Новый день начинается."];
+  const INITIAL_LOG = [];
 
   let state = freshState();
   let logEntries = INITIAL_LOG.slice();
