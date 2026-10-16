@@ -2,7 +2,6 @@
   Панель «История событий»: контейнер лога и отдельные записи.
 */
 .log{
-  max-height:220px;
   overflow:auto;
   padding:14px 18px;
   display:grid;

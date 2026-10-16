@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="css/styles-location.css">
 <link rel="stylesheet" href="css/styles-actions.css">
 <link rel="stylesheet" href="css/styles-log.css">
+<link rel="stylesheet" href="css/styles-info.css">
 <link rel="stylesheet" href="css/styles-side.css">
 <link rel="stylesheet" href="css/styles-controls.css">
 <link rel="stylesheet" href="css/styles-dialog.css">
@@ -20,9 +21,32 @@
 <header><div><div class="eyebrow">Текстовая история · прототип 0.2</div><h1>Город начинается здесь</h1></div><div class="status" id="status"></div></header>
 <div class="layout">
 <main class="main">
-<section class="panel"><div class="heading"><span class="dot"></span> Описание локации</div><div class="locbar"><div class="locname" id="location-name"></div><div class="tag" id="location-tag"></div></div><div class="location-notice" id="location-notice" hidden></div><div class="description" id="description" aria-live="polite"></div><figure class="location-image" id="location-image" hidden><img id="location-image-img" alt=""><figcaption id="location-image-caption"></figcaption></figure></section>
+<section class="panel">
+  <div class="heading"><span class="dot"></span> Описание локации</div>
+  <div class="locbar"><div class="locname" id="location-name"></div><div class="tag" id="location-tag"></div></div>
+  <div class="location-notice" id="location-notice" hidden></div>
+  <div class="description" id="description" aria-live="polite"></div>
+  <figure class="location-image" id="location-image" hidden><img id="location-image-img" alt=""><figcaption id="location-image-caption"></figcaption></figure>
+</section>
+
+<section class="panel" id="info-panel" hidden>
+  <div class="heading"><span class="dot"></span> Информация</div>
+  <div class="info" id="info-list" aria-live="polite"></div>
+</section>
+
 <section class="panel"><div class="heading"><span class="dot"></span> Доступные действия</div><div class="actions" id="actions"></div></section>
-<section class="panel"><div class="heading"><span class="dot"></span> История событий</div><div class="log" id="log" aria-live="polite"></div></section>
+
+<section class="panel">
+  <button type="button" class="heading heading--toggle" id="log-toggle"
+          aria-expanded="false" aria-controls="log-body">
+    <span class="dot"></span>
+    <span class="heading-label">История событий</span>
+    <span class="heading-chevron" aria-hidden="true">▾</span>
+  </button>
+  <div id="log-body" hidden>
+    <div class="log" id="log" aria-live="polite"></div>
+  </div>
+</section>
 </main>
 <aside class="side">
 <section class="panel"><div class="heading"><span class="dot"></span> Вспомогательное окно</div><div class="tabs" id="tabs"></div><div class="tabcontent" id="side-content"></div></section>

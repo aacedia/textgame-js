@@ -1,8 +1,48 @@
 /*
   Слой правил. Чистые функции без побочных эффектов и без DOM.
+  Ничего не знают про UI. Принимают state аргументом, возвращают новый state.
+
+  Публичный API:
+    Rules.deepClone(value)
+    Rules.hasItem(state, id)
+    Rules.isAdjacent(gameData, from, to)
+    Rules.formatTime(minutes)
+    Rules.isLocationOpen(gameData, id, minutes)
+    Rules.describeHours(hours)
+    Rules.checkCondition(condition, state, gameData)
+    Rules.describeConditionFailure(condition, state, gameData)
+    Rules.applyEffect(effect, state, gameData)   -> { state, messages }
+    Rules.applyEffects(effects, state, gameData) -> { state, messages }
+
+  Сообщения в messages — массив объектов { kind: "move" | "info", text }.
+    "move"  — переход между локациями (для «Истории событий»);
+    "info"  — всё остальное (для панели «Информация»).
+
+  Поддерживаемые условия:
+    { item: "keys" }
+    { flag: "attendedClass", equals: true | false }
+    { not: <условие> }
+    { all: [<условие>, ...] }
+    { any: [<условие>, ...] }
+    { variableAtLeast: { name: "money", value: 100 } }
+    { variableEquals:  { name: "day",   value: 1   } }
+    { variableDiffers: { name: "lastClassDay", other: "day" } }
+    { locationOpen: "shop" }
+
+  Поддерживаемые эффекты:
+    { type: "move", to: "locationId" }
+    { type: "giveItem", item: "itemId" }
+    { type: "removeItem", item: "itemId" }
+    { type: "setFlag", flag: "name", value: true }
+    { type: "changeVariable", name: "money", amount: -100 }
+    { type: "setVariable", name: "day", value: 1 }
+    { type: "setVariableFromVariable", name: "lastClassDay", from: "day" }
+    { type: "advanceTime", minutes: 480 }
 */
 window.Rules = (() => {
   "use strict";
+
+  /* ---------- утилиты ---------- */
 
   function deepClone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -23,15 +63,19 @@ window.Rules = (() => {
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   }
 
+  // Проверяет, открыта ли локация в указанное время (в минутах от полуночи).
+  // Локации без поля hours считаются открытыми всегда.
   function isLocationOpen(gameData, id, minutes) {
     const loc = gameData.locations[id];
     if (!loc || !loc.hours) return true;
     const { from, to } = loc.hours;
     const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
     if (from <= to) return t >= from && t < to;
+    // Интервал через полночь: например, с 22:00 до 06:00
     return t >= from || t < to;
   }
 
+  // Человекочитаемая строка расписания: "08:00–20:00".
   function describeHours(hours) {
     if (!hours) return "круглосуточно";
     return `${formatTime(hours.from)}–${formatTime(hours.to)}`;
@@ -67,35 +111,37 @@ window.Rules = (() => {
     return false;
   }
 
+  /*
+    Возвращает причину недоступности действия в виде строки или null, если
+    условие на самом деле выполнено. Понимает только простые случаи:
+    locationOpen, item, flag, variableAtLeast, variableDiffers. Для сложных
+    условий (all/any/not) возвращает null, и UI покажет общий текст.
+  */
   function describeConditionFailure(condition, state, gameData) {
     if (!condition) return null;
     if (checkCondition(condition, state, gameData)) return null;
 
     if (condition.locationOpen) {
       const loc = gameData.locations[condition.locationOpen];
-      if (loc && loc.hours) {
-        return `Откроется в ${formatTime(loc.hours.from)}`;
-      }
+      if (loc && loc.hours) return `Откроется в ${formatTime(loc.hours.from)}`;
       return "Сейчас закрыто";
     }
-    if (condition.item) {
-      return "Нужен подходящий предмет";
-    }
+    if (condition.item) return "Нужен подходящий предмет";
     if (condition.variableAtLeast) {
       const suffix = condition.variableAtLeast.name === "money" ? " ₽" : "";
       return `Нужно ${condition.variableAtLeast.value}${suffix}`;
     }
-    if (condition.variableDiffers) {
-      return "Уже сделано сегодня";
-    }
-    if (condition.flag && condition.equals === false) {
-      return "Уже сделано";
-    }
+    if (condition.variableDiffers) return "Уже сделано сегодня";
+    if (condition.flag && condition.equals === false) return "Уже сделано";
     return null;
   }
 
   /* ---------- эффекты ---------- */
 
+  /*
+    Чистый редьюсер: возвращает новый state и массив сообщений.
+    Сообщения — объекты { kind: "move" | "info", text }.
+  */
   function applyEffect(effect, state, gameData) {
     const next = deepClone(state);
     const messages = [];
@@ -105,39 +151,46 @@ window.Rules = (() => {
         const target = gameData.locations[effect.to];
         if (target) {
           next.location = effect.to;
-          messages.push(`Ты переходишь: ${target.name}.`);
+          messages.push({ kind: "move", text: `Ты переходишь: ${target.name}.` });
         }
         break;
       }
+
       case "giveItem": {
         const item = gameData.items[effect.item];
         if (item && !next.inventory.includes(effect.item)) {
           next.inventory.push(effect.item);
-          messages.push(`Получен предмет: ${item.name}.`);
+          messages.push({ kind: "info", text: `Получен предмет: ${item.name}.` });
         }
         break;
       }
+
       case "removeItem": {
         next.inventory = next.inventory.filter(id => id !== effect.item);
         break;
       }
+
       case "setFlag": {
         next.flags[effect.flag] = effect.value;
         break;
       }
+
       case "changeVariable": {
         next.variables[effect.name] =
           Number(next.variables[effect.name] || 0) + effect.amount;
         break;
       }
+
       case "setVariable": {
         next.variables[effect.name] = effect.value;
         break;
       }
+
       case "setVariableFromVariable": {
         next.variables[effect.name] = next.variables[effect.from];
         break;
       }
+
       case "advanceTime": {
         const before = next.variables.minutes;
         const total = before + effect.minutes;
@@ -146,9 +199,9 @@ window.Rules = (() => {
         if (daysPassed > 0) {
           next.variables.day += daysPassed;
           if (daysPassed === 1) {
-            messages.push("Наступает новый день.");
+            messages.push({ kind: "info", text: "Наступает новый день." });
           } else {
-            messages.push(`Проходит ${daysPassed} дн.`);
+            messages.push({ kind: "info", text: `Проходит ${daysPassed} дн.` });
           }
         }
         break;
@@ -158,6 +211,9 @@ window.Rules = (() => {
     return { state: next, messages };
   }
 
+  /*
+    Применяет массив эффектов по очереди, накапливая сообщения.
+  */
   function applyEffects(effects, state, gameData) {
     let current = state;
     const messages = [];
@@ -168,6 +224,8 @@ window.Rules = (() => {
     }
     return { state: current, messages };
   }
+
+  /* ---------- экспорт ---------- */
 
   return {
     deepClone,
