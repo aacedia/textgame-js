@@ -1,0 +1,21 @@
+/*
+  Панель «История событий»: контейнер лога и отдельные записи.
+*/
+.log{
+  max-height:220px;
+  overflow:auto;
+  padding:14px 18px;
+  display:grid;
+  gap:10px;
+}
+.logentry{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+  border-left:2px solid var(--border);
+  padding-left:11px;
+}
+.logentry:first-child{
+  color:var(--text);
+  border-color:var(--accent);
+}

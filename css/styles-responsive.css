@@ -1,0 +1,16 @@
+/*
+  Адаптив. Подключается последним, чтобы переопределять базовые правила.
+*/
+@media(max-width:780px){
+  body{padding:13px}
+  .layout{grid-template-columns:1fr}
+  .side{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .side .panel:first-child{grid-column:1/-1}
+}
+@media(max-width:460px){
+  .side{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr}
+  header{align-items:flex-start}
+  .status{max-width:125px}
+  .locbar{align-items:flex-start;flex-direction:column}
+}

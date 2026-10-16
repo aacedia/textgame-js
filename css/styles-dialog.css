@@ -1,0 +1,26 @@
+/*
+  Модальные диалоги: <dialog>, .dialoghead, .dialogbody, .dialogactions.
+*/
+dialog{
+  background:var(--panel);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:12px;
+  max-width:440px;
+  width:calc(100% - 32px);
+  padding:0;
+  box-shadow:var(--shadow-strong);
+}
+dialog::backdrop{background:var(--backdrop)}
+.dialoghead{
+  padding:14px 17px;
+  border-bottom:1px solid var(--border);
+  font-weight:700;
+  color:var(--text);
+}
+.dialogbody{padding:16px;color:#5c4b40}
+.dialogactions{
+  display:flex;justify-content:flex-end;gap:8px;
+  padding:0 16px 16px;
+}
+.dialogactions button{min-width:90px;text-align:center}

@@ -1,0 +1,11 @@
+/*
+  Подвал и общие утилиты.
+*/
+.footer{
+  color:var(--muted-2);
+  font-size:11px;
+  margin-top:14px;
+  text-align:center;
+}
+
+.empty{color:var(--muted);font-size:13px;margin:0}
