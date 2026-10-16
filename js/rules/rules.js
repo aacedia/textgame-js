@@ -13,6 +13,8 @@
     Rules.describeConditionFailure(condition, state, gameData)
     Rules.applyEffect(effect, state, gameData)   -> { state, messages }
     Rules.applyEffects(effects, state, gameData) -> { state, messages }
+    Rules.classifyEffect(effect)                 -> "move" | "item" | "money" | "time" | "state"
+    Rules.classifyAction(action)                 -> категория действия (см. ниже)
 
   Сообщения в messages — массив объектов { kind: "move" | "info", text }.
     "move"  — переход между локациями (для «Истории событий»);
@@ -225,6 +227,49 @@ window.Rules = (() => {
     return { state: current, messages };
   }
 
+  /* ---------- классификация действий ---------- */
+
+  /*
+    Определяет смысловую категорию одного эффекта:
+      "move"  — переход между локациями;
+      "item"  — выдача или изъятие предмета;
+      "money" — изменение переменной money;
+      "time"  — сдвиг времени;
+      "state" — всё остальное (флаги, переменные, копирование).
+  */
+  function classifyEffect(effect) {
+    if (!effect || typeof effect !== "object") return "state";
+    switch (effect.type) {
+      case "move": return "move";
+      case "giveItem":
+      case "removeItem": return "item";
+      case "advanceTime": return "time";
+      case "changeVariable":
+        return effect.name === "money" ? "money" : "state";
+      case "setVariable":
+      case "setVariableFromVariable":
+      case "setFlag":
+      default:
+        return "state";
+    }
+  }
+
+  /*
+    Определяет категорию действия по его эффектам.
+      - Если эффектов нет — "state" (нейтральная категория).
+      - Если все эффекты одной категории — эта категория.
+      - Если категории разные — "mixed" (комплексное действие).
+
+    Используется UI для цветовой маркировки кнопок действий.
+  */
+  function classifyAction(action) {
+    const effects = (action && action.effects) || [];
+    if (!effects.length) return "state";
+    const kinds = new Set(effects.map(classifyEffect));
+    if (kinds.size === 1) return kinds.values().next().value;
+    return "mixed";
+  }
+
   /* ---------- экспорт ---------- */
 
   return {
@@ -237,6 +282,8 @@ window.Rules = (() => {
     checkCondition,
     describeConditionFailure,
     applyEffect,
-    applyEffects
+    applyEffects,
+    classifyEffect,
+    classifyAction
   };
 })();

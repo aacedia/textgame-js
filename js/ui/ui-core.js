@@ -206,6 +206,11 @@ window.UI = (() => {
     actions.forEach(action => {
       const button = document.createElement("button");
       button.disabled = !action.available;
+      if (action.accent) {
+        button.classList.add("action", "action--" + action.accent);
+      } else {
+        button.classList.add("action");
+      }
       const hintText = action.available
         ? (action.hint || "")
         : (action.unavailableReason || "Сейчас недоступно");

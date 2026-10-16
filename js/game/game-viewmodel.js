@@ -108,7 +108,6 @@ window.Game = window.Game || {};
     loc.actions.forEach(action => {
       // Скрываем "одноразовые" действия, которые уже выполнены.
       if (action.once && state.flags[action.id + "_done"]) return;
-
       const available = Rules.checkCondition(action.condition, state, GAME_DATA);
       result.push({
         id: action.id,
@@ -117,7 +116,8 @@ window.Game = window.Game || {};
         available,
         unavailableReason: available
           ? ""
-          : (Rules.describeConditionFailure(action.condition, state, GAME_DATA) || "")
+          : (Rules.describeConditionFailure(action.condition, state, GAME_DATA) || ""),
+        accent: Rules.classifyAction(action)
       });
     });
     return result;
