@@ -33,7 +33,7 @@ window.GAME_DATA = {
   },
   character: {
     name: "Герой",
-    avatar: "https://pbs.twimg.com/profile_images/1936718908989362176/llks1Mq8_400x400.jpg",
+    avatar: "assets/images/characters/hero.png",
     avatarAlt: "Портрет героя",
     description: "Молодой человек, только начинает свой путь в городе."
   },
@@ -57,7 +57,7 @@ window.GAME_DATA = {
     },
     street: {
       name: "Улица", tag: "Город",
-      image: "https://img.magnific.com/premium-photo/people-city-street-night_1064398-1288.jpg",
+      image: "assets/images/locations/street.jpg",
       imageAlt: "Ночная городская улица с людьми и огнями",
       imageCaption: "Улица вечером: огни, прохожие и спешащий транспорт.",
       description: [
