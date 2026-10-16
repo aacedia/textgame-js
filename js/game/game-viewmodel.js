@@ -72,6 +72,11 @@ window.Game = window.Game || {};
       notice = `${loc.name} закрыт. Откроется в ${Rules.formatTime(loc.hours.from)}.`;
     }
 
+    // Если открыта панель «Информация» — не показываем картинку локации,
+    // чтобы не дублировать визуальный акцент и освободить место.
+    const infoVisible = Game.getInfo().length > 0;
+    const showImage = !infoVisible && !!loc.image;
+
     return {
       name: loc.name,
       tag: loc.tag,
@@ -79,9 +84,9 @@ window.Game = window.Game || {};
       tagClass,
       notice,
       description: loc.description,
-      image: loc.image,
-      imageAlt: loc.imageAlt,
-      imageCaption: loc.imageCaption
+      image: showImage ? loc.image : "",
+      imageAlt: showImage ? (loc.imageAlt || "") : "",
+      imageCaption: showImage ? (loc.imageCaption || "") : ""
     };
   }
 

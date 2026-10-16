@@ -1,89 +1,149 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Город начинается здесь — текстовая игра</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Город начинается здесь — текстовая игра</title>
 
-<link rel="stylesheet" href="css/styles-base.css">
-<link rel="stylesheet" href="css/styles-location.css">
-<link rel="stylesheet" href="css/styles-actions.css">
-<link rel="stylesheet" href="css/styles-log.css">
-<link rel="stylesheet" href="css/styles-info.css">
-<link rel="stylesheet" href="css/styles-side.css">
-<link rel="stylesheet" href="css/styles-controls.css">
-<link rel="stylesheet" href="css/styles-dialog.css">
-<link rel="stylesheet" href="css/styles-footer.css">
-<link rel="stylesheet" href="css/styles-responsive.css">
+  <link rel="stylesheet" href="css/styles-base.css">
+  <link rel="stylesheet" href="css/styles-location.css">
+  <link rel="stylesheet" href="css/styles-actions.css">
+  <link rel="stylesheet" href="css/styles-log.css">
+  <link rel="stylesheet" href="css/styles-info.css">
+  <link rel="stylesheet" href="css/styles-side.css">
+  <link rel="stylesheet" href="css/styles-controls.css">
+  <link rel="stylesheet" href="css/styles-dialog.css">
+  <link rel="stylesheet" href="css/styles-footer.css">
+  <link rel="stylesheet" href="css/styles-responsive.css">
 </head>
+
 <body>
-<div class="game">
-<header><div><div class="eyebrow">Текстовая история · прототип 0.2</div><h1>Город начинается здесь</h1></div><div class="status" id="status"></div></header>
-<div class="layout">
-<main class="main">
-<section class="panel">
-  <div class="heading"><span class="dot"></span> Описание локации</div>
-  <div class="locbar"><div class="locname" id="location-name"></div><div class="tag" id="location-tag"></div></div>
-  <div class="location-notice" id="location-notice" hidden></div>
-  <div class="description" id="description" aria-live="polite"></div>
-  <figure class="location-image" id="location-image" hidden><img id="location-image-img" alt=""><figcaption id="location-image-caption"></figcaption></figure>
-</section>
+  <div class="game">
 
-<section class="panel" id="info-panel" hidden>
-  <div class="heading"><span class="dot"></span> Информация</div>
-  <div class="info" id="info-list" aria-live="polite"></div>
-</section>
+    <header>
+      <div>
+        <div class="eyebrow">Текстовая история · прототип 0.2</div>
+        <h1>Город начинается здесь</h1>
+      </div>
+      <div class="status" id="status"></div>
+    </header>
 
-<section class="panel"><div class="heading"><span class="dot"></span> Доступные действия</div><div class="actions" id="actions"></div></section>
+    <div class="layout">
 
-<section class="panel">
-  <button type="button" class="heading heading--toggle" id="log-toggle"
-          aria-expanded="false" aria-controls="log-body">
-    <span class="dot"></span>
-    <span class="heading-label">История событий</span>
-    <span class="heading-chevron" aria-hidden="true">▾</span>
-  </button>
-  <div id="log-body" hidden>
-    <div class="log" id="log" aria-live="polite"></div>
-  </div>
-</section>
-</main>
-<aside class="side">
-<section class="panel"><div class="heading"><span class="dot"></span> Вспомогательное окно</div><div class="tabs" id="tabs"></div><div class="tabcontent" id="side-content"></div></section>
-<section class="panel">
-  <button type="button" class="heading heading--toggle" id="controls-toggle"
-          aria-expanded="false" aria-controls="controls-content">
-    <span class="dot"></span>
-    <span class="heading-label">Управление</span>
-    <span class="heading-chevron" aria-hidden="true">▾</span>
-  </button>
-  <div id="controls-content" hidden>
-    <div class="sidecontent menubuttons">
-      <button data-command="save">Сохранить</button>
-      <button data-command="load">Загрузить</button>
-      <button data-command="help">Справка</button>
-      <button data-command="restart">Начать заново</button>
+      <main class="main">
+
+        <!-- Верхняя часть главной колонки: растягивается и скроллится -->
+        <div class="main-top">
+
+          <section class="panel">
+            <div class="heading"><span class="dot"></span> Описание локации</div>
+            <div class="locbar">
+              <div class="locname" id="location-name"></div>
+              <div class="tag" id="location-tag"></div>
+            </div>
+            <div class="location-notice" id="location-notice" hidden></div>
+            <div class="description" id="description" aria-live="polite"></div>
+            <figure class="location-image" id="location-image" hidden>
+              <img id="location-image-img" alt="">
+              <figcaption id="location-image-caption"></figcaption>
+            </figure>
+          </section>
+
+          <section class="panel" id="info-panel" hidden>
+            <div class="heading"><span class="dot"></span> Информация</div>
+            <div class="info" id="info-list" aria-live="polite"></div>
+          </section>
+
+        </div>
+
+        <!-- Нижняя часть главной колонки: прижата к низу -->
+        <div class="main-bottom">
+
+          <section class="panel">
+            <div class="heading"><span class="dot"></span> Доступные действия</div>
+            <div class="actions" id="actions"></div>
+          </section>
+
+          <section class="panel">
+            <button type="button" class="heading heading--toggle" id="log-toggle" aria-expanded="false"
+              aria-controls="log-body">
+              <span class="dot"></span>
+              <span class="heading-label">История событий</span>
+              <span class="heading-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div id="log-body" hidden>
+              <div class="log" id="log" aria-live="polite"></div>
+            </div>
+          </section>
+
+        </div>
+
+      </main>
+
+      <aside class="side">
+
+        <!-- Верхняя часть боковой колонки: растягивается и скроллится -->
+        <div class="side-top">
+
+          <section class="panel">
+            <div class="heading"><span class="dot"></span> Вспомогательное окно</div>
+            <div class="tabs" id="tabs"></div>
+            <div class="tabcontent" id="side-content"></div>
+          </section>
+
+        </div>
+
+        <!-- Нижняя часть боковой колонки: прижата к низу -->
+        <div class="side-bottom">
+
+          <section class="panel">
+            <button type="button" class="heading heading--toggle" id="controls-toggle" aria-expanded="false"
+              aria-controls="controls-content">
+              <span class="dot"></span>
+              <span class="heading-label">Управление</span>
+              <span class="heading-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div id="controls-content" hidden>
+              <div class="sidecontent menubuttons">
+                <button data-command="save">Сохранить</button>
+                <button data-command="load">Загрузить</button>
+                <button data-command="help">Справка</button>
+                <button data-command="restart">Начать заново</button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+      </aside>
+
     </div>
+
+    <div class="footer">Данные игры отделены от движка · сохранение в этом браузере</div>
+
   </div>
-</section>
-</aside>
-</div><div class="footer">Данные игры отделены от движка · сохранение в этом браузере</div>
-</div>
-<dialog id="dialog"><div class="dialoghead" id="dialog-title"></div><div class="dialogbody" id="dialog-body"></div><div class="dialogactions" id="dialog-actions"></div></dialog>
 
-<script src="js/data/data.js"></script>
-<script src="js/rules/rules.js"></script>
-<script src="js/save/save.js"></script>
+  <dialog id="dialog">
+    <div class="dialoghead" id="dialog-title"></div>
+    <div class="dialogbody" id="dialog-body"></div>
+    <div class="dialogactions" id="dialog-actions"></div>
+  </dialog>
 
-<script src="js/ui/ui-core.js"></script>
-<script src="js/ui/ui-side.js"></script>
-<script src="js/ui/ui-controls.js"></script>
-<script src="js/ui/ui.js"></script>
+  <script src="js/data/data.js"></script>
+  <script src="js/rules/rules.js"></script>
+  <script src="js/save/save.js"></script>
 
-<script src="js/game/game-state.js"></script>
-<script src="js/game/game-viewmodel.js"></script>
-<script src="js/game/game-actions.js"></script>
-<script src="js/game/game-commands.js"></script>
-<script src="js/game/game.js"></script>
+  <script src="js/ui/ui-core.js"></script>
+  <script src="js/ui/ui-side.js"></script>
+  <script src="js/ui/ui-controls.js"></script>
+  <script src="js/ui/ui.js"></script>
+
+  <script src="js/game/game-state.js"></script>
+  <script src="js/game/game-viewmodel.js"></script>
+  <script src="js/game/game-actions.js"></script>
+  <script src="js/game/game-commands.js"></script>
+  <script src="js/game/game.js"></script>
 </body>
+
 </html>

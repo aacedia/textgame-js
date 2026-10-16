@@ -1,13 +1,46 @@
 /*
   Адаптив. Подключается последним, чтобы переопределять базовые правила.
 */
-@media(max-width:780px){
-  body{padding:13px}
-  .layout{grid-template-columns:1fr}
-  .side{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .side .panel:first-child{grid-column:1/-1}
+
+@media(max-width: 780px){
+  body{
+    height:auto;
+    overflow:auto;
+    padding:13px;
+  }
+  .game{
+    height:auto;
+    grid-template-rows:none;
+    display:block;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .main,
+  .side{
+    display:grid;
+    grid-template-rows:none;
+    min-height:0;
+  }
+  .main-top,
+  .side-top{
+    overflow:visible;
+    padding-right:0;
+  }
+  .main-bottom,
+  .side-bottom{
+    display:grid;
+    gap:14px;
+  }
+  .side{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .side .side-top{grid-column:1/-1}
+  .side .side-bottom{grid-column:1/-1}
 }
-@media(max-width:460px){
+
+@media(max-width: 460px){
   .side{grid-template-columns:1fr}
   .actions{grid-template-columns:1fr}
   header{align-items:flex-start}
