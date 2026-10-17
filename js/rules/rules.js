@@ -388,6 +388,24 @@ window.Rules = (() => {
     return "mixed";
   }
 
+  /* ---------- выбор варианта ---------- */
+
+  /*
+    Выбирает случайный вариант из массива. Учитывает condition каждого
+    варианта: подходящие фильтруются, из них выбирается случайный.
+  
+    Возвращает выбранный объект или null, если подходящих нет.
+  */
+  function pickVariant(variants, state, gameData) {
+    if (!Array.isArray(variants) || !variants.length) return null;
+    const eligible = variants.filter(v =>
+      !v.condition || checkCondition(v.condition, state, gameData)
+    );
+    if (!eligible.length) return null;
+    const index = Math.floor(Math.random() * eligible.length);
+    return eligible[index];
+  }
+
   /* ---------- экспорт ---------- */
 
   return {
@@ -404,6 +422,7 @@ window.Rules = (() => {
     applyEffect,
     applyEffects,
     classifyEffect,
-    classifyAction
+    classifyAction,
+    pickVariant
   };
 })();

@@ -38,7 +38,7 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 250,
+      money: 99,
       lastClassDay: 0,
       classesAttended: 0
     },
@@ -121,8 +121,7 @@ window.GAME_DATA = {
     street: {
       name: "Улица", tag: "Город",
       image: "assets/images/locations/street.jpg",
-      imageAlt: "Ночная городская улица с людьми и огнями",
-      imageCaption: "Улица вечером: огни, прохожие и спешащий транспорт.",
+      imageCaption: "Оживлённая улица: огни, прохожие и спешащий транспорт.",
       description: [
         "На улице уже шумно: проезжают автобусы, прохожие спешат по своим делам, а на перекрёстке мигает зелёный сигнал.",
         "Отсюда можно добраться до университета или зайти в небольшой магазин на соседней улице."
@@ -151,17 +150,43 @@ window.GAME_DATA = {
         {
           id: "look_around",
           label: "Осмотреться",
-          hint: "Понаблюдать за прохожими",
+          hint: "Случайное событие",
           effects: [{ type: "setFlag", flag: "lookedAroundStreet", value: true }],
-          text: "Мимо проходит студент с рюкзаком. На остановке подъезжает автобус.",
-          image: "assets/images/locations/street-view.jpg",
-          imageAlt: "Остановка с подъезжающим автобусом"
+          variants: [
+            {
+              text: "Мимо проезжает автобус и останавливается на перекрёстке.",
+              image: "assets/images/locations/street-scene-bus.jpg",
+              imageAlt: "Автобус на остановке"
+            },
+            {
+              text: "На тротуар садится голубь, клюёт крошки и улетает.",
+              image: "assets/images/locations/street-scene-pigeon.jpg",
+              imageAlt: "Голубь на тротуаре"
+            },
+            {
+              text: "Мимо проходит студентка с рюкзаком и кивает тебе.",
+              image: "assets/images/locations/street-scene-student.jpg",
+              imageAlt: "Студентка с рюкзаком на улице"
+            },
+            {
+              condition: { not: { flag: "foundCoin" } },
+              effects: [
+                { type: "setFlag", flag: "foundCoin", value: true },
+                { type: "changeVariable", name: "money", amount: 1 }
+              ],
+              text: "На тротуаре что-то блестит. Ты наклоняешься и находишь монетку в 1 ₽. Вряд ли снова так повезёт.",
+              image: "assets/images/locations/street-scene-coin.jpg",
+              imageAlt: "Монетка на асфальте"
+            }
+          ]
         }
       ]
     },
     university: {
       name: "Университет", tag: "Учёба",
       hours: { from: 8 * 60, to: 20 * 60 },
+      image: "assets/images/locations/university.jpg",
+      imageAlt: "Главное здание университета: вход и студенты",
       description: [
         "Перед тобой главное здание университета. У входа собрались студенты, а из открытых окон доносится гул голосов.",
         "До начала занятий ещё есть время. Можно осмотреть холл или вернуться на улицу."
@@ -206,21 +231,18 @@ window.GAME_DATA = {
     shop: {
       name: "Магазин", tag: "Покупки",
       hours: { from: 8 * 60, to: 22 * 60 },
+      image: "assets/images/locations/shop.jpg",
+      imageAlt: "Небольшой магазин у перекрёстка: витрина и вход",
       description: [
-        "Небольшой магазин у перекрёстка. На полках стоят напитки, снеки и самые разные мелочи. За кассой скучает продавец.",
-        "Можно купить блокнот за 100 ₽. Деньги и покупки уже работают как простая игровая механика."
+        "Небольшой магазин у перекрёстка. На полках стоят напитки, снеки и самые разные мелочи. За кассой скучает продавец."
       ],
       actions: [
         {
           id: "buy_notebook",
           label: "Купить блокнот",
           hint: "100 ₽",
-          condition: {
-            all: [
-              { not: { item: "notebook" } },
-              { variableAtLeast: { name: "money", value: 100 } }
-            ]
-          },
+          hiddenWhen: { item: "notebook" },
+          condition: { variableAtLeast: { name: "money", value: 100 } },
           effects: [
             { type: "changeVariable", name: "money", amount: -100 },
             { type: "giveItem", item: "notebook" }

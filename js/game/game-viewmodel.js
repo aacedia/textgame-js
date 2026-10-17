@@ -110,8 +110,12 @@ window.Game = window.Game || {};
     const state = Game.getState();
     const result = [];
     loc.actions.forEach(action => {
-      // Скрываем "одноразовые" действия, которые уже выполнены.
+      // Скрываем одноразовые действия, которые уже выполнены.
       if (action.once && state.flags[action.id + "_done"]) return;
+
+      // Скрываем действия по условию hiddenWhen.
+      if (action.hiddenWhen && Rules.checkCondition(action.hiddenWhen, state, GAME_DATA)) return;
+
       const available = Rules.checkCondition(action.condition, state, GAME_DATA);
       result.push({
         id: action.id,

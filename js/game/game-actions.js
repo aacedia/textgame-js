@@ -22,9 +22,9 @@ window.Game = window.Game || {};
   "use strict";
 
   const GAME_DATA = window.GAME_DATA;
-  const Rules     = window.Rules;
+  const Rules = window.Rules;
   if (!GAME_DATA) { console.error("game-actions.js: window.GAME_DATA не найден."); return; }
-  if (!Rules)     { console.error("game-actions.js: window.Rules не найден.");     return; }
+  if (!Rules) { console.error("game-actions.js: window.Rules не найден."); return; }
 
   /* ---------- поиск действия ---------- */
 
@@ -54,9 +54,20 @@ window.Game = window.Game || {};
       working = { ...working, flags: { ...working.flags, [action.id + "_done"]: true } };
     }
 
+    // Выбор варианта, если он есть. У действия без variants вернётся null,
+    // и дальше используется action.text / action.image как раньше.
+    const variant = Rules.pickVariant(action.variants, working, GAME_DATA);
+
+    // Собираем список эффектов: сначала эффекты самого действия,
+    // потом эффекты выбранного варианта (если он есть).
+    const effectList = [
+      ...(action.effects || []),
+      ...(variant && variant.effects ? variant.effects : [])
+    ];
+
     // Применяем эффекты через правила
     const { state: nextState, messages } = Rules.applyEffects(
-      action.effects || [],
+      effectList,
       working,
       GAME_DATA
     );
@@ -69,21 +80,25 @@ window.Game = window.Game || {};
     // "История событий" — только переходы
     if (moveMessages.length) Game.pushLog(moveMessages);
 
+    // Текст и картинка берутся сначала из варианта, потом из действия.
+    const text = (variant && variant.text) || action.text;
+    const image = (variant && variant.image) || action.image;
+    const imageAlt = (variant && variant.imageAlt) || action.imageAlt || text;
+    const imageCaption = (variant && variant.imageCaption) || action.imageCaption;
+
     // "Информация" — результат последнего осмысленного действия.
     // Порядок: текст действия → картинка → сообщения от эффектов.
     const batch = [];
-    if (action.text) {
-      batch.push({ kind: "text", text: action.text });
-    }
-    if (action.image) {
+    if (text) batch.push({ kind: "text", text });
+    if (image) {
       batch.push({
         kind: "image",
-        src: action.image,
-        alt: action.imageAlt || action.text || "",
-        caption: action.imageCaption || ""
+        src: image,
+        alt: imageAlt || "",
+        caption: imageCaption || ""
       });
     }
-    infoMessages.forEach(text => batch.push({ kind: "text", text }));
+    infoMessages.forEach(t => batch.push({ kind: "text", text: t }));
 
     // Если действие — чисто переход (move без собственного text/image),
     // очищаем "Информацию", чтобы она не висела с прошлого осмысленного действия.

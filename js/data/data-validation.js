@@ -84,41 +84,29 @@ window.DataValidation = (() => {
 
     /* ---------- проверки действий ---------- */
 
-    function validateActions(locationId, actions, gameData, errors) {
-        const seen = new Set();
-        actions.forEach((action, index) => {
-            const where = `locations.${locationId}.actions[${index}]`;
-
-            // id обязателен и уникален в пределах локации.
-            if (!action.id) {
-                pushError(errors, where, `действие без поля "id"`);
-            } else if (seen.has(action.id)) {
-                pushError(errors, where, `дубликат id "${action.id}" в локации "${locationId}"`);
-            } else {
-                seen.add(action.id);
-            }
-
-            // effects: массив (если есть).
-            if (action.effects !== undefined && !Array.isArray(action.effects)) {
-                pushError(errors, where, `effects должен быть массивом`);
-                return;
-            }
-
-            // Проверяем ссылки в эффектах.
-            (action.effects || []).forEach((effect, effIndex) => {
-                validateEffectRefs(
-                    `${where}.effects[${effIndex}]`,
-                    effect,
-                    gameData,
-                    errors
-                );
+    // Проверяем варианты (если есть).
+    if (action.variants !== undefined) {
+        if (!Array.isArray(action.variants)) {
+            pushError(errors, where, `variants должен быть массивом`);
+        } else {
+            action.variants.forEach((variant, vIndex) => {
+                const vPath = `${where}.variants[${vIndex}]`;
+                if (!variant || typeof variant !== "object") {
+                    pushError(errors, vPath, `вариант должен быть объектом`);
+                    return;
+                }
+                if (variant.effects !== undefined && !Array.isArray(variant.effects)) {
+                    pushError(errors, vPath, `effects варианта должен быть массивом`);
+                    return;
+                }
+                (variant.effects || []).forEach((effect, eIndex) => {
+                    validateEffectRefs(`${vPath}.effects[${eIndex}]`, effect, gameData, errors);
+                });
+                if (variant.condition) {
+                    validateConditionRefs(`${vPath}.condition`, variant.condition, gameData, errors);
+                }
             });
-
-            // Проверяем простые ссылки в condition.
-            if (action.condition) {
-                validateConditionRefs(`${where}.condition`, action.condition, gameData, errors);
-            }
-        });
+        }
     }
 
     function validateEffectRefs(path, effect, gameData, errors) {
