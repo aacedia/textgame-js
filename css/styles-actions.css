@@ -24,13 +24,15 @@
 .action-count{
   display:inline-block;
   margin-left:6px;
-  padding:0 6px;
+  padding:1px 7px;
   border-radius:99px;
   background:rgba(0,0,0,0.06);
   color:var(--muted);
-  font-size:11px;
+  font-size:12px;
   font-weight:600;
+  line-height:1.35;
   vertical-align:middle;
+  transform:translateY(-1px);
 }
 .action--recent .action-count{
   background:rgba(0,0,0,0.10);
