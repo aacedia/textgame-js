@@ -222,12 +222,38 @@ window.Rules = (() => {
     if (!condition) return null;
     if (checkCondition(condition, state, gameData)) return null;
 
+    // Составное условие: находим первую невыполненную ветку и описываем её.
+    if (Array.isArray(condition.all)) {
+      for (const c of condition.all) {
+        const reason = describeConditionFailure(c, state, gameData);
+        if (reason) return reason;
+      }
+      return "Не все условия выполнены";
+    }
+    if (Array.isArray(condition.any)) {
+      // Для any ни одна ветка не выполнена — перечисляем причины коротко.
+      // Возвращаем причину первой ветки как наиболее вероятную.
+      for (const c of condition.any) {
+        const reason = describeConditionFailure(c, state, gameData);
+        if (reason) return reason;
+      }
+      return "Ни одно из условий не выполнено";
+    }
+    if (condition.not) {
+      // Для not причина — что условие на самом деле выполнено.
+      return null;
+    }
+
     if (condition.locationOpen) {
       const loc = gameData.locations[condition.locationOpen];
       if (loc && loc.hours) return `Откроется в ${formatTime(loc.hours.from)}`;
       return "Сейчас закрыто";
     }
-    if (condition.item) return "Нужен подходящий предмет";
+    if (condition.item) {
+      const item = gameData.items[condition.item];
+      const name = item ? item.name : condition.item;
+      return `Нужен предмет: ${name}`;
+    }
     if (condition.variableAtLeast) {
       const suffix = condition.variableAtLeast.name === "money" ? " ₽" : "";
       return `Нужно ${condition.variableAtLeast.value}${suffix}`;

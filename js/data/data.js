@@ -35,7 +35,13 @@ window.GAME_DATA = {
     location: "apartment",
     inventory: [],
     flags: { hasInspectedTable: false },
-    variables: { day: 1, minutes: 510, money: 250, lastClassDay: 0 },
+    variables: {
+      day: 1,
+      minutes: 510,
+      money: 250,
+      lastClassDay: 0,
+      classesAttended: 0
+    },
     uiTab: "inventory",
     controlsOpen: false,
     logOpen: false
@@ -55,7 +61,14 @@ window.GAME_DATA = {
     notebook: {
       name: "Блокнот",
       icon: "📓",
-      description: "Пока чистый. В нём можно делать заметки."
+      // Описание может быть строкой или функцией (state) => string.
+      description: (state) => {
+        const count = Number(state.variables.classesAttended) || 0;
+        if (count === 0) {
+          return "Пока чистый. В нём можно делать заметки.";
+        }
+        return `Содержит заметки. Посещено занятий: ${count}.`;
+      }
     }
   },
   locations: {
@@ -165,10 +178,16 @@ window.GAME_DATA = {
         {
           id: "attend_class",
           label: "Посетить занятие",
-          hint: "Один раз в день · 90 минут",
-          condition: { variableDiffers: { name: "lastClassDay", other: "day" } },
+          hint: "Один раз в день · нужен блокнот",
+          condition: {
+            all: [
+              { item: "notebook" },
+              { variableDiffers: { name: "lastClassDay", other: "day" } }
+            ]
+          },
           effects: [
             { type: "setVariableFromVariable", name: "lastClassDay", from: "day" },
+            { type: "changeVariable", name: "classesAttended", amount: 1 },
             { type: "advanceTime", minutes: 90 }
           ],
           text: "Ты заходишь в аудиторию и проводишь полтора часа на занятии.",

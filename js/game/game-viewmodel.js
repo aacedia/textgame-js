@@ -161,9 +161,31 @@ window.Game = window.Game || {};
   function buildInventoryVM() {
     const state = Game.getState();
     const items = state.inventory
-      .map(id => GAME_DATA.items[id])
+      .map(id => {
+        const item = GAME_DATA.items[id];
+        if (!item) return null;
+        return {
+          id,
+          name: item.name,
+          icon: item.icon,
+          description: resolveDescription(item.description, state)
+        };
+      })
       .filter(Boolean);
     return { type: "inventory", items };
+  }
+
+  // Описание предмета может быть строкой или функцией (state) => string.
+  function resolveDescription(description, state) {
+    if (typeof description === "function") {
+      try {
+        return String(description(state) || "");
+      } catch (e) {
+        console.warn(`Ошибка в описании предмета:`, e);
+        return "";
+      }
+    }
+    return String(description || "");
   }
 
   function buildMapVM() {
