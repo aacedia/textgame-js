@@ -253,16 +253,20 @@ window.UI = (() => {
     actions.forEach(action => {
       const button = document.createElement("button");
       button.disabled = !action.available;
-      if (action.accent) {
-        button.classList.add("action", "action--" + action.accent);
-      } else {
-        button.classList.add("action");
-      }
+      button.classList.add("action");
+      if (action.accent) button.classList.add("action--" + action.accent);
+      if (action.recent) button.classList.add("action--recent");
+
+      const countHtml = action.count > 1
+        ? `<span class="action-count" title="Нажато раз: ${action.count}">${action.count}</span>`
+        : "";
+
       const hintText = action.available
         ? (action.hint || "")
         : (action.unavailableReason || "Сейчас недоступно");
+
       button.innerHTML =
-        `<span class="action-title">${escapeHtml(action.label)}</span>` +
+        `<span class="action-title">${escapeHtml(action.label)}${countHtml}</span>` +
         `<span class="hint">${escapeHtml(hintText)}</span>`;
       button.title = action.available ? action.label : hintText;
       button.addEventListener("click", () => handlers.onAction(action.id));

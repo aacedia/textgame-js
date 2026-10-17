@@ -1,17 +1,5 @@
 /*
-  Сборка view-модели. Читает state через Game.getState(), Game.getLog(),
-  Game.getInfo() и возвращает готовый объект для UI.render.
-
-  Не трогает UI и не меняет состояние. Только читает.
-
-  Публичный API:
-    Game.buildViewModel()       -> полный viewModel для UI.render
-    Game.buildStatusVM()        -> блок статуса
-    Game.buildLocationVM(loc)   -> блок локации
-    Game.buildInfoVM()          -> блок «Информация»
-    Game.buildActionsVM(loc)    -> список действий
-    Game.buildSideVM()          -> боковая панель (вкладки + контент)
-    Game.buildSideContentVM()   -> контент активной вкладки
+  Сборка view-модели. Только чтение состояния.
 */
 window.Game = window.Game || {};
 
@@ -22,8 +10,6 @@ window.Game = window.Game || {};
   const Rules = window.Rules;
   if (!GAME_DATA) { console.error("game-viewmodel.js: window.GAME_DATA не найден."); return; }
   if (!Rules) { console.error("game-viewmodel.js: window.Rules не найден."); return; }
-
-  /* ---------- главный сборщик ---------- */
 
   function buildViewModel() {
     const state = Game.getState();
@@ -40,8 +26,6 @@ window.Game = window.Game || {};
     };
   }
 
-  /* ---------- блок статуса (шапка) ---------- */
-
   function buildStatusVM() {
     const state = Game.getState();
     const loc = GAME_DATA.locations[state.location];
@@ -56,8 +40,6 @@ window.Game = window.Game || {};
       inventoryCount: state.inventory.length
     };
   }
-
-  /* ---------- блок локации ---------- */
 
   function buildLocationVM(loc) {
     const state = Game.getState();
@@ -76,8 +58,6 @@ window.Game = window.Game || {};
       notice = `${loc.name} закрыт. Откроется в ${Rules.formatTime(loc.hours.from)}.`;
     }
 
-    // Если открыта панель «Информация» — не показываем картинку локации,
-    // чтобы не дублировать визуальный акцент и освободить место.
     const infoVisible = Game.getInfo().length > 0;
     const showImage = !infoVisible && !!loc.image;
 
@@ -94,29 +74,25 @@ window.Game = window.Game || {};
     };
   }
 
-  /* ---------- блок «Информация» ---------- */
-
   function buildInfoVM() {
     const entries = Game.getInfo();
-    return {
-      visible: entries.length > 0,
-      entries: entries.slice()
-    };
+    return { visible: entries.length > 0, entries: entries.slice() };
   }
-
-  /* ---------- блок действий ---------- */
 
   function buildActionsVM(loc) {
     const state = Game.getState();
+    const last = state.lastAction;
     const result = [];
-    loc.actions.forEach(action => {
-      // Скрываем одноразовые действия, которые уже выполнены.
-      if (action.once && state.flags[action.id + "_done"]) return;
 
-      // Скрываем действия по условию hiddenWhen.
+    loc.actions.forEach(action => {
+      if (action.once && state.flags[action.id + "_done"]) return;
       if (action.hiddenWhen && Rules.checkCondition(action.hiddenWhen, state, GAME_DATA)) return;
 
       const available = Rules.checkCondition(action.condition, state, GAME_DATA);
+
+      const isRecent = !!(last && last.id === action.id && last.location === state.location);
+      const count = isRecent ? (state.streakCount || 0) : 0;
+
       result.push({
         id: action.id,
         label: action.label,
@@ -125,13 +101,14 @@ window.Game = window.Game || {};
         unavailableReason: available
           ? ""
           : (Rules.describeConditionFailure(action.condition, state, GAME_DATA) || ""),
-        accent: Rules.classifyAction(action)
+        accent: Rules.classifyAction(action),
+        count,
+        recent: isRecent
       });
     });
+
     return result;
   }
-
-  /* ---------- боковая панель ---------- */
 
   function buildSideVM() {
     const state = Game.getState();
@@ -150,17 +127,12 @@ window.Game = window.Game || {};
   function buildSideContentVM() {
     const state = Game.getState();
     switch (state.uiTab) {
-      case "inventory":
-        return buildInventoryVM();
-      case "map":
-        return buildMapVM();
+      case "inventory": return buildInventoryVM();
+      case "map": return buildMapVM();
       case "quests":
-      default:
-        return buildQuestsVM();
+      default: return buildQuestsVM();
     }
   }
-
-  /* ---------- вкладки боковой панели ---------- */
 
   function buildInventoryVM() {
     const state = Game.getState();
@@ -179,15 +151,10 @@ window.Game = window.Game || {};
     return { type: "inventory", items };
   }
 
-  // Описание предмета может быть строкой или функцией (state) => string.
   function resolveDescription(description, state) {
     if (typeof description === "function") {
-      try {
-        return String(description(state) || "");
-      } catch (e) {
-        console.warn(`Ошибка в описании предмета:`, e);
-        return "";
-      }
+      try { return String(description(state) || ""); }
+      catch (e) { console.warn(`Ошибка в описании предмета:`, e); return ""; }
     }
     return String(description || "");
   }
@@ -228,7 +195,6 @@ window.Game = window.Game || {};
   }
 
   function buildCharacterVM() {
-    const state = Game.getState();
     const ch = GAME_DATA.character || {};
     return {
       name: ch.name || "",
@@ -237,8 +203,6 @@ window.Game = window.Game || {};
       description: ch.description || ""
     };
   }
-
-  /* ---------- экспорт ---------- */
 
   Object.assign(window.Game, {
     buildViewModel,

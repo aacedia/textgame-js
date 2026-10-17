@@ -1,12 +1,5 @@
 /*
   Панель «Доступные действия»: сетка кнопок и их внутренняя структура.
-  Цветная полоса слева показывает категорию действия:
-    .action--move   — переход
-    .action--item   — предметы (выдать/изъять)
-    .action--money  — деньги
-    .action--time   — время
-    .action--state  — состояние (флаги, переменные)
-    .action--mixed  — комплексное действие (несколько категорий)
 */
 .actions{padding:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .action-title{display:block;font-weight:650;color:var(--text)}
@@ -14,10 +7,32 @@
 
 /* Цветные полосы по категории действия */
 .action{border-left-width:4px;border-left-style:solid;border-left-color:var(--border)}
+.action--move  {border-left-color:#7fb6d9}
+.action--item  {border-left-color:#8fc7a3}
+.action--money {border-left-color:#d9a35b}
+.action--time  {border-left-color:#a89ad9}
+.action--state {border-left-color:#b3a99c}
+.action--mixed {border-left-color:#e8956b}
 
-.action--move  {border-left-color:#7fb6d9}   /* голубой  */
-.action--item  {border-left-color:#8fc7a3}   /* зелёный  */
-.action--money {border-left-color:#d9a35b}   /* золотой  */
-.action--time  {border-left-color:#a89ad9}   /* сиреневый*/
-.action--state {border-left-color:#b3a99c}   /* серый    */
-.action--mixed {border-left-color:#e8956b}   /* коралловый */
+/* Последнее действие в этой локации */
+.action--recent{
+  background:var(--accent-2);
+  border-color:var(--accent);
+}
+
+/* Счётчик нажатий */
+.action-count{
+  display:inline-block;
+  margin-left:6px;
+  padding:0 6px;
+  border-radius:99px;
+  background:rgba(0,0,0,0.06);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:600;
+  vertical-align:middle;
+}
+.action--recent .action-count{
+  background:rgba(0,0,0,0.10);
+  color:var(--accent-3);
+}

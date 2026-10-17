@@ -1,45 +1,28 @@
-/*
-  Валидация data.js. Проверяет ссылки и связи между данными:
-    - links и move.to ссылаются на существующие локации;
-    - giveItem.item и removeItem.item — на существующие предметы;
-    - condition.item — на существующий предмет (для простых условий);
-    - id действий уникальны в пределах локации;
-    - hours корректны;
-    - initialState ссылается на существующие сущности.
-
-  Модуль не падает при ошибках. Он возвращает { ok, errors } и пишет
-  предупреждения в консоль. Игра продолжает работу.
-
-  Публичный API:
-    DataValidation.validate(gameData) -> { ok, errors }
-
-  Должен подключаться после data.js. Вызывается из game.js при старте.
-*/
 window.DataValidation = (() => {
     "use strict";
-
-    /* ---------- утилита ---------- */
 
     function pushError(errors, path, message) {
         errors.push({ path, message });
     }
 
-    /* ---------- проверки локаций ---------- */
+    function isValidMinute(value) {
+        return typeof value === "number"
+            && Number.isFinite(value)
+            && value >= 0
+            && value < 1440;
+    }
 
     function validateLocations(gameData, errors) {
         const locations = gameData.locations || {};
         const links = gameData.links || {};
 
-        // Все локации, упомянутые в links, должны существовать.
         Object.keys(links).forEach(from => {
             if (!locations[from]) {
                 pushError(errors, `links.${from}`, `links ссылается на несуществующую локацию "${from}"`);
             }
         });
 
-        // Каждая локация из locations должна иметь корректные links и actions.
         Object.entries(locations).forEach(([id, loc]) => {
-            // links: массив строк, все локации существуют.
             const targets = links[id];
             if (targets !== undefined) {
                 if (!Array.isArray(targets)) {
@@ -53,7 +36,6 @@ window.DataValidation = (() => {
                 }
             }
 
-            // hours: from и to в диапазоне [0, 1440).
             if (loc.hours) {
                 const { from, to } = loc.hours;
                 if (!isValidMinute(from)) {
@@ -64,49 +46,77 @@ window.DataValidation = (() => {
                 }
             }
 
-            // actions: массив (если есть).
             if (loc.actions !== undefined && !Array.isArray(loc.actions)) {
                 pushError(errors, `locations.${id}.actions`, `actions должен быть массивом`);
                 return;
             }
 
-            // Действия.
             validateActions(id, loc.actions || [], gameData, errors);
         });
     }
 
-    function isValidMinute(value) {
-        return typeof value === "number"
-            && Number.isFinite(value)
-            && value >= 0
-            && value < 1440;
-    }
+    function validateActions(locationId, actions, gameData, errors) {
+        const seen = new Set();
+        actions.forEach((action, index) => {
+            const where = `locations.${locationId}.actions[${index}]`;
 
-    /* ---------- проверки действий ---------- */
+            if (!action.id) {
+                pushError(errors, where, `действие без поля "id"`);
+            } else if (seen.has(action.id)) {
+                pushError(errors, where, `дубликат id "${action.id}" в локации "${locationId}"`);
+            } else {
+                seen.add(action.id);
+            }
 
-    // Проверяем варианты (если есть).
-    if (action.variants !== undefined) {
-        if (!Array.isArray(action.variants)) {
-            pushError(errors, where, `variants должен быть массивом`);
-        } else {
-            action.variants.forEach((variant, vIndex) => {
-                const vPath = `${where}.variants[${vIndex}]`;
-                if (!variant || typeof variant !== "object") {
-                    pushError(errors, vPath, `вариант должен быть объектом`);
-                    return;
+            if (action.minutes !== undefined) {
+                if (typeof action.minutes !== "number" || Number.isNaN(action.minutes)) {
+                    pushError(errors, `${where}.minutes`, `minutes должен быть числом`);
+                } else if (action.minutes < 0) {
+                    pushError(errors, `${where}.minutes`, `minutes не может быть отрицательным`);
                 }
-                if (variant.effects !== undefined && !Array.isArray(variant.effects)) {
-                    pushError(errors, vPath, `effects варианта должен быть массивом`);
-                    return;
-                }
-                (variant.effects || []).forEach((effect, eIndex) => {
-                    validateEffectRefs(`${vPath}.effects[${eIndex}]`, effect, gameData, errors);
-                });
-                if (variant.condition) {
-                    validateConditionRefs(`${vPath}.condition`, variant.condition, gameData, errors);
-                }
+            }
+
+            if (action.effects !== undefined && !Array.isArray(action.effects)) {
+                pushError(errors, where, `effects должен быть массивом`);
+                return;
+            }
+
+            (action.effects || []).forEach((effect, effIndex) => {
+                validateEffectRefs(`${where}.effects[${effIndex}]`, effect, gameData, errors);
             });
-        }
+
+            if (action.condition) {
+                validateConditionRefs(`${where}.condition`, action.condition, gameData, errors);
+            }
+
+            if (action.hiddenWhen) {
+                validateConditionRefs(`${where}.hiddenWhen`, action.hiddenWhen, gameData, errors);
+            }
+
+            if (action.variants !== undefined) {
+                if (!Array.isArray(action.variants)) {
+                    pushError(errors, where, `variants должен быть массивом`);
+                } else {
+                    action.variants.forEach((variant, vIndex) => {
+                        const vPath = `${where}.variants[${vIndex}]`;
+                        if (!variant || typeof variant !== "object") {
+                            pushError(errors, vPath, `вариант должен быть объектом`);
+                            return;
+                        }
+                        if (variant.effects !== undefined && !Array.isArray(variant.effects)) {
+                            pushError(errors, vPath, `effects варианта должен быть массивом`);
+                            return;
+                        }
+                        (variant.effects || []).forEach((effect, eIndex) => {
+                            validateEffectRefs(`${vPath}.effects[${eIndex}]`, effect, gameData, errors);
+                        });
+                        if (variant.condition) {
+                            validateConditionRefs(`${vPath}.condition`, variant.condition, gameData, errors);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     function validateEffectRefs(path, effect, gameData, errors) {
@@ -147,8 +157,6 @@ window.DataValidation = (() => {
         }
     }
 
-    /* ---------- проверки персонажа ---------- */
-
     function validateCharacter(gameData, errors) {
         const ch = gameData.character;
         if (!ch || typeof ch !== "object") {
@@ -159,8 +167,6 @@ window.DataValidation = (() => {
             pushError(errors, "character.avatar", "avatar должен быть строкой");
         }
     }
-
-    /* ---------- проверки initialState ---------- */
 
     function validateInitialState(gameData, errors) {
         const s = gameData.initialState;
@@ -182,15 +188,11 @@ window.DataValidation = (() => {
         }
     }
 
-    /* ---------- проверки стартовой локации и links ---------- */
-
     function validateStart(gameData, errors) {
         if (gameData.start && !gameData.locations[gameData.start]) {
             pushError(errors, "start", `стартовая локация "${gameData.start}" не существует`);
         }
     }
-
-    /* ---------- главная функция ---------- */
 
     function validate(gameData) {
         const errors = [];

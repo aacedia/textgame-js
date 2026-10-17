@@ -1,10 +1,9 @@
 /*
-  Действия игрока. Принимает id от UI, находит соответствующее действие
-  в GAME_DATA, применяет эффекты через Rules, обновляет состояние и лог.
+  Действия игрока.
 
-  Время действия — это свойство действия (action.minutes), а не эффект.
-  По умолчанию 1 минута. Применяется после эффектов, чтобы переход (если есть)
-  случился до траты времени.
+  Серия нажатий: если жать одно и то же действие подряд (в той же локации),
+  счётчик растёт. Любое другое действие, переход через карту или смена
+  локации сбрасывают серию.
 */
 window.Game = window.Game || {};
 
@@ -48,12 +47,26 @@ window.Game = window.Game || {};
       };
     }
 
+    // Серия нажатий: продолжается только если то же действие подряд
+    // в той же локации. Иначе — начинается заново.
+    const sameStreak =
+      working.streakAction === action.id &&
+      working.lastAction &&
+      working.lastAction.id === action.id &&
+      working.lastAction.location === state.location;
+
+    working = {
+      ...working,
+      streakAction: action.id,
+      streakCount: sameStreak ? (working.streakCount || 0) + 1 : 1,
+      lastAction: { id: action.id, location: state.location }
+    };
+
     const effectList = [
       ...(action.effects || []),
       ...(variant && variant.effects ? variant.effects : [])
     ];
 
-    // Время действия — свойство, по умолчанию 1 минута. Применяется после эффектов.
     const minutes = Number(action.minutes) || 1;
     effectList.push({ type: "advanceTime", minutes });
 
@@ -68,12 +81,11 @@ window.Game = window.Game || {};
     const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
 
     const locName = GAME_DATA.locations[state.location].name;
-    const logBatch = [
+    Game.pushLog([
       `Действие: ${action.label} (${locName})`,
       ...moveMessages,
       ...infoMessages
-    ];
-    Game.pushLog(logBatch);
+    ]);
 
     const text = (variant && variant.text) || action.text;
     const image = (variant && variant.image) || action.image;
@@ -83,12 +95,7 @@ window.Game = window.Game || {};
     const batch = [];
     if (text) batch.push({ kind: "text", text });
     if (image) {
-      batch.push({
-        kind: "image",
-        src: image,
-        alt: imageAlt || "",
-        caption: imageCaption || ""
-      });
+      batch.push({ kind: "image", src: image, alt: imageAlt || "", caption: imageCaption || "" });
     }
 
     const isMoveOnly = moveMessages.length > 0 && batch.length === 0;
@@ -115,7 +122,14 @@ window.Game = window.Game || {};
       state,
       GAME_DATA
     );
-    Game.setState(nextState);
+
+    // Переход сбрасывает и серию, и lastAction.
+    Game.setState({
+      ...nextState,
+      lastAction: null,
+      streakAction: null,
+      streakCount: 0
+    });
     Game.pushLog(messages.map(m => m.text));
     Game.clearInfo();
     Game.render();
