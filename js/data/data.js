@@ -107,14 +107,16 @@ window.GAME_DATA = {
           label: "Немного отдохнуть",
           hint: "Проходит 15 минут",
           effects: [{ type: "advanceTime", minutes: 15 }],
-          text: "Ты ненадолго присаживаешься и собираешься с мыслями."
+          text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
+          image: "assets/images/locations/apartment-rest.jpg"
         },
         {
           id: "sleep_8h",
           label: "Лечь спать",
           hint: "Проходит 8 часов",
           effects: [{ type: "advanceTime", minutes: 480 }],
-          text: "Ты ложишься спать и просыпаешься через восемь часов."
+          text: "Ты ложишься спать и просыпаешься через восемь часов.",
+          image: "assets/images/locations/apartment-sleep.jpg"
         }
       ]
     },
