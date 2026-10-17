@@ -9,16 +9,22 @@
     Rules.formatTime(minutes)
     Rules.isLocationOpen(gameData, id, minutes)
     Rules.describeHours(hours)
+    Rules.getTimeOfDay(minutes)
+    Rules.describeTimeOfDay(timeOfDay)
     Rules.checkCondition(condition, state, gameData)
     Rules.describeConditionFailure(condition, state, gameData)
     Rules.applyEffect(effect, state, gameData)   -> { state, messages }
     Rules.applyEffects(effects, state, gameData) -> { state, messages }
     Rules.classifyEffect(effect)                 -> "move" | "item" | "money" | "time" | "state"
-    Rules.classifyAction(action)                 -> категория действия (см. ниже)
+    Rules.classifyAction(action)                 -> категория действия
 
   Сообщения в messages — массив объектов { kind: "move" | "info", text }.
     "move"  — переход между локациями (для «Истории событий»);
     "info"  — всё остальное (для панели «Информация»).
+
+  Валидация. При опечатках в типе эффекта/условия или при отсутствии
+  обязательного поля функция пишет console.warn и обрабатывает случай
+  как «ничего не произошло». Это безопасно для игры и заметно в консоли.
 
   Поддерживаемые условия:
     { item: "keys" }
@@ -65,25 +71,122 @@ window.Rules = (() => {
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   }
 
-  // Проверяет, открыта ли локация в указанное время (в минутах от полуночи).
-  // Локации без поля hours считаются открытыми всегда.
   function isLocationOpen(gameData, id, minutes) {
     const loc = gameData.locations[id];
     if (!loc || !loc.hours) return true;
     const { from, to } = loc.hours;
     const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
     if (from <= to) return t >= from && t < to;
-    // Интервал через полночь: например, с 22:00 до 06:00
     return t >= from || t < to;
   }
 
-  // Человекочитаемая строка расписания: "08:00–20:00".
   function describeHours(hours) {
     if (!hours) return "круглосуточно";
     return `${formatTime(hours.from)}–${formatTime(hours.to)}`;
   }
 
+  /* ---------- время суток ---------- */
+
+  function getTimeOfDay(minutes) {
+    const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
+    if (t >= 5 * 60 && t < 12 * 60) return "morning";
+    if (t >= 12 * 60 && t < 17 * 60) return "day";
+    if (t >= 17 * 60 && t < 23 * 60) return "evening";
+    return "night";
+  }
+
+  function describeTimeOfDay(timeOfDay) {
+    switch (timeOfDay) {
+      case "morning": return "🌅";
+      case "day": return "☀️";
+      case "evening": return "🌆";
+      case "night":
+      default: return "🌙";
+    }
+  }
+
+  /* ---------- валидация ---------- */
+
+  // Предупреждение в консоль с указанием функции и проблемного объекта.
+  function warn(message, payload) {
+    if (payload !== undefined) {
+      console.warn(`Rules: ${message}`, payload);
+    } else {
+      console.warn(`Rules: ${message}`);
+    }
+  }
+
+  // Проверяет, что у эффекта есть обязательные поля по его типу.
+  // Возвращает true, если структура корректна.
+  function validateEffectShape(effect) {
+    switch (effect.type) {
+      case "move":
+        if (typeof effect.to !== "string" || !effect.to) {
+          warn(`move без поля "to"`, effect);
+          return false;
+        }
+        return true;
+      case "giveItem":
+      case "removeItem":
+        if (typeof effect.item !== "string" || !effect.item) {
+          warn(`${effect.type} без поля "item"`, effect);
+          return false;
+        }
+        return true;
+      case "setFlag":
+        if (typeof effect.flag !== "string" || !effect.flag) {
+          warn(`setFlag без поля "flag"`, effect);
+          return false;
+        }
+        return true;
+      case "changeVariable":
+        if (typeof effect.name !== "string" || !effect.name) {
+          warn(`changeVariable без поля "name"`, effect);
+          return false;
+        }
+        if (typeof effect.amount !== "number" || Number.isNaN(effect.amount)) {
+          warn(`changeVariable без числового "amount"`, effect);
+          return false;
+        }
+        return true;
+      case "setVariable":
+        if (typeof effect.name !== "string" || !effect.name) {
+          warn(`setVariable без поля "name"`, effect);
+          return false;
+        }
+        return true;
+      case "setVariableFromVariable":
+        if (typeof effect.name !== "string" || !effect.name) {
+          warn(`setVariableFromVariable без поля "name"`, effect);
+          return false;
+        }
+        if (typeof effect.from !== "string" || !effect.from) {
+          warn(`setVariableFromVariable без поля "from"`, effect);
+          return false;
+        }
+        return true;
+      case "advanceTime":
+        if (typeof effect.minutes !== "number" || Number.isNaN(effect.minutes)) {
+          warn(`advanceTime без числового "minutes"`, effect);
+          return false;
+        }
+        return true;
+      default:
+        warn(`неизвестный тип эффекта "${effect.type}"`, effect);
+        return false;
+    }
+  }
+
   /* ---------- условия ---------- */
+
+  // Возвращает true для известных условий, false — для неизвестных.
+  // Используется только для предупреждения в консоль.
+  const KNOWN_CONDITIONS = [
+    "all", "any", "not",
+    "item", "flag",
+    "variableAtLeast", "variableEquals", "variableDiffers",
+    "locationOpen"
+  ];
 
   function checkCondition(condition, state, gameData) {
     if (!condition) return true;
@@ -110,15 +213,11 @@ window.Rules = (() => {
     if (condition.locationOpen) {
       return isLocationOpen(gameData, condition.locationOpen, state.variables.minutes);
     }
+    // Условие не распознано — предупреждаем и считаем невыполненным.
+    warn(`неизвестное условие`, condition);
     return false;
   }
 
-  /*
-    Возвращает причину недоступности действия в виде строки или null, если
-    условие на самом деле выполнено. Понимает только простые случаи:
-    locationOpen, item, flag, variableAtLeast, variableDiffers. Для сложных
-    условий (all/any/not) возвращает null, и UI покажет общий текст.
-  */
   function describeConditionFailure(condition, state, gameData) {
     if (!condition) return null;
     if (checkCondition(condition, state, gameData)) return null;
@@ -140,27 +239,39 @@ window.Rules = (() => {
 
   /* ---------- эффекты ---------- */
 
-  /*
-    Чистый редьюсер: возвращает новый state и массив сообщений.
-    Сообщения — объекты { kind: "move" | "info", text }.
-  */
   function applyEffect(effect, state, gameData) {
     const next = deepClone(state);
     const messages = [];
 
+    // Проверка структуры: если эффект сломан, ничего не делаем.
+    // warn уже вызван внутри validateEffectShape.
+    if (!effect || typeof effect !== "object") {
+      warn(`эффект не является объектом`, effect);
+      return { state: next, messages };
+    }
+    if (!validateEffectShape(effect)) {
+      return { state: next, messages };
+    }
+
     switch (effect.type) {
       case "move": {
         const target = gameData.locations[effect.to];
-        if (target) {
-          next.location = effect.to;
-          messages.push({ kind: "move", text: `Ты переходишь: ${target.name}.` });
+        if (!target) {
+          warn(`move → неизвестная локация "${effect.to}"`, effect);
+          break;
         }
+        next.location = effect.to;
+        messages.push({ kind: "move", text: `Ты переходишь: ${target.name}.` });
         break;
       }
 
       case "giveItem": {
         const item = gameData.items[effect.item];
-        if (item && !next.inventory.includes(effect.item)) {
+        if (!item) {
+          warn(`giveItem → неизвестный предмет "${effect.item}"`, effect);
+          break;
+        }
+        if (!next.inventory.includes(effect.item)) {
           next.inventory.push(effect.item);
           messages.push({ kind: "info", text: `Получен предмет: ${item.name}.` });
         }
@@ -213,9 +324,6 @@ window.Rules = (() => {
     return { state: next, messages };
   }
 
-  /*
-    Применяет массив эффектов по очереди, накапливая сообщения.
-  */
   function applyEffects(effects, state, gameData) {
     let current = state;
     const messages = [];
@@ -229,14 +337,6 @@ window.Rules = (() => {
 
   /* ---------- классификация действий ---------- */
 
-  /*
-    Определяет смысловую категорию одного эффекта:
-      "move"  — переход между локациями;
-      "item"  — выдача или изъятие предмета;
-      "money" — изменение переменной money;
-      "time"  — сдвиг времени;
-      "state" — всё остальное (флаги, переменные, копирование).
-  */
   function classifyEffect(effect) {
     if (!effect || typeof effect !== "object") return "state";
     switch (effect.type) {
@@ -254,48 +354,12 @@ window.Rules = (() => {
     }
   }
 
-  /*
-    Определяет категорию действия по его эффектам.
-      - Если эффектов нет — "state" (нейтральная категория).
-      - Если все эффекты одной категории — эта категория.
-      - Если категории разные — "mixed" (комплексное действие).
-
-    Используется UI для цветовой маркировки кнопок действий.
-  */
   function classifyAction(action) {
     const effects = (action && action.effects) || [];
     if (!effects.length) return "state";
     const kinds = new Set(effects.map(classifyEffect));
     if (kinds.size === 1) return kinds.values().next().value;
     return "mixed";
-  }
-
-  /* ---------- время суток ---------- */
-
-  /*
-    Определяет часть суток по текущему времени (в минутах от полуночи).
-      "morning" — 05:00–11:59
-      "day"     — 12:00–16:59
-      "evening" — 17:00–22:59
-      "night"   — 23:00–04:59
-  */
-  function getTimeOfDay(minutes) {
-    const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
-    if (t >= 5 * 60 && t < 12 * 60) return "morning";
-    if (t >= 12 * 60 && t < 17 * 60) return "day";
-    if (t >= 17 * 60 && t < 23 * 60) return "evening";
-    return "night";
-  }
-
-  // Эмодзи для части суток. Используется в статусе.
-  function describeTimeOfDay(timeOfDay) {
-    switch (timeOfDay) {
-      case "morning": return "🌅";
-      case "day": return "☀️";
-      case "evening": return "🌆";
-      case "night":
-      default: return "🌙";
-    }
   }
 
   /* ---------- экспорт ---------- */
