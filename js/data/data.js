@@ -1,31 +1,10 @@
 /*
   ДАННЫЕ ИГРЫ. Здесь только контент: локации, предметы, персонаж, стартовое состояние.
-  Никакой логики.
-
-  Структура локации:
-    name, tag, description[], image?, imageAlt?, imageCaption?,
-    hours?: { from, to },   // минуты от полуночи; отсутствует — открыта всегда
-    actions[]
 
   Структура действия:
     id, label, hint?, condition?, effects[], text?, once?,
+    minutes?,               // время действия в минутах; по умолчанию 1
     image?, imageAlt?, imageCaption?
-
-    text    — авторский текст, попадает в панель «Информация».
-    image   — путь к изображению (относительно index.html), попадает в «Информацию».
-    imageAlt — альтернативный текст для изображения.
-    imageCaption — подпись под изображением; если не задано, подписи нет.
-
-  Условия: { item }, { flag, equals? }, { not }, { all }, { any },
-           { variableAtLeast: { name, value } }, { variableEquals: { name, value } },
-           { variableDiffers: { name, other } },
-           { locationOpen: "locationId" }
-
-  Эффекты: { type: "move", to }, { type: "giveItem", item },
-           { type: "removeItem", item }, { type: "setFlag", flag, value },
-           { type: "changeVariable", name, amount }, { type: "setVariable", name, value },
-           { type: "setVariableFromVariable", name, from },
-           { type: "advanceTime", minutes }
 
   Пути к изображениям указываются относительно index.html, а не data.js.
 */
@@ -62,7 +41,6 @@ window.GAME_DATA = {
     notebook: {
       name: "Блокнот",
       icon: "📓",
-      // Описание может быть строкой или функцией (state) => string.
       description: (state) => {
         const count = Number(state.variables.classesAttended) || 0;
         if (count === 0) {
@@ -107,7 +85,8 @@ window.GAME_DATA = {
           id: "rest",
           label: "Немного отдохнуть",
           hint: "Проходит 15 минут",
-          effects: [{ type: "advanceTime", minutes: 15 }],
+          minutes: 15,
+          effects: [],
           text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
           image: "assets/images/locations/apartment-rest.jpg"
         },
@@ -115,7 +94,8 @@ window.GAME_DATA = {
           id: "sleep_8h",
           label: "Лечь спать",
           hint: "Проходит 8 часов",
-          effects: [{ type: "advanceTime", minutes: 480 }],
+          minutes: 480,
+          effects: [],
           text: "Ты ложишься спать и просыпаешься через восемь часов.",
           image: "assets/images/locations/apartment-sleep.jpg"
         }
@@ -208,6 +188,7 @@ window.GAME_DATA = {
           id: "attend_class",
           label: "Посетить занятие",
           hint: "Один раз в день · нужен блокнот",
+          minutes: 90,
           condition: {
             all: [
               { item: "notebook" },
@@ -216,8 +197,7 @@ window.GAME_DATA = {
           },
           effects: [
             { type: "setVariableFromVariable", name: "lastClassDay", from: "day" },
-            { type: "changeVariable", name: "classesAttended", amount: 1 },
-            { type: "advanceTime", minutes: 90 }
+            { type: "changeVariable", name: "classesAttended", amount: 1 }
           ],
           text: "Ты заходишь в аудиторию и проводишь полтора часа на занятии.",
           image: "assets/images/locations/university-classroom.jpg",
