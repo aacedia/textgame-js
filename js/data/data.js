@@ -99,6 +99,7 @@ window.GAME_DATA = {
           id: "leave_home",
           label: "Выйти на улицу",
           hint: "Отправиться в город",
+          condition: { item: "keys" },
           effects: [{ type: "move", to: "street" }]
         },
         {
