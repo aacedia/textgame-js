@@ -17,10 +17,11 @@
     Rules.applyEffects(effects, state, gameData) -> { state, messages }
     Rules.classifyEffect(effect)                 -> "move" | "item" | "money" | "time" | "state"
     Rules.classifyAction(action)                 -> категория действия
+    Rules.pickVariant(variants, state, gameData, actionId) -> { variant, index } | null
 
   Сообщения в messages — массив объектов { kind: "move" | "info", text }.
     "move"  — переход между локациями (для «Истории событий»);
-    "info"  — всё остальное (для панели «Информация»).
+    "info"  — всё остальное (для «Истории событий»).
 
   Валидация. При опечатках в типе эффекта/условия или при отсутствии
   обязательного поля функция пишет console.warn и обрабатывает случай
@@ -179,15 +180,6 @@ window.Rules = (() => {
 
   /* ---------- условия ---------- */
 
-  // Возвращает true для известных условий, false — для неизвестных.
-  // Используется только для предупреждения в консоль.
-  const KNOWN_CONDITIONS = [
-    "all", "any", "not",
-    "item", "flag",
-    "variableAtLeast", "variableEquals", "variableDiffers",
-    "locationOpen"
-  ];
-
   function checkCondition(condition, state, gameData) {
     if (!condition) return true;
     if (condition.all) return condition.all.every(c => checkCondition(c, state, gameData));
@@ -222,6 +214,9 @@ window.Rules = (() => {
     if (!condition) return null;
     if (checkCondition(condition, state, gameData)) return null;
 
+    // Явная причина, если разработчик данных её указал.
+    if (condition.reason) return condition.reason;
+
     // Составное условие: находим первую невыполненную ветку и описываем её.
     if (Array.isArray(condition.all)) {
       for (const c of condition.all) {
@@ -231,17 +226,25 @@ window.Rules = (() => {
       return "Не все условия выполнены";
     }
     if (Array.isArray(condition.any)) {
-      // Для any ни одна ветка не выполнена — перечисляем причины коротко.
-      // Возвращаем причину первой ветки как наиболее вероятную.
       for (const c of condition.any) {
         const reason = describeConditionFailure(c, state, gameData);
         if (reason) return reason;
       }
       return "Ни одно из условий не выполнено";
     }
+
+    // Отрицание: описываем то, что на самом деле выполнено.
+    // Например, not { item: "notebook" } при наличии блокнота → "Уже есть: Блокнот".
     if (condition.not) {
-      // Для not причина — что условие на самом деле выполнено.
-      return null;
+      const inner = condition.not;
+      if (inner.item) {
+        const item = gameData.items[inner.item];
+        return `Уже есть: ${item ? item.name : inner.item}`;
+      }
+      if (inner.flag) return "Уже сделано";
+      if (inner.variableAtLeast) return "Уже достигнуто";
+      if (inner.variableEquals) return "Уже так";
+      return "Условие уже выполнено";
     }
 
     if (condition.locationOpen) {
@@ -255,8 +258,9 @@ window.Rules = (() => {
       return `Нужен предмет: ${name}`;
     }
     if (condition.variableAtLeast) {
-      const suffix = condition.variableAtLeast.name === "money" ? " ₽" : "";
-      return `Нужно ${condition.variableAtLeast.value}${suffix}`;
+      const { name, value } = condition.variableAtLeast;
+      const suffix = name === "money" ? " ₽" : "";
+      return `Нужно ${value}${suffix}`;
     }
     if (condition.variableDiffers) return "Уже сделано сегодня";
     if (condition.flag && condition.equals === false) return "Уже сделано";
@@ -270,7 +274,6 @@ window.Rules = (() => {
     const messages = [];
 
     // Проверка структуры: если эффект сломан, ничего не делаем.
-    // warn уже вызван внутри validateEffectShape.
     if (!effect || typeof effect !== "object") {
       warn(`эффект не является объектом`, effect);
       return { state: next, messages };
@@ -282,12 +285,14 @@ window.Rules = (() => {
     switch (effect.type) {
       case "move": {
         const target = gameData.locations[effect.to];
+        const from = gameData.locations[next.location];
         if (!target) {
           warn(`move → неизвестная локация "${effect.to}"`, effect);
           break;
         }
+        const fromName = from ? from.name : "?";
         next.location = effect.to;
-        messages.push({ kind: "move", text: `Ты переходишь: ${target.name}.` });
+        messages.push({ kind: "move", text: `Переход: ${fromName} -> ${target.name}` });
         break;
       }
 
@@ -315,8 +320,19 @@ window.Rules = (() => {
       }
 
       case "changeVariable": {
-        next.variables[effect.name] =
-          Number(next.variables[effect.name] || 0) + effect.amount;
+        const before = Number(next.variables[effect.name] || 0);
+        const after = before + effect.amount;
+        next.variables[effect.name] = after;
+
+        // Сообщения только для денег: остальные переменные служебные.
+        if (effect.name === "money") {
+          const diff = after - before;
+          if (diff > 0) {
+            messages.push({ kind: "info", text: `Получено: ${diff} ₽` });
+          } else if (diff < 0) {
+            messages.push({ kind: "info", text: `Потрачено: ${-diff} ₽` });
+          }
+        }
         break;
       }
 
@@ -396,14 +412,13 @@ window.Rules = (() => {
       - прошлого выбора для этого действия (state.lastVariant[actionId]).
         Если у прошлого варианта не выставлен repeatable: true, он исключается
         из выбора, когда есть альтернативы.
-  
+
     Возвращает { variant, index } или null, если подходящих нет.
     index — позиция варианта в исходном массиве (для сохранения в state).
   */
   function pickVariant(variants, state, gameData, actionId) {
     if (!Array.isArray(variants) || !variants.length) return null;
 
-    // Собираем индексы подходящих вариантов с учётом condition.
     const eligible = [];
     variants.forEach((v, i) => {
       if (!v.condition || checkCondition(v.condition, state, gameData)) {
@@ -412,11 +427,8 @@ window.Rules = (() => {
     });
     if (!eligible.length) return null;
 
-    // Прошлый индекс для этого действия (если был).
     const lastIndex = state.lastVariant && state.lastVariant[actionId];
 
-    // Если прошлый вариант всё ещё в пуле и не repeatable — исключаем его,
-    // но только если есть альтернативы.
     let pool = eligible;
     if (lastIndex !== undefined && eligible.length > 1) {
       const lastVariant = variants[lastIndex];

@@ -3,13 +3,16 @@
   в GAME_DATA, применяет эффекты через Rules, обновляет состояние и лог.
 
   Разделение сообщений по каналам:
-    - "move"  → "История событий" (накапливается, как раньше).
-    - "info"  → "Информация" (заменяется при каждом новом осмысленном действии).
-    - action.text и action.image → "Информация".
+    - "История событий" получает:
+        * "Действие: <label> (<location name>)" — при каждом нажатии;
+        * "Переход: <from> -> <to>" — из эффектов move;
+        * информационные сообщения эффектов ("Получен предмет: …",
+          "Наступает новый день.").
+    - "Информация" получает только авторский текст и картинку действия
+      (или выбранного варианта). Служебные сообщения эффектов сюда больше
+      не попадают — они идут в историю.
 
-  Если действие — чисто переход (только move-эффект без text/image),
-  "Информация" очищается. Если у перехода есть text или image — они
-  показываются в "Информации", а переход дополнительно попадает в "Историю".
+  Если действие — чисто переход (move без text/image), "Информация" очищается.
 
   Публичный API:
     Game.onAction(id)
@@ -87,17 +90,25 @@ window.Game = window.Game || {};
     const moveMessages = messages.filter(m => m.kind === "move").map(m => m.text);
     const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
 
-    // "История событий" — только переходы
-    if (moveMessages.length) Game.pushLog(moveMessages);
+    // "История событий": действие + переходы + результаты эффектов.
+    // Порядок в массиве: сначала "Действие", потом эффекты.
+    // pushLog добавляет в начало, поэтому в логе "Действие" окажется сверху.
+    const locName = GAME_DATA.locations[state.location].name;
+    const logBatch = [
+      `Действие: ${action.label} (${locName})`,
+      ...moveMessages,
+      ...infoMessages
+    ];
+    Game.pushLog(logBatch);
 
-    // Текст и картинка берутся сначала из варианта, потом из действия.
+    // Текст и картинка для "Информации" берутся сначала из варианта,
+    // потом из действия. Служебные сообщения эффектов сюда не попадают.
     const text = (variant && variant.text) || action.text;
     const image = (variant && variant.image) || action.image;
     const imageAlt = (variant && variant.imageAlt) || action.imageAlt || text;
     const imageCaption = (variant && variant.imageCaption) || action.imageCaption;
 
-    // "Информация" — результат последнего осмысленного действия.
-    // Порядок: текст действия → картинка → сообщения от эффектов.
+    // "Информация": только авторский текст и картинка.
     const batch = [];
     if (text) batch.push({ kind: "text", text });
     if (image) {
@@ -108,7 +119,6 @@ window.Game = window.Game || {};
         caption: imageCaption || ""
       });
     }
-    infoMessages.forEach(t => batch.push({ kind: "text", text: t }));
 
     // Если действие — чисто переход (move без собственного text/image),
     // очищаем "Информацию", чтобы она не висела с прошлого осмысленного действия.
@@ -130,8 +140,11 @@ window.Game = window.Game || {};
     if (!Rules.isAdjacent(GAME_DATA, state.location, target)) return;
     if (!Rules.isLocationOpen(GAME_DATA, target, state.variables.minutes)) return;
 
+    const fromName = GAME_DATA.locations[state.location].name;
+    const toName = GAME_DATA.locations[target].name;
+
     Game.setState({ ...state, location: target });
-    Game.pushLog([`Ты переходишь: ${GAME_DATA.locations[target].name}.`]);
+    Game.pushLog([`Переход: ${fromName} -> ${toName}`]);
     Game.clearInfo();
     Game.render();
   }
