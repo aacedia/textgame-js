@@ -9,13 +9,13 @@ window.Game = window.Game || {};
   "use strict";
 
   const GAME_DATA = window.GAME_DATA;
-  const Rules     = window.Rules;
-  const Save      = window.Save;
-  const UI        = window.UI;
+  const Rules = window.Rules;
+  const Save = window.Save;
+  const UI = window.UI;
   if (!GAME_DATA) { console.error("game.js: window.GAME_DATA не найден."); return; }
-  if (!Rules)     { console.error("game.js: window.Rules не найден.");     return; }
-  if (!Save)      { console.error("game.js: window.Save не найден.");      return; }
-  if (!UI)        { console.error("game.js: window.UI не найден.");        return; }
+  if (!Rules) { console.error("game.js: window.Rules не найден."); return; }
+  if (!Save) { console.error("game.js: window.Save не найден."); return; }
+  if (!UI) { console.error("game.js: window.UI не найден."); return; }
 
   // Проверяем, что все модули зарегистрировали свои методы.
   const required = [
@@ -37,7 +37,20 @@ window.Game = window.Game || {};
 
   Object.assign(window.Game, { render });
 
-  // Запуск: подписываем UI на колбэки и рисуем первый кадр.
+  /* ---------- старт ---------- */
+
+  // Проверка данных при старте. Не блокирует игру: если что-то не так, пишем в консоль и продолжаем.
+  if (typeof DataValidation !== "undefined" && typeof DataValidation.validate === "function") {
+    const report = DataValidation.validate(GAME_DATA);
+    if (!report.ok) {
+      console.warn(`DataValidation: обнаружено ${report.errors.length} проблем(ы) в data.js:`);
+      report.errors.forEach(err => {
+        const prefix = err.path ? `[${err.path}] ` : "";
+        console.warn(`  ${prefix}${err.message}`);
+      });
+    }
+  }
+
   UI.init({ onAction: Game.onAction, onCommand: Game.onCommand });
   render();
 })();
