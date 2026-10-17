@@ -107,9 +107,14 @@ window.Game = window.Game || {};
     merged.flags = Object.assign({}, base.flags, merged.flags || {});
     merged.variables = Object.assign({}, base.variables, merged.variables || {});
 
+    const VALID_TABS = ["quests", "inventory", "map"];
+    if (!VALID_TABS.includes(merged.uiTab)) {
+      merged.uiTab = "quests";
+    }
+
     const logs = Array.isArray(snapshot.logEntries)
       ? snapshot.logEntries.slice(0, LOG_LIMIT)
-      : [];
+      : ["Сохранение загружено."];
 
     const infos = Array.isArray(snapshot.infoEntries)
       ? snapshot.infoEntries.filter(Game.isInfoEntry).slice(0, INFO_LIMIT)

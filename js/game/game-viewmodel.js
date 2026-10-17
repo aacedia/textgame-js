@@ -138,9 +138,9 @@ window.Game = window.Game || {};
     return {
       activeTab: state.uiTab,
       tabs: [
+        { id: "quests", label: "Задания" },
         { id: "inventory", label: "Инвентарь" },
-        { id: "map", label: "Карта" },
-        { id: "quests", label: "Задания" }
+        { id: "map", label: "Карта" }
       ],
       content: buildSideContentVM(),
       character: buildCharacterVM()
@@ -150,13 +150,13 @@ window.Game = window.Game || {};
   function buildSideContentVM() {
     const state = Game.getState();
     switch (state.uiTab) {
+      case "inventory":
+        return buildInventoryVM();
       case "map":
         return buildMapVM();
       case "quests":
-        return buildQuestsVM();
-      case "inventory":
       default:
-        return buildInventoryVM();
+        return buildQuestsVM();
     }
   }
 

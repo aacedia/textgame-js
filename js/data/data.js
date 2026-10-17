@@ -42,7 +42,7 @@ window.GAME_DATA = {
       lastClassDay: 0,
       classesAttended: 0
     },
-    uiTab: "inventory",
+    uiTab: "quests",
     controlsOpen: false,
     logOpen: false,
     lastVariant: {}
