@@ -87,6 +87,7 @@ window.UI = (() => {
     renderInfo(vm.info);
     renderActions(vm.actions);
     renderLog(vm.log, vm.logOpen);
+    if (typeof UI.renderCharacterPanel === "function") UI.renderCharacterPanel(vm.side.character);
     if (typeof UI.renderSide === "function") UI.renderSide(vm.side);
     if (typeof UI.renderControls === "function") UI.renderControls(vm.controlsOpen);
   }
@@ -94,10 +95,56 @@ window.UI = (() => {
   /* ---------- статус (шапка) ---------- */
 
   function renderStatus(status) {
-    $("status").innerHTML =
-      `День ${status.day} · ${status.time}<br>` +
-      `Баланс: ${status.money} ₽<br>` +
-      `Локация: ${escapeHtml(status.locationName)}`;
+    const root = $("status");
+    root.replaceChildren();
+
+    // Время + день
+    const timeBadge = buildBadge({
+      main: `${status.timeIcon ? status.timeIcon + " " : ""}${status.time}`,
+      sub: `день ${status.day}`,
+      modifier: "badge--time" + (status.timeOfDay ? " badge--time--" + status.timeOfDay : "")
+    });
+    root.appendChild(timeBadge);
+
+    // Деньги
+    const moneyBadge = buildBadge({
+      main: `${status.money} ₽`,
+      modifier: "badge--money"
+    });
+    root.appendChild(moneyBadge);
+
+    // Локация
+    const locationBadge = buildBadge({
+      main: status.locationName,
+      modifier: "badge--location"
+    });
+    root.appendChild(locationBadge);
+
+    // Инвентарь: рюкзак + количество предметов
+    const inventoryBadge = buildBadge({
+      main: `💼 ${status.inventoryCount}`,
+      modifier: "badge--inventory"
+    });
+    root.appendChild(inventoryBadge);
+  }
+
+  function buildBadge({ main, sub, modifier }) {
+    const badge = document.createElement("span");
+    badge.className = "badge" + (modifier ? " " + modifier : "");
+
+    const mainEl = document.createElement("span");
+    mainEl.className = "badge__main";
+    mainEl.textContent = main || "";
+    badge.appendChild(mainEl);
+
+    if (sub) {
+      const subEl = document.createElement("span");
+      subEl.className = "badge__sub";
+      subEl.textContent = sub;
+      badge.appendChild(subEl);
+    }
+
+    return badge;
   }
 
   /* ---------- локация ---------- */

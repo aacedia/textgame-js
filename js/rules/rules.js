@@ -270,6 +270,34 @@ window.Rules = (() => {
     return "mixed";
   }
 
+  /* ---------- время суток ---------- */
+
+  /*
+    Определяет часть суток по текущему времени (в минутах от полуночи).
+      "morning" — 05:00–11:59
+      "day"     — 12:00–16:59
+      "evening" — 17:00–22:59
+      "night"   — 23:00–04:59
+  */
+  function getTimeOfDay(minutes) {
+    const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
+    if (t >= 5 * 60 && t < 12 * 60) return "morning";
+    if (t >= 12 * 60 && t < 17 * 60) return "day";
+    if (t >= 17 * 60 && t < 23 * 60) return "evening";
+    return "night";
+  }
+
+  // Эмодзи для части суток. Используется в статусе.
+  function describeTimeOfDay(timeOfDay) {
+    switch (timeOfDay) {
+      case "morning": return "🌅";
+      case "day": return "☀️";
+      case "evening": return "🌆";
+      case "night":
+      default: return "🌙";
+    }
+  }
+
   /* ---------- экспорт ---------- */
 
   return {
@@ -279,6 +307,8 @@ window.Rules = (() => {
     formatTime,
     isLocationOpen,
     describeHours,
+    getTimeOfDay,
+    describeTimeOfDay,
     checkCondition,
     describeConditionFailure,
     applyEffect,

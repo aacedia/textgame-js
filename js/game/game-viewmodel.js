@@ -45,11 +45,15 @@ window.Game = window.Game || {};
   function buildStatusVM() {
     const state = Game.getState();
     const loc = GAME_DATA.locations[state.location];
+    const timeOfDay = Rules.getTimeOfDay(state.variables.minutes);
     return {
       day: state.variables.day,
       time: Rules.formatTime(state.variables.minutes),
+      timeOfDay,
+      timeIcon: Rules.describeTimeOfDay(timeOfDay),
       money: state.variables.money,
-      locationName: loc.name
+      locationName: loc.name,
+      inventoryCount: state.inventory.length
     };
   }
 
@@ -132,25 +136,23 @@ window.Game = window.Game || {};
       tabs: [
         { id: "inventory", label: "Инвентарь" },
         { id: "map", label: "Карта" },
-        { id: "quests", label: "Задания" },
-        { id: "status", label: "Персонаж" }
+        { id: "quests", label: "Задания" }
       ],
-      content: buildSideContentVM()
+      content: buildSideContentVM(),
+      character: buildCharacterVM()
     };
   }
 
   function buildSideContentVM() {
     const state = Game.getState();
     switch (state.uiTab) {
-      case "inventory":
-        return buildInventoryVM();
       case "map":
         return buildMapVM();
       case "quests":
         return buildQuestsVM();
-      case "status":
+      case "inventory":
       default:
-        return buildCharacterVM();
+        return buildInventoryVM();
     }
   }
 
@@ -203,17 +205,10 @@ window.Game = window.Game || {};
     const state = Game.getState();
     const ch = GAME_DATA.character || {};
     return {
-      type: "status",
-      info: {
-        name: ch.name || "",
-        avatar: ch.avatar || "",
-        avatarAlt: ch.avatarAlt || "",
-        description: ch.description || "",
-        day: state.variables.day,
-        time: Rules.formatTime(state.variables.minutes),
-        money: state.variables.money,
-        inventoryCount: state.inventory.length
-      }
+      name: ch.name || "",
+      avatar: ch.avatar || "",
+      avatarAlt: ch.avatarAlt || "",
+      description: ch.description || ""
     };
   }
 

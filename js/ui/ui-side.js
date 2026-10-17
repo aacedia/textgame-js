@@ -1,7 +1,11 @@
 /*
   UI — боковая панель.
-  Регистрирует методы в window.UI: renderSide, renderTabs, renderInventory,
-  renderMap, renderQuests, renderCharacter.
+  Регистрирует методы в window.UI:
+    renderSide, renderTabs, renderInventory, renderMap, renderQuests,
+    renderCharacterPanel.
+
+  Панель «Персонаж» — отдельное окно в правой колонке (не вкладка),
+  рендерится через renderCharacterPanel.
 
   Зависит от window.UI.escapeHtml и window.UI.getHandlers.
   Должен подключаться после ui-core.js.
@@ -14,7 +18,7 @@
 
   const { escapeHtml, getHandlers } = UI;
 
-  /* ---------- боковая панель ---------- */
+  /* ---------- боковая панель: вкладки ---------- */
 
   function renderSide(side) {
     renderTabs(side.tabs, side.activeTab);
@@ -22,9 +26,8 @@
     root.replaceChildren();
     switch (side.content.type) {
       case "inventory": renderInventory(root, side.content.items); break;
-      case "map":       renderMap(root, side.content.rows);        break;
-      case "quests":    renderQuests(root, side.content.quests);   break;
-      case "status":    renderCharacter(root, side.content.info);  break;
+      case "map": renderMap(root, side.content.rows); break;
+      case "quests": renderQuests(root, side.content.quests); break;
     }
   }
 
@@ -40,6 +43,8 @@
       root.appendChild(b);
     });
   }
+
+  /* ---------- вкладка «Инвентарь» ---------- */
 
   function renderInventory(root, items) {
     if (!items.length) {
@@ -59,6 +64,8 @@
     });
     root.appendChild(ul);
   }
+
+  /* ---------- вкладка «Карта» ---------- */
 
   function renderMap(root, rows) {
     const list = document.createElement("div");
@@ -86,50 +93,67 @@
     root.appendChild(list);
   }
 
+  /* ---------- вкладка «Задания» ---------- */
+
   function renderQuests(root, quests) {
     root.innerHTML = quests
       .map(q => `<p>${q.done ? "✓" : "○"} ${escapeHtml(q.text)}</p>`)
       .join("");
   }
 
-  function renderCharacter(root, info) {
+  /* ---------- панель «Персонаж» ---------- */
+
+  function renderCharacterPanel(info) {
+    const root = UI.$("character-content");
+    if (!root || !info) return;
+    root.replaceChildren();
+
+    // Аватар
     const hasAvatar = !!info.avatar;
-    const avatarHtml = hasAvatar
-      ? `<div class="character-avatar">` +
-          `<img id="character-avatar-img" src="${escapeHtml(info.avatar)}" ` +
-               `alt="${escapeHtml(info.avatarAlt || info.name || "Персонаж")}">` +
-        `</div>`
-      : `<div class="character-avatar character-avatar--empty" aria-hidden="true">?</div>`;
+    const avatarEl = document.createElement("div");
+    avatarEl.className = "character-avatar" + (hasAvatar ? "" : " character-avatar--empty");
 
-    const nameHtml = info.name
-      ? `<div class="character-name">${escapeHtml(info.name)}</div>`
-      : "";
+    if (hasAvatar) {
+      const img = document.createElement("img");
+      img.id = "character-avatar-img";
+      img.src = info.avatar;
+      img.alt = info.avatarAlt || info.name || "Персонаж";
+      img.onerror = () => {
+        avatarEl.classList.add("character-avatar--empty");
+        avatarEl.replaceChildren(document.createTextNode("?"));
+      };
+      avatarEl.appendChild(img);
+    } else {
+      avatarEl.textContent = "?";
+      avatarEl.setAttribute("aria-hidden", "true");
+    }
+    root.appendChild(avatarEl);
 
-    const descHtml = info.description
-      ? `<p class="character-desc">${escapeHtml(info.description)}</p>`
-      : "";
+    // Имя
+    if (info.name) {
+      const nameEl = document.createElement("div");
+      nameEl.className = "character-name";
+      nameEl.textContent = info.name;
+      root.appendChild(nameEl);
+    }
 
-    root.innerHTML =
-      `<div class="character-card">` +
-        avatarHtml +
-        nameHtml +
-        descHtml +
-      `</div>` +
-      `<div class="character-stats">` +
-        `<p><strong>День:</strong> ${info.day}</p>` +
-        `<p><strong>Время:</strong> ${info.time}</p>` +
-        `<p><strong>Деньги:</strong> ${info.money} ₽</p>` +
-        `<p><strong>Инвентарь:</strong> ${info.inventoryCount} предмет(а)</p>` +
-      `</div>`;
+    // Описание
+    if (info.description) {
+      const descEl = document.createElement("p");
+      descEl.className = "character-desc";
+      descEl.textContent = info.description;
+      root.appendChild(descEl);
+    }
   }
 
-  // Регистрируем публичные методы в общем объекте UI.
+  /* ---------- экспорт ---------- */
+
   Object.assign(UI, {
     renderSide,
     renderTabs,
     renderInventory,
     renderMap,
     renderQuests,
-    renderCharacter
+    renderCharacterPanel
   });
 })();

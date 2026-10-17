@@ -21,14 +21,6 @@
 <body>
   <div class="game">
 
-    <header>
-      <div>
-        <div class="eyebrow">Текстовая история · прототип 0.2</div>
-        <h1>Город начинается здесь</h1>
-      </div>
-      <div class="status" id="status"></div>
-    </header>
-
     <div class="layout">
 
       <main class="main">
@@ -87,6 +79,12 @@
         <div class="side-top">
 
           <section class="panel">
+            <div class="heading"><span class="dot"></span> Персонаж</div>
+            <div class="status" id="status"></div>
+            <div class="character-panel" id="character-content"></div>
+          </section>
+
+          <section class="panel">
             <div class="heading"><span class="dot"></span> Вспомогательное окно</div>
             <div class="tabs" id="tabs"></div>
             <div class="tabcontent" id="side-content"></div>
@@ -119,8 +117,6 @@
       </aside>
 
     </div>
-
-    <div class="footer">Данные игры отделены от движка · сохранение в этом браузере</div>
 
   </div>
 
