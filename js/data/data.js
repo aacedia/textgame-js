@@ -38,13 +38,14 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 99,
+      money: 250,
       lastClassDay: 0,
       classesAttended: 0
     },
     uiTab: "inventory",
     controlsOpen: false,
-    logOpen: false
+    logOpen: false,
+    lastVariant: {}
   },
   character: {
     name: "Герой",

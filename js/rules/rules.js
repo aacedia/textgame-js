@@ -391,19 +391,44 @@ window.Rules = (() => {
   /* ---------- выбор варианта ---------- */
 
   /*
-    Выбирает случайный вариант из массива. Учитывает condition каждого
-    варианта: подходящие фильтруются, из них выбирается случайный.
+    Выбирает случайный вариант из массива с учётом:
+      - condition каждого варианта (подходящие фильтруются);
+      - прошлого выбора для этого действия (state.lastVariant[actionId]).
+        Если у прошлого варианта не выставлен repeatable: true, он исключается
+        из выбора, когда есть альтернативы.
   
-    Возвращает выбранный объект или null, если подходящих нет.
+    Возвращает { variant, index } или null, если подходящих нет.
+    index — позиция варианта в исходном массиве (для сохранения в state).
   */
-  function pickVariant(variants, state, gameData) {
+  function pickVariant(variants, state, gameData, actionId) {
     if (!Array.isArray(variants) || !variants.length) return null;
-    const eligible = variants.filter(v =>
-      !v.condition || checkCondition(v.condition, state, gameData)
-    );
+
+    // Собираем индексы подходящих вариантов с учётом condition.
+    const eligible = [];
+    variants.forEach((v, i) => {
+      if (!v.condition || checkCondition(v.condition, state, gameData)) {
+        eligible.push(i);
+      }
+    });
     if (!eligible.length) return null;
-    const index = Math.floor(Math.random() * eligible.length);
-    return eligible[index];
+
+    // Прошлый индекс для этого действия (если был).
+    const lastIndex = state.lastVariant && state.lastVariant[actionId];
+
+    // Если прошлый вариант всё ещё в пуле и не repeatable — исключаем его,
+    // но только если есть альтернативы.
+    let pool = eligible;
+    if (lastIndex !== undefined && eligible.length > 1) {
+      const lastVariant = variants[lastIndex];
+      const isRepeatable = !!(lastVariant && lastVariant.repeatable);
+      if (!isRepeatable) {
+        const withoutLast = eligible.filter(i => i !== lastIndex);
+        if (withoutLast.length) pool = withoutLast;
+      }
+    }
+
+    const index = pool[Math.floor(Math.random() * pool.length)];
+    return { variant: variants[index], index };
   }
 
   /* ---------- экспорт ---------- */

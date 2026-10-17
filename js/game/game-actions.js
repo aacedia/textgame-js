@@ -54,9 +54,19 @@ window.Game = window.Game || {};
       working = { ...working, flags: { ...working.flags, [action.id + "_done"]: true } };
     }
 
-    // Выбор варианта, если он есть. У действия без variants вернётся null,
-    // и дальше используется action.text / action.image как раньше.
-    const variant = Rules.pickVariant(action.variants, working, GAME_DATA);
+    // Выбор варианта, если он есть. pickVariant возвращает { variant, index }
+    // или null. Учитывает прошлый выбор для этого действия и флаг repeatable.
+    const picked = Rules.pickVariant(action.variants, working, GAME_DATA, action.id);
+    const variant = picked ? picked.variant : null;
+
+    // Запоминаем индекс выбранного варианта, чтобы в следующий раз
+    // не выбрать его же (если у него нет repeatable: true).
+    if (picked) {
+      working = {
+        ...working,
+        lastVariant: { ...(working.lastVariant || {}), [action.id]: picked.index }
+      };
+    }
 
     // Собираем список эффектов: сначала эффекты самого действия,
     // потом эффекты выбранного варианта (если он есть).
