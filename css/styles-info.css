@@ -1,43 +1,27 @@
 /*
   Панель «Информация»: результат последнего осмысленного действия.
-  Содержит текст действия, опциональную картинку и информационные
-  сообщения от эффектов (получение предмета, смена дня и т.п.).
-
-  Структура:
-    .info                    — контейнер со списком записей
-    .infoentry               — общая база для любой записи
-    .infoentry--text         — текстовая запись
-    .infoentry--image        — картинка (figure)
-    .infoentry-img           — сама картинка (img)
-    .infoentry-caption       — подпись под картинкой (figcaption)
-
-  Текстовая запись отделена акцентной полосой слева, чтобы визуально
-  совпадать с записями в «Истории событий», но без жирного выделения
-  первой записи: все записи в «Информации» равнозначны.
 */
 .info{
   padding:12px 18px 16px;
   display:grid;
   gap:10px;
 }
-
 .infoentry{
   margin:0;
   color:#5c4b40;
   font-size:14px;
   line-height:1.5;
 }
-
-/* Текстовая запись */
 .infoentry--text{
   border-left:3px solid var(--accent);
   padding-left:11px;
 }
 
-/* Картинка */
+/* Картинка: ограниченная ширина, фиксированные пропорции */
 .infoentry--image{
   display:block;
-  margin:0;
+  margin:0 auto;
+  max-width:min(420px, 100%);
   border:1px solid var(--border);
   border-radius:8px;
   overflow:hidden;
@@ -46,8 +30,7 @@
 .infoentry-img{
   display:block;
   width:100%;
-  height:auto;
-  max-height:260px;
+  aspect-ratio:16 / 9;
   object-fit:cover;
 }
 .infoentry-caption{

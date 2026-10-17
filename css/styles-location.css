@@ -31,14 +31,21 @@
 .description p{margin:0 0 10px}
 .description p:last-child{margin:0}
 
+/* Изображение локации: ограниченная ширина, фиксированные пропорции */
 .location-image{
-  margin:0 18px 18px;
+  margin:0 auto 18px;
+  max-width:min(560px, calc(100% - 36px));
   border:1px solid var(--border);
   border-radius:10px;
   overflow:hidden;
   background:var(--panel-2);
 }
-.location-image img{display:block;width:100%;height:auto;max-height:340px;object-fit:cover}
+.location-image img{
+  display:block;
+  width:100%;
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+}
 .location-image figcaption{
   padding:8px 12px;
   color:var(--muted);
