@@ -15,10 +15,10 @@
 
   viewModel:
     {
-      status: { day, time, money, locationName, inventoryCount, timeOfDay, timeIcon },
+      status: { day, time, money, date, timeOfDay, timeIcon },
       location: { name, tag, tagText?, tagClass?, notice?, description[], image?, imageAlt?, imageCaption? },
       info: { visible, entries: [{ kind: "text" | "image", ... }] },
-      actions: [{ id, label, hint, available, unavailableReason?, accent?, recent?, count? }],
+      actions: [{ id, label, hint, available, unavailableReason?, accent?, recent?, count?, type?, choices? }],
       log: [ "строка", ... ],
       logOpen: boolean,
       side: { activeTab, tabs: [{ id, label }], content: { type, ... }, character: {...} },
@@ -38,25 +38,37 @@ window.UI = (() => {
   function init(opts) {
     handlers = Object.assign(handlers, opts || {});
 
+    // Кнопки панели «Управление»: сохранить, загрузить, справка, чит-код, рестарт.
     document.querySelectorAll("[data-command]").forEach(btn => {
-      btn.addEventListener("click", () => handlers.onCommand(btn.dataset.command));
+      btn.addEventListener("click", () => {
+        const cmd = btn.dataset.command;
+        if (cmd === "cheat") {
+          openCheatDialog();
+        } else {
+          handlers.onCommand(cmd);
+        }
+      });
     });
 
+    // Заголовок «Управление» — сворачивание/разворачивание.
     const controlsToggle = $("controls-toggle");
     if (controlsToggle) {
       controlsToggle.addEventListener("click", () => handlers.onCommand("controls:toggle"));
     }
 
+    // Заголовок «История событий» — сворачивание/разворачивание.
     const logToggle = $("log-toggle");
     if (logToggle) {
       logToggle.addEventListener("click", () => handlers.onCommand("log:toggle"));
     }
 
+    // Кнопка «Начать заново» в оверлее «Игра окончена».
     const gameOverRestart = $("game-over-restart");
     if (gameOverRestart) {
       gameOverRestart.addEventListener("click", () => handlers.onCommand("restart"));
     }
 
+    // Делегируем инициализацию соседним модулям, если они есть.
     if (typeof UI.initSide === "function") UI.initSide(handlers);
     if (typeof UI.initControls === "function") UI.initControls(handlers);
   }
@@ -85,7 +97,7 @@ window.UI = (() => {
     renderGameOver(vm.gameOver);
   }
 
-  /* ---------- статус (шапка) ---------- */
+  /* ---------- статус ---------- */
 
   function renderStatus(status) {
     const root = $("status");
@@ -193,7 +205,7 @@ window.UI = (() => {
     }
   }
 
-  /* ---------- панель «Информация» ---------- */
+  /* ---------- информация ---------- */
 
   function renderInfo(info) {
     const panel = $("info-panel");
@@ -280,6 +292,8 @@ window.UI = (() => {
     });
   }
 
+  /* ---------- диалог выбора (например, сон) ---------- */
+
   function openChoice(action) {
     const dialog = $("dialog");
     $("dialog-title").textContent = action.label;
@@ -297,7 +311,6 @@ window.UI = (() => {
       });
       wrap.appendChild(b);
     });
-
     $("dialog-body").appendChild(wrap);
 
     const actionsEl = $("dialog-actions");
@@ -310,7 +323,7 @@ window.UI = (() => {
     dialog.showModal();
   }
 
-  /* ---------- «История событий» ---------- */
+  /* ---------- история событий ---------- */
 
   function renderLog(entries, open) {
     const toggle = $("log-toggle");
@@ -355,6 +368,34 @@ window.UI = (() => {
       root.appendChild(b);
     });
     $("dialog").showModal();
+  }
+
+  /* ---------- чит-диалог ---------- */
+
+  function openCheatDialog() {
+    const dialog = $("cheat-dialog");
+    const input = $("cheat-input");
+    const apply = $("cheat-apply");
+    const cancel = $("cheat-cancel");
+    if (!dialog || !input || !apply || !cancel) return;
+
+    input.value = "";
+
+    const onSubmit = () => {
+      const command = input.value.trim();
+      dialog.close();
+      if (command) handlers.onCommand("cheat:apply:" + command);
+    };
+
+    apply.onclick = onSubmit;
+    cancel.onclick = () => dialog.close();
+    input.onkeydown = e => {
+      if (e.key === "Enter") onSubmit();
+      if (e.key === "Escape") dialog.close();
+    };
+
+    dialog.showModal();
+    input.focus();
   }
 
   /* ---------- экспорт ---------- */

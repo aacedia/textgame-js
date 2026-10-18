@@ -21,7 +21,7 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 9999999,
+      money: 50,
       lastClassDay: 0,
       lastHimariDay: 0,
       lastOrderDay: 0,

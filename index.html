@@ -85,6 +85,7 @@
                 <button data-command="save">Сохранить</button>
                 <button data-command="load">Загрузить</button>
                 <button data-command="help">Справка</button>
+                <button data-command="cheat">Чит-код</button>
                 <button data-command="restart">Начать заново</button>
               </div>
             </div>
@@ -107,6 +108,18 @@
     <div class="dialoghead" id="dialog-title"></div>
     <div class="dialogbody" id="dialog-body"></div>
     <div class="dialogactions" id="dialog-actions"></div>
+  </dialog>
+
+  <dialog id="cheat-dialog">
+    <div class="dialoghead">Чит-код</div>
+    <div class="dialogbody">
+      <label for="cheat-input" class="cheat-label">Команда:</label>
+      <input id="cheat-input" type="text" class="cheat-input" autocomplete="off">
+    </div>
+    <div class="dialogactions">
+      <button id="cheat-cancel">Отмена</button>
+      <button id="cheat-apply" class="primary">Применить</button>
+    </div>
   </dialog>
 
   <script src="js/data/data.js"></script>

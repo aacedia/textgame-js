@@ -72,6 +72,11 @@ window.Game = window.Game || {};
       Game.render();
       return;
     }
+    if (command.startsWith("cheat:apply:")) {
+      const raw = command.slice("cheat:apply:".length);
+      applyCheat(raw);
+      return;
+    }
 
     switch (command) {
       case "save": saveGame(); break;
@@ -215,6 +220,53 @@ window.Game = window.Game || {};
       "Выбирай действия в центральном окне. Серые действия пока недоступны: обычно не выполнены условия или не хватает предмета. В правом окне — персонаж и вкладки с заданиями и инвентарём. В инвентаре можно фильтровать предметы по типу. Сохранение хранится в localStorage этого браузера.",
       [{ label: "Понятно", primary: true }]
     );
+  }
+
+  /* ---------- жители читы вырубайте ---------- */
+
+  function applyCheat(raw) {
+    const state = Game.getState();
+    const text = String(raw || "").trim();
+
+    if (!text) return;
+
+    const addMatch = text.match(/^player\.additem\s+(\S+)\s+(\d+)$/i);
+    if (!addMatch) {
+      UI.showDialog(
+        "Чит-код",
+        `Неизвестная команда. Поддерживается только: player.additem <id> <amount>`,
+        [{ label: "Закрыть", primary: true }]
+      );
+      return;
+    }
+
+    const id = addMatch[1];
+    const amount = Math.max(1, Number(addMatch[2]) || 0);
+
+    // F — код валюты.
+    if (id === "F" || id === "f") {
+      const before = Number(state.variables.money) || 0;
+      Game.patchState({
+        variables: { ...state.variables, money: before + amount }
+      });
+      Game.pushLog([`Чит: добавлено ${amount} ₽`]);
+      UI.showDialog("Чит-код", `Добавлено ${amount} ₽.`, [{ label: "ОК", primary: true }]);
+      Game.render();
+      return;
+    }
+
+    // Иначе — предмет из GAME_DATA.items.
+    if (!GAME_DATA.items[id]) {
+      UI.showDialog("Чит-код", `Неизвестный предмет: ${id}`, [{ label: "Закрыть", primary: true }]);
+      return;
+    }
+
+    const inventory = [...state.inventory];
+    for (let i = 0; i < amount; i++) inventory.push(id);
+    Game.patchState({ inventory });
+    Game.pushLog([`Чит: получено ${amount} × ${GAME_DATA.items[id].name}`]);
+    UI.showDialog("Чит-код", `Добавлено ${amount} × ${GAME_DATA.items[id].name}.`, [{ label: "ОК", primary: true }]);
+    Game.render();
   }
 
   /* ---------- тексты ошибок ---------- */
