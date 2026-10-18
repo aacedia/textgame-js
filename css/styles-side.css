@@ -27,6 +27,27 @@
 
 /* ---------- Вкладка «Инвентарь» ---------- */
 
+/* Панель фильтров инвентаря */
+.inv-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:10px;
+}
+.inv-filter{
+  font-size:11px;
+  padding:4px 9px;
+  border-radius:99px;
+  text-align:center;
+  background:var(--panel);
+}
+.inv-filter.active{
+  background:var(--accent-2);
+  border-color:var(--accent);
+  color:var(--accent-3);
+  font-weight:650;
+}
+
 .inventory{
   list-style:none;
   padding:0;
@@ -174,6 +195,9 @@
   font-size:11px;
   color:var(--muted);
 }
+.char-bar--with-tooltip{
+  cursor:help;
+}
 .char-bar__label{white-space:nowrap}
 .char-bar__track{
   height:8px;
@@ -199,27 +223,26 @@
 .char-bar--hunger  .char-bar__fill{background:#d9a35b}
 .char-bar--thirst  .char-bar__fill{background:#7fb6d9}
 .char-bar--fatigue .char-bar__fill{background:#a89ad9}
-.char-bar--mood .char-bar__fill{background:#e8b86b}
-.char-bar--with-tooltip{
-  cursor:help;
+.char-bar--mood    .char-bar__fill{background:#e8b86b}
+
+/* ---------- Уровни полосок ---------- */
+
+/* warning — жёлтый */
+.char-bar--warning .char-bar__fill{
+  background:#e8c46b;
 }
-/* Панель фильтров инвентаря */
-.inv-filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-bottom:10px;
+.char-bar--warning .char-bar__label,
+.char-bar--warning .char-bar__value{
+  color:#a8832f;
+  font-weight:600;
 }
-.inv-filter{
-  font-size:11px;
-  padding:4px 9px;
-  border-radius:99px;
-  text-align:center;
-  background:var(--panel);
+
+/* critical — красный */
+.char-bar--critical .char-bar__fill{
+  background:#e07a6b;
 }
-.inv-filter.active{
-  background:var(--accent-2);
-  border-color:var(--accent);
-  color:var(--accent-3);
-  font-weight:650;
+.char-bar--critical .char-bar__label,
+.char-bar--critical .char-bar__value{
+  color:#b03f30;
+  font-weight:700;
 }

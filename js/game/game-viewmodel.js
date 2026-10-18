@@ -259,6 +259,26 @@ window.Game = window.Game || {};
     const v = state.variables;
     const needsMax = GAME_DATA.needsMax ?? 100;
     const moodMax = GAME_DATA.moodMax ?? 100;
+
+    function level(value, direction) {
+      if (direction === "high") {
+        if (value >= 100) return "critical";
+        if (value >= 80) return "warning";
+        return "normal";
+      } else {
+        if (value <= 0) return "critical";
+        if (value <= 20) return "warning";
+        return "normal";
+      }
+    }
+
+    const health = v.health ?? 0;
+    const stamina = v.stamina ?? 0;
+    const hunger = v.hunger ?? 0;
+    const thirst = v.thirst ?? 0;
+    const fatigue = v.fatigue ?? 0;
+    const mood = v.mood ?? 0;
+
     return {
       name: ch.name || "",
       avatar: ch.avatar || "",
@@ -267,33 +287,39 @@ window.Game = window.Game || {};
       bars: [
         {
           key: "health", label: "Здоровье",
-          value: v.health ?? 0, max: GAME_DATA.healthMax ?? 100, color: "health",
+          value: health, max: GAME_DATA.healthMax ?? 100, color: "health",
+          level: level(health, "low"),
           tooltip: "При 0 — конец игры. Восстанавливается сном."
         },
         {
           key: "stamina", label: "Выносливость",
-          value: v.stamina ?? 0, max: GAME_DATA.staminaMax ?? 100, color: "stamina",
+          value: stamina, max: GAME_DATA.staminaMax ?? 100, color: "stamina",
+          level: level(stamina, "low"),
           tooltip: "Тратится на подработку. Восстанавливается сном и некоторыми напитками."
         },
         {
+          key: "mood", label: "Настроение",
+          value: mood, max: moodMax, color: "mood",
+          level: level(mood, "low"),
+          tooltip: "Падает со временем, быстрее при высоких потребностях. При 0 потребности растут вдвое быстрее."
+        },
+        {
           key: "hunger", label: "Голод",
-          value: v.hunger ?? 0, max: needsMax, color: "hunger",
+          value: hunger, max: needsMax, color: "hunger",
+          level: level(hunger, "high"),
           tooltip: "Растёт со временем. На 100 наносит урон здоровью. Снижается едой."
         },
         {
           key: "thirst", label: "Жажда",
-          value: v.thirst ?? 0, max: needsMax, color: "thirst",
+          value: thirst, max: needsMax, color: "thirst",
+          level: level(thirst, "high"),
           tooltip: "Растёт со временем. На 100 наносит урон здоровью. Снижается питьём."
         },
         {
           key: "fatigue", label: "Усталость",
-          value: v.fatigue ?? 0, max: needsMax, color: "fatigue",
+          value: fatigue, max: needsMax, color: "fatigue",
+          level: level(fatigue, "high"),
           tooltip: "Растёт со временем. На 100 наносит урон здоровью. Снижается сном и отдыхом."
-        },
-        {
-          key: "mood", label: "Настроение",
-          value: v.mood ?? 0, max: moodMax, color: "mood",
-          tooltip: "Падает со временем, быстрее при высоких потребностях. При 0 потребности растут вдвое быстрее. Поднимается развлечениями и едой."
         }
       ]
     };
