@@ -3,7 +3,7 @@ Object.assign(window.GAME_DATA.locations, {
         name: "Квартира", tag: "Безопасное место",
         image: "assets/images/locations/apartment.jpg",
         description: [
-            "Небольшая, но уютная квартира. Утренний свет пробивается сквозь занавески, а на столе лежат ключи и телефон."
+            "Небольшая, но уютная квартира."
         ],
         extraDescription: [
             {
