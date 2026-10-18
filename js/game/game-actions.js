@@ -1,23 +1,24 @@
 /*
-  Действия игрока. Принимает id от UI, находит действие в GAME_DATA,
-  применяет эффекты через Rules, обновляет состояние и лог.
+  Действия игрока. Принимает id от UI:
+    - "goto:<locationId>" — переход через карту;
+    - "use:<itemId>"      — использование расходника из инвентаря;
+    - иначе               — id действия из текущей локации.
 
-  Время действия — свойство action.minutes, по умолчанию 1 минута.
-  Применяется после эффектов.
+  Время действия — action.minutes, по умолчанию 1 минута, применяется
+  после эффектов.
 
-  restoreBeforeTime / reduceBeforeTime — применить до advanceTime.
-  restoreAfterTime / reduceAfterTime   — применить после advanceTime.
-  Формат: { ключ_переменной: значение }. restore ставит, reduce вычитает
-  (с ограничением по [0, ∞)).
+  restoreBeforeTime / reduceBeforeTime — до advanceTime.
+  restoreAfterTime / reduceAfterTime   — после advanceTime.
+  restore ставит значение, reduce вычитает (с ограничением по [0, ∞)).
 
   Серия нажатий: если жать одно и то же действие подряд (в той же локации),
   счётчик растёт. Любое другое действие, переход через карту или смена
   локации сбрасывают серию.
 
-  После gameOver все действия заблокированы.
+  После gameOver действия заблокированы.
 
   Если после действия текущая локация оказалась закрыта по расписанию,
-  игрока автоматически перемещает в defaultExit этой локации (обычно street).
+  игрока автоматически перемещает в defaultExit этой локации.
 */
 window.Game = window.Game || {};
 
@@ -83,6 +84,10 @@ window.Game = window.Game || {};
       handleGoto(id.slice(5));
       return;
     }
+    if (id.startsWith("use:")) {
+      handleUse(id.slice(4));
+      return;
+    }
 
     const state = Game.getState();
     const action = findAction(id);
@@ -104,7 +109,6 @@ window.Game = window.Game || {};
       };
     }
 
-    // Серия нажатий
     const sameStreak =
       working.streakAction === action.id &&
       working.lastAction &&
@@ -123,7 +127,6 @@ window.Game = window.Game || {};
       ...(variant && variant.effects ? variant.effects : [])
     ];
 
-    // Восстановление/снижение до времени.
     if (action.restoreBeforeTime || action.reduceBeforeTime) {
       working = { ...working, variables: { ...working.variables } };
       applyRestore(working.variables, action.restoreBeforeTime);
@@ -144,7 +147,6 @@ window.Game = window.Game || {};
     );
     Game.setState(nextState);
 
-    // Восстановление/снижение после времени.
     if (action.restoreAfterTime || action.reduceAfterTime || nextState.sleeping) {
       const after = { ...nextState, variables: { ...nextState.variables } };
       applyRestore(after.variables, action.restoreAfterTime);
@@ -153,7 +155,6 @@ window.Game = window.Game || {};
       Game.setState(after);
     }
 
-    // Если локация закрылась по времени — выгоняем игрока на улицу.
     const evicted = evictIfClosed(Game.getState());
     if (evicted.messages.length) {
       Game.setState(evicted.state);
@@ -193,6 +194,86 @@ window.Game = window.Game || {};
     Game.render();
   }
 
+  function handleUse(itemId) {
+    const state = Game.getState();
+    if (state.gameOver) return;
+    if (!state.inventory.includes(itemId)) return;
+
+    const item = GAME_DATA.items[itemId];
+    if (!item || !item.consumable || !item.use) return;
+
+    const use = item.use;
+
+    // Тратим один экземпляр предмета.
+    const idx = state.inventory.indexOf(itemId);
+    const inventory = state.inventory.slice();
+    inventory.splice(idx, 1);
+
+    let working = { ...state, inventory };
+
+    // restore/reduce до времени (если заданы в use).
+    if (use.restoreBeforeTime || use.reduceBeforeTime) {
+      working = { ...working, variables: { ...working.variables } };
+      applyRestore(working.variables, use.restoreBeforeTime);
+      applyReduce(working.variables, use.reduceBeforeTime);
+    }
+
+    if (use.sleep) {
+      working = { ...working, sleeping: true };
+    }
+
+    const effectList = [...(use.effects || [])];
+    const minutes = Number(use.minutes) || 1;
+    effectList.push({ type: "advanceTime", minutes });
+
+    const { state: nextState, messages } = Rules.applyEffects(effectList, working, GAME_DATA);
+    Game.setState(nextState);
+
+    if (use.restoreAfterTime || use.reduceAfterTime || nextState.sleeping) {
+      const after = { ...nextState, variables: { ...nextState.variables } };
+      applyRestore(after.variables, use.restoreAfterTime);
+      applyReduce(after.variables, use.reduceAfterTime);
+      after.sleeping = false;
+      Game.setState(after);
+    }
+
+    const evicted = evictIfClosed(Game.getState());
+    if (evicted.messages.length) {
+      Game.setState(evicted.state);
+    }
+
+    const moveMessages = [
+      ...messages.filter(m => m.kind === "move").map(m => m.text),
+      ...evicted.messages
+    ];
+    const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
+
+    Game.pushLog([
+      `Использовано: ${item.name}`,
+      ...moveMessages,
+      ...infoMessages
+    ]);
+
+    const batch = [];
+    if (use.text) batch.push({ kind: "text", text: use.text });
+    if (use.image) {
+      batch.push({
+        kind: "image",
+        src: use.image,
+        alt: use.imageAlt || use.text || "",
+        caption: use.imageCaption || ""
+      });
+    }
+
+    if (batch.length) {
+      Game.setInfo(batch);
+    } else {
+      Game.clearInfo();
+    }
+
+    Game.render();
+  }
+
   function handleGoto(target) {
     const state = Game.getState();
     if (state.gameOver) return;
@@ -222,5 +303,5 @@ window.Game = window.Game || {};
     Game.render();
   }
 
-  Object.assign(window.Game, { onAction, handleGoto, findAction });
+  Object.assign(window.Game, { onAction, handleGoto, handleUse, findAction });
 })();

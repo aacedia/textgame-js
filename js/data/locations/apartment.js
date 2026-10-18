@@ -55,7 +55,7 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 30,
                 condition: { variableAtLeast: { name: "money", value: 20 } },
                 effects: [{ type: "changeVariable", name: "money", amount: -20 }],
-                restoreAfterTime: { hunger: 0 },
+                reduceAfterTime: { hunger: 80 },
                 text: "Ты готовишь простой ужин и ешь.",
                 image: "assets/images/locations/apartment-rest.jpg"
             },

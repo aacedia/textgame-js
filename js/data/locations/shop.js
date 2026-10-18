@@ -22,33 +22,71 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/items/notebook.jpg"
             },
             {
-                id: "buy_snack",
-                label: "Купить перекус",
-                hint: "30 ₽ · снимает голод",
-                minutes: 5,
-                condition: { variableAtLeast: { name: "money", value: 30 } },
-                effects: [{ type: "changeVariable", name: "money", amount: -30 }],
-                restoreAfterTime: { hunger: 0 },
-                text: "Ты покупаешь булочку и быстро перекусываешь.",
-                image: "assets/images/locations/shop-shelves.jpg"
+                id: "buy_water",
+                label: "Купить бутылку воды",
+                hint: "15 ₽",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 15 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -15 },
+                    { type: "giveItem", item: "water" }
+                ],
+                text: "Ты берёшь с полки бутылку воды и кладёшь её в сумку."
             },
             {
-                id: "buy_water",
-                label: "Купить воду",
-                hint: "15 ₽ · снимает жажду",
-                minutes: 2,
-                condition: { variableAtLeast: { name: "money", value: 15 } },
-                effects: [{ type: "changeVariable", name: "money", amount: -15 }],
-                restoreAfterTime: { thirst: 0 },
-                text: "Ты покупаешь бутылку воды и пьёшь.",
-                image: "assets/images/locations/shop-shelves.jpg"
+                id: "buy_energy_drink",
+                label: "Купить энергетик",
+                hint: "40 ₽",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 40 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -40 },
+                    { type: "giveItem", item: "energy_drink" }
+                ],
+                text: "Ты берёшь банку энергетика и убираешь её в сумку."
+            },
+            {
+                id: "buy_chocolate",
+                label: "Купить шоколадный батончик",
+                hint: "25 ₽",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 25 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -25 },
+                    { type: "giveItem", item: "chocolate" }
+                ],
+                text: "Ты берёшь шоколадный батончик и убираешь его в сумку."
+            },
+            {
+                id: "buy_sandwich",
+                label: "Купить сэндвич",
+                hint: "60 ₽",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 60 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -60 },
+                    { type: "giveItem", item: "sandwich" }
+                ],
+                text: "Ты берёшь сэндвич и убираешь его в сумку."
+            },
+            {
+                id: "buy_pizza_slice",
+                label: "Купить кусочек пиццы",
+                hint: "80 ₽",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 80 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -80 },
+                    { type: "giveItem", item: "pizza_slice" }
+                ],
+                text: "Ты берёшь кусочек пиццы и убираешь его в сумку."
             },
             {
                 id: "look_shelves",
                 label: "Осмотреть полки",
                 hint: "Изучить ассортимент",
                 effects: [{ type: "setFlag", flag: "lookedAtShelves", value: true }],
-                text: "На полках ты замечаешь воду, яблоки и блокноты.",
+                text: "На полках ты замечаешь воду, снеки, шоколад и готовые сэндвичи.",
                 image: "assets/images/locations/shop-shelves.jpg"
             },
             {

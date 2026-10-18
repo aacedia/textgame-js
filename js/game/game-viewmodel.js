@@ -135,18 +135,26 @@ window.Game = window.Game || {};
 
   function buildInventoryVM() {
     const state = Game.getState();
-    const items = state.inventory
-      .map(id => {
+    const counts = {};
+    state.inventory.forEach(id => {
+      counts[id] = (counts[id] || 0) + 1;
+    });
+
+    const items = Object.entries(counts)
+      .map(([id, count]) => {
         const item = GAME_DATA.items[id];
         if (!item) return null;
         return {
           id,
           name: item.name,
           icon: item.icon,
-          description: resolveDescription(item.description, state)
+          description: resolveDescription(item.description, state),
+          count,
+          consumable: !!item.consumable
         };
       })
       .filter(Boolean);
+
     return { type: "inventory", items };
   }
 

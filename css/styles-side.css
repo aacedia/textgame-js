@@ -33,17 +33,44 @@
   margin:0;
   display:grid;
   gap:8px;
+  max-height:320px;
+  overflow-y:auto;
+  padding-right:4px;
+
+  /* Firefox */
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
 }
+/* WebKit (Chrome, Safari, Edge) */
+.inventory::-webkit-scrollbar{
+  width:6px;
+}
+.inventory::-webkit-scrollbar-track{
+  background:transparent;
+}
+.inventory::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:99px;
+}
+.inventory::-webkit-scrollbar-thumb:hover{
+  background:var(--accent-2);
+}
+
 .item{
-  display:flex;
-  align-items:center;
-  gap:10px;
+  display:grid;
+  grid-template-columns:32px 1fr;
+  grid-template-areas:
+    "icon body"
+    "use  use";
+  gap:8px;
+  align-items:flex-start;
   border:1px solid var(--border);
   border-radius:7px;
   padding:9px;
   background:var(--panel);
 }
 .itemicon{
+  grid-area:icon;
   display:grid;
   place-items:center;
   width:32px;
@@ -52,14 +79,31 @@
   background:var(--accent-2);
   font-size:17px;
 }
+.item-body{
+  grid-area:body;
+  min-width:0;
+}
 .itemname{
   font-size:13px;
   font-weight:650;
   color:var(--text);
 }
+.item-count{
+  margin-left:6px;
+  font-size:11px;
+  color:var(--muted);
+  font-weight:600;
+}
 .itemnote{
   color:var(--muted);
   font-size:11px;
+}
+.item-use{
+  grid-area:use;
+  justify-self:stretch;
+  padding:6px 10px;
+  font-size:12px;
+  text-align:center;
 }
 
 /* ---------- Вкладка «Карта» ---------- */
@@ -133,7 +177,6 @@
   color:var(--text);
   letter-spacing:-.01em;
 }
-
 .character-desc{
   margin:0;
   font-size:12px;
@@ -144,6 +187,7 @@
 }
 
 /* ---------- Полоски характеристик ---------- */
+
 .character-bars{
   display:grid;
   gap:6px;

@@ -56,10 +56,28 @@
     items.forEach(item => {
       const li = document.createElement("li");
       li.className = "item";
+
+      const countHtml = item.count > 1
+        ? `<span class="item-count">×${item.count}</span>`
+        : "";
+
+      const useHtml = item.consumable
+        ? `<button class="item-use" data-item="${escapeHtml(item.id)}">Использовать</button>`
+        : "";
+
       li.innerHTML =
         `<span class="itemicon" aria-hidden="true">${escapeHtml(item.icon || "◆")}</span>` +
-        `<span><span class="itemname">${escapeHtml(item.name)}</span><br>` +
-        `<span class="itemnote">${escapeHtml(item.description || "")}</span></span>`;
+        `<span class="item-body">` +
+        `<span class="itemname">${escapeHtml(item.name)}${countHtml}</span><br>` +
+        `<span class="itemnote">${escapeHtml(item.description || "")}</span>` +
+        `</span>` +
+        useHtml;
+
+      const btn = li.querySelector(".item-use");
+      if (btn) {
+        btn.addEventListener("click", () => getHandlers().onAction("use:" + item.id));
+      }
+
       ul.appendChild(li);
     });
     root.appendChild(ul);

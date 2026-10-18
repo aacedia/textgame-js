@@ -88,13 +88,45 @@ body {
   min-height: 0;
 }
 
-.side-top {
-  display: grid;
-  gap: 14px;
-  align-content: start;
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: 4px;
+.side-top{
+  display:grid;
+  grid-template-rows:auto minmax(0, 1fr);
+  gap:14px;
+  align-content:stretch;
+  min-height:0;
+  overflow:hidden;
+  padding-right:4px;
+}
+
+/* Панель с вкладками растягивается */
+.side-top .panel:last-child{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+/* Вкладки и контент распределяются по вертикали */
+.side-top .panel:last-child .tabs{
+  flex:0 0 auto;
+}
+
+.side-top .panel:last-child .tabcontent{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Список инвентаря занимает всё доступное место */
+.side-top .panel:last-child .tabcontent > .inventory{
+  flex:1 1 auto;
+  min-height:0;
+  max-height:none;
+}
+
+/* Внутри .tabcontent другие вкладки могут не растягиваться */
+.side-top .panel:last-child .tabcontent > *:not(.inventory){
+  flex:0 0 auto;
 }
 
 .side-bottom {
