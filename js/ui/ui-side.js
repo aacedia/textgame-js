@@ -3,10 +3,7 @@
   Регистрирует методы в window.UI:
     renderSide, renderTabs, renderInventory, renderMap, renderQuests,
     renderCharacterPanel.
-
-  Панель «Персонаж» — отдельное окно в правой колонке (не вкладка),
-  рендерится через renderCharacterPanel.
-
+  Панель «Персонаж» — отдельное окно в правой колонке (не вкладка).
   Зависит от window.UI.escapeHtml и window.UI.getHandlers.
   Должен подключаться после ui-core.js.
 */

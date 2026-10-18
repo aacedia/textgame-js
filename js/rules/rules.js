@@ -7,6 +7,7 @@
     Rules.hasItem(state, id)
     Rules.isAdjacent(gameData, from, to)
     Rules.formatTime(minutes)
+    Rules.formatDate(dayNumber, gameData)
     Rules.isLocationOpen(gameData, id, minutes, dayNumber)
     Rules.describeHours(hours)
     Rules.getTimeOfDay(minutes)
@@ -49,15 +50,46 @@ window.Rules = (() => {
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   }
 
+  function monthName(m) {
+    const months = [
+      "января", "февраля", "марта", "апреля", "мая", "июня",
+      "июля", "августа", "сентября", "октября", "ноября", "декабря"
+    ];
+    return months[m - 1] || "";
+  }
+
+  function formatDate(dayNumber, gameData) {
+    const start = gameData.startDate || { year: 2026, month: 9, day: 1 };
+    const weekdays = gameData.weekdays || ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+    const offset = Math.max(0, Number(dayNumber) - 1);
+    const base = new Date(start.year, start.month - 1, start.day);
+    base.setDate(base.getDate() + offset);
+
+    const y = base.getFullYear();
+    const m = base.getMonth() + 1;
+    const d = base.getDate();
+
+    const wdIndex = (base.getDay() + 6) % 7;
+    const weekday = weekdays[wdIndex];
+
+    return {
+      day: d,
+      month: m,
+      year: y,
+      weekday,
+      weekdayIndex: wdIndex,
+      text: `${weekday}, ${d} ${monthName(m)} ${y}`
+    };
+  }
+
   function isLocationOpen(gameData, id, minutes, dayNumber) {
     const loc = (gameData.locations || {})[id];
     if (!loc) return false;
 
-    // День недели: 0 = понедельник, ..., 6 = воскресенье.
     if (Array.isArray(loc.closedWeekdays) && dayNumber != null) {
       const date = formatDate(dayNumber, gameData);
-      const idx = (date.weekday && (gameData.weekdays || []).indexOf(date.weekday)) ?? -1;
-      if (loc.closedWeekdays.includes(idx)) return false;
+      if (loc.closedWeekdays.includes(date.weekdayIndex)) return false;
     }
 
     if (!loc.hours) return true;
@@ -230,8 +262,7 @@ window.Rules = (() => {
       const loc = (gameData.locations || {})[condition.locationOpen];
       if (loc && Array.isArray(loc.closedWeekdays) && state.variables.day != null) {
         const date = formatDate(state.variables.day, gameData);
-        const idx = (gameData.weekdays || []).indexOf(date.weekday);
-        if (loc.closedWeekdays.includes(idx)) {
+        if (loc.closedWeekdays.includes(date.weekdayIndex)) {
           return "Сегодня закрыто";
         }
       }
@@ -364,15 +395,16 @@ window.Rules = (() => {
           warn(`giveItem → неизвестный предмет "${effect.item}"`, effect);
           break;
         }
-        if (!next.inventory.includes(effect.item)) {
-          next.inventory.push(effect.item);
-          messages.push({ kind: "info", text: `Получен предмет: ${item.name}.` });
-        }
+        next.inventory.push(effect.item);
+        messages.push({ kind: "info", text: `Получен предмет: ${item.name}.` });
         break;
       }
 
       case "removeItem": {
-        next.inventory = next.inventory.filter(id => id !== effect.item);
+        const idx = next.inventory.indexOf(effect.item);
+        if (idx !== -1) {
+          next.inventory.splice(idx, 1);
+        }
         break;
       }
 
@@ -506,42 +538,6 @@ window.Rules = (() => {
 
     const index = pool[Math.floor(Math.random() * pool.length)];
     return { variant: variants[index], index };
-  }
-
-  function formatDate(dayNumber, gameData) {
-    const start = gameData.startDate || { year: 2026, month: 9, day: 1 };
-    const weekdays = gameData.weekdays || ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-
-    // Разница в днях от начала игры. dayNumber = 1 — первый день.
-    const offset = Math.max(0, Number(dayNumber) - 1);
-
-    // Считаем дату через Date — надёжно и с корректными переходами между месяцами.
-    const base = new Date(start.year, start.month - 1, start.day);
-    base.setDate(base.getDate() + offset);
-
-    const y = base.getFullYear();
-    const m = base.getMonth() + 1;
-    const d = base.getDate();
-
-    // День недели: 0 = воскресенье, 1 = понедельник. Приводим к нашему массиву.
-    const wdIndex = (base.getDay() + 6) % 7;
-    const weekday = weekdays[wdIndex];
-
-    return {
-      day: d,
-      month: m,
-      year: y,
-      weekday,
-      text: `${weekday}, ${d} ${monthName(m)} ${y}`
-    };
-  }
-
-  function monthName(m) {
-    const months = [
-      "января", "февраля", "марта", "апреля", "мая", "июня",
-      "июля", "августа", "сентября", "октября", "ноября", "декабря"
-    ];
-    return months[m - 1] || "";
   }
 
   /* ---------- экспорт ---------- */
