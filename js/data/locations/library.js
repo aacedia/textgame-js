@@ -19,12 +19,18 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_on_order",
                 label: "Выполнить заказ",
-                hint: "Завершить взятую работу",
-                condition: { flag: "hasActiveOrder" },
-                skipTime: true,
-                effects: [{ type: "completeOrder" }],
-                text: "Ты садишься за стол, раскладываешь материалы и работаешь над заказом. Когда всё готово, ты получаешь оплату.",
-                image: "assets/images/locations/library-books.jpg"
+                hint: "Завершить взятую работу · −10 выносливости",
+                condition: {
+                    all: [
+                        { flag: "hasActiveOrder" },
+                        { variableAtLeast: { name: "stamina", value: 10 } }
+                    ]
+                },
+                effects: [
+                    { type: "changeVariable", name: "stamina", amount: -10 },
+                    { type: "completeOrder" }
+                ],
+                text: "Ты садишься за стол, раскладываешь материалы и работаешь над заказом. Когда всё готово, ты получаешь оплату."
             },
             {
                 id: "read_books",

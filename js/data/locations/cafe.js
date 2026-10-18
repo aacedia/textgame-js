@@ -52,8 +52,8 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 180,
                 condition: {
                     all: [
-                        { variableAtLeast: { name: "stamina", value: 20 } },
-                        { variableDiffers: { name: "lastShiftDay", other: "day" } }
+                        { variableDiffers: { name: "lastShiftDay", other: "day" } },
+                        { variableAtLeast: { name: "stamina", value: 20 } }
                     ]
                 },
                 effects: [

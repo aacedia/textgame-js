@@ -67,25 +67,7 @@ Object.assign(window.GAME_DATA.locations, {
                             { type: "setFlag", flag: "orderReward", value: 100 },
                             { type: "setFlag", flag: "orderName", value: "Небольшой реферат" }
                         ],
-                        text: "Тебе попадается небольшой заказ: реферат. Работы на час — заплатить обещают 100 ₽. Выполнить можно в библиотеке."
-                    },
-                    {
-                        effects: [
-                            { type: "setFlag", flag: "hasActiveOrder", value: true },
-                            { type: "setFlag", flag: "orderSize", value: 3 },
-                            { type: "setFlag", flag: "orderReward", value: 300 },
-                            { type: "setFlag", flag: "orderName", value: "Курсовая работа" }
-                        ],
-                        text: "Попадается курсач: три часа работы за 300 ₽. Искать материалы удобнее всего в библиотеке."
-                    },
-                    {
-                        effects: [
-                            { type: "setFlag", flag: "hasActiveOrder", value: true },
-                            { type: "setFlag", flag: "orderSize", value: 5 },
-                            { type: "setFlag", flag: "orderReward", value: 700 },
-                            { type: "setFlag", flag: "orderName", value: "Дипломная работа" }
-                        ],
-                        text: "Крупный заказ: дипломная работа. Пять часов за 700 ₽ — но и подход серьёзный. Всё делать — в библиотеке."
+                        text: "Тебе попадается заказ на реферат. Работы на час — заплатить обещают 100 ₽. Выполнить можно в библиотеке."
                     }
                 ]
             },
