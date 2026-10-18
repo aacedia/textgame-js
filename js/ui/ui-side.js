@@ -23,7 +23,6 @@
     root.replaceChildren();
     switch (side.content.type) {
       case "inventory": renderInventory(root, side.content.items); break;
-      case "map": renderMap(root, side.content.rows); break;
       case "quests": renderQuests(root, side.content.quests); break;
     }
   }

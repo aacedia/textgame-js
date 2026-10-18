@@ -1,5 +1,5 @@
 /*
-  Боковая панель: вкладки, инвентарь, карта, задания, панель «Персонаж».
+  Боковая панель: вкладки, инвентарь, задания, панель «Персонаж».
 */
 
 /* ---------- Контейнер вкладок ---------- */
@@ -104,34 +104,6 @@
   padding:6px 10px;
   font-size:12px;
   text-align:center;
-}
-
-/* ---------- Вкладка «Карта» ---------- */
-
-.maplist{
-  display:grid;
-  gap:7px;
-}
-.maprow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  padding:8px;
-  border:1px solid var(--border);
-  border-radius:7px;
-  font-size:13px;
-  background:var(--panel);
-}
-.maprow small{color:var(--muted)}
-.maprow.current{
-  border-color:var(--accent);
-  background:var(--accent-2);
-}
-.maprow .closed{color:var(--notice-text)}
-.maprow button{
-  padding:5px 8px;
-  font-size:12px;
 }
 
 /* ---------- Вкладка «Задания» ---------- */

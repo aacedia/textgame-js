@@ -107,7 +107,7 @@ window.Game = window.Game || {};
     merged.flags = Object.assign({}, base.flags, merged.flags || {});
     merged.variables = Object.assign({}, base.variables, merged.variables || {});
 
-    const VALID_TABS = ["quests", "inventory", "map"];
+    const VALID_TABS = ["quests", "inventory"];
     if (!VALID_TABS.includes(merged.uiTab)) {
       merged.uiTab = "quests";
     }

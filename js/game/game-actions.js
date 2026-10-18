@@ -80,10 +80,6 @@ window.Game = window.Game || {};
     const initial = Game.getState();
     if (initial.gameOver) return;
 
-    if (id.startsWith("goto:")) {
-      handleGoto(id.slice(5));
-      return;
-    }
     if (id.startsWith("use:")) {
       handleUse(id.slice(4));
       return;
@@ -274,34 +270,5 @@ window.Game = window.Game || {};
     Game.render();
   }
 
-  function handleGoto(target) {
-    const state = Game.getState();
-    if (state.gameOver) return;
-    if (!GAME_DATA.locations[target]) return;
-    if (!Rules.isAdjacent(GAME_DATA, state.location, target)) return;
-    if (!Rules.isLocationOpen(GAME_DATA, target, state.variables.minutes, state.variables.day)) return;
-
-    const { state: nextState, messages } = Rules.applyEffects(
-      [
-        { type: "move", to: target },
-        { type: "advanceTime", minutes: 1 }
-      ],
-      state,
-      GAME_DATA
-    );
-
-    const evicted = evictIfClosed(nextState);
-
-    Game.setState({
-      ...evicted.state,
-      lastAction: null,
-      streakAction: null,
-      streakCount: 0
-    });
-    Game.pushLog([...messages.map(m => m.text), ...evicted.messages]);
-    Game.clearInfo();
-    Game.render();
-  }
-
-  Object.assign(window.Game, { onAction, handleGoto, handleUse, findAction });
+  Object.assign(window.Game, { onAction, handleUse, findAction });
 })();

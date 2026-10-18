@@ -22,7 +22,7 @@ window.Game = window.Game || {};
     "getState", "setState", "patchState",
     "getLog", "pushLog", "resetLog", "freshState",
     "buildViewModel",
-    "onAction", "handleGoto",
+    "onAction",
     "onCommand"
   ];
   const missing = required.filter(name => typeof Game[name] !== "function");
