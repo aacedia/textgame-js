@@ -11,8 +11,26 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         extraDescription: [
             {
-                condition: { timeBetween: { from: 12 * 60, to: 18 * 60 } },
-                text: "На скамейке у фонтана сидит Химари с книгой — кажется, она никуда не спешит."
+                condition: {
+                    all: [
+                        { timeBetween: { from: 12 * 60, to: 18 * 60 } },
+                        { variableDiffers: { name: "lastHimariDay", other: "day" } }
+                    ]
+                },
+                parts: [
+                    { text: "На скамейке у фонтана сидит " },
+                    { link: { action: "talk_to_himari", text: "Химари" } },
+                    { text: " с книгой — кажется, она никуда не спешит." }
+                ]
+            },
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 12 * 60, to: 18 * 60 } },
+                        { not: { variableDiffers: { name: "lastHimariDay", other: "day" } } }
+                    ]
+                },
+                text: "На скамейке у фонтана сидит Химари с книгой. Ты уже говорил с ней сегодня."
             }
         ],
         actions: [
@@ -28,13 +46,14 @@ Object.assign(window.GAME_DATA.locations, {
             },
             {
                 id: "talk_to_himari",
+                type: "link",
                 label: "Подойти к Химари",
                 hint: "Поговорить",
                 minutes: 15,
-                hiddenWhen: {
-                    any: [
-                        { not: { timeBetween: { from: 12 * 60, to: 18 * 60 } } },
-                        { not: { variableDiffers: { name: "lastHimariDay", other: "day" } } }
+                condition: {
+                    all: [
+                        { timeBetween: { from: 12 * 60, to: 18 * 60 } },
+                        { variableDiffers: { name: "lastHimariDay", other: "day" } }
                     ]
                 },
                 effects: [

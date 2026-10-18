@@ -141,9 +141,34 @@ window.UI = (() => {
       noticeEl.hidden = true;
     }
 
-    $("description").innerHTML = loc.description
-      .map(p => `<p>${escapeHtml(p)}</p>`)
-      .join("");
+    const descRoot = $("description");
+    descRoot.replaceChildren();
+    (loc.description || []).forEach(item => {
+      if (item.type === "parts" && Array.isArray(item.parts)) {
+        const p = document.createElement("p");
+        item.parts.forEach(part => {
+          if (part.link) {
+            const a = document.createElement("a");
+            a.href = "#";
+            a.className = "inline-action";
+            a.dataset.action = part.link.action;
+            a.textContent = part.link.text;
+            a.addEventListener("click", e => {
+              e.preventDefault();
+              handlers.onAction(part.link.action);
+            });
+            p.appendChild(a);
+          } else {
+            p.appendChild(document.createTextNode(part.text || ""));
+          }
+        });
+        descRoot.appendChild(p);
+      } else {
+        const p = document.createElement("p");
+        p.textContent = item.text || "";
+        descRoot.appendChild(p);
+      }
+    });
 
     renderLocationImage(loc);
   }

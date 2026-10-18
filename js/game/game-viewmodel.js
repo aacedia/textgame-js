@@ -58,12 +58,18 @@ window.Game = window.Game || {};
       notice = `${loc.name} закрыт. Откроется в ${Rules.formatTime(loc.hours.from)}.`;
     }
 
-    // Основное описание + динамические дополнения из extraDescription.
-    const description = Array.isArray(loc.description) ? [...loc.description] : [];
+    const description = [];
+    (loc.description || []).forEach(p => {
+      if (p) description.push({ type: "text", text: p });
+    });
+
     if (Array.isArray(loc.extraDescription)) {
       loc.extraDescription.forEach(rule => {
-        if (!rule.condition || Rules.checkCondition(rule.condition, state, GAME_DATA)) {
-          if (rule.text) description.push(rule.text);
+        if (rule.condition && !Rules.checkCondition(rule.condition, state, GAME_DATA)) return;
+        if (Array.isArray(rule.parts)) {
+          description.push({ type: "parts", parts: rule.parts });
+        } else if (rule.text) {
+          description.push({ type: "text", text: rule.text });
         }
       });
     }
@@ -95,6 +101,9 @@ window.Game = window.Game || {};
     const result = [];
 
     loc.actions.forEach(action => {
+      // Действия типа "link" не показываются в списке — только через ссылки в тексте.
+      if (action.type === "link") return;
+
       if (action.once && state.flags[action.id + "_done"]) return;
       if (action.hiddenWhen && Rules.checkCondition(action.hiddenWhen, state, GAME_DATA)) return;
 
