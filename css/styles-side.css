@@ -199,6 +199,7 @@
 .char-bar--hunger  .char-bar__fill{background:#d9a35b}
 .char-bar--thirst  .char-bar__fill{background:#7fb6d9}
 .char-bar--fatigue .char-bar__fill{background:#a89ad9}
+.char-bar--mood .char-bar__fill{background:#e8b86b}
 
 /* Панель фильтров инвентаря */
 .inv-filters{

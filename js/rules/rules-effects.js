@@ -29,6 +29,26 @@
         const isSleeping = !!next.sleeping;
         const rateMultiplier = isSleeping ? 0.1 : 1;
 
+        // ---- Настроение ----
+        const moodMax = Number(gameData.moodMax ?? 100);
+        const moodRates = gameData.moodRates || {};
+        const passiveLoss = Number(moodRates.passive ?? 0);
+        const perHighNeed = Number(moodRates.perHighNeed ?? 0);
+        const highThreshold = Number(moodRates.highNeedThreshold ?? 80);
+
+        let moodLoss = passiveLoss;
+        ["hunger", "thirst", "fatigue"].forEach(key => {
+            const v = Number(next.variables[key]) || 0;
+            if (v > highThreshold) moodLoss += perHighNeed;
+        });
+        const hours = delta / 60;
+        next.variables.mood = Math.max(0, Math.min(moodMax, (Number(next.variables.mood) || 0) - moodLoss * hours));
+        const lowMood = next.variables.mood <= 0;
+
+        // ---- Потребности ----
+        const lowMoodMultiplier = lowMood ? Number(moodRates.lowMoodMultiplier ?? 2) : 1;
+        const combinedMultiplier = rateMultiplier * lowMoodMultiplier;
+
         let damage = 0;
 
         ["hunger", "thirst", "fatigue"].forEach(key => {
@@ -38,7 +58,7 @@
                 return;
             }
 
-            const rate = (Number(rates[key]) || 0) * rateMultiplier;
+            const rate = (Number(rates[key]) || 0) * combinedMultiplier;
             const current = Number(next.variables[key]) || 0;
 
             let minutesAtMax = 0;
@@ -133,9 +153,17 @@
 
             case "changeVariable": {
                 const before = Number(next.variables[effect.name] || 0);
-                const after = before + effect.amount;
+                let after = before + effect.amount;
+
+                // Зажим для настроения по [0, moodMax].
+                if (effect.name === "mood") {
+                    const max = Number(gameData.moodMax ?? 100);
+                    after = Math.max(0, Math.min(max, after));
+                }
+
                 next.variables[effect.name] = after;
 
+                // Сообщения только для денег: остальные переменные служебные.
                 if (effect.name === "money") {
                     const diff = after - before;
                     if (diff > 0) {

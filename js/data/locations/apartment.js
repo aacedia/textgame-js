@@ -42,9 +42,19 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "watch_tv",
                 label: "Смотреть телевизор",
-                hint: "Проходит 1 час · снимает усталость",
+                hint: "Проходит 1 час · +50 настроения",
                 minutes: 60,
+                condition: {
+                    all: [
+                        { flag: "tvAtHome" },
+                        { variableDiffers: { name: "lastTvDay", other: "day" } }
+                    ]
+                },
                 hiddenWhen: { not: { flag: "tvAtHome" } },
+                effects: [
+                    { type: "changeVariable", name: "mood", amount: 50 },
+                    { type: "setVariableFromVariable", name: "lastTvDay", from: "day" }
+                ],
                 reduceAfterTime: { fatigue: 20 },
                 text: "Ты устраиваешься перед телевизором и неспешно смотришь передачу. Время летит незаметно.",
                 image: "assets/images/locations/apartment-tv.jpg"

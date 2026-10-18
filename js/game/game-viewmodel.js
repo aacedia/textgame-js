@@ -258,6 +258,7 @@ window.Game = window.Game || {};
     const ch = GAME_DATA.character || {};
     const v = state.variables;
     const needsMax = GAME_DATA.needsMax ?? 100;
+    const moodMax = GAME_DATA.moodMax ?? 100;
     return {
       name: ch.name || "",
       avatar: ch.avatar || "",
@@ -268,7 +269,8 @@ window.Game = window.Game || {};
         { key: "stamina", label: "Выносливость", value: v.stamina ?? 0, max: GAME_DATA.staminaMax ?? 100, color: "stamina" },
         { key: "hunger", label: "Голод", value: v.hunger ?? 0, max: needsMax, color: "hunger" },
         { key: "thirst", label: "Жажда", value: v.thirst ?? 0, max: needsMax, color: "thirst" },
-        { key: "fatigue", label: "Усталость", value: v.fatigue ?? 0, max: needsMax, color: "fatigue" }
+        { key: "fatigue", label: "Усталость", value: v.fatigue ?? 0, max: needsMax, color: "fatigue" },
+        { key: "mood", label: "Настроение", value: v.mood ?? 0, max: moodMax, color: "mood" }
       ]
     };
   }

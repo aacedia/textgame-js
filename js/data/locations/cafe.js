@@ -16,30 +16,34 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "street" }]
             },
             {
-                id: "eat_at_cafe",
-                label: "Поесть в кафе",
-                hint: "50 ₽ · снимает голод",
-                minutes: 40,
-                condition: { variableAtLeast: { name: "money", value: 50 } },
-                effects: [{ type: "changeVariable", name: "money", amount: -50 }],
-                reduceAfterTime: { hunger: 80 },
-                text: "Ты заказываешь горячий обед и не спеша ешь.",
-                image: "assets/images/locations/cafe-food.jpg"
-            },
-            {
                 id: "drink_at_cafe",
                 label: "Выпить кофе",
-                hint: "20 ₽ · -10 усталости · +20 выносливости",
+                hint: "20 ₽ · -10 усталости · +20 выносливости · +10 настроения",
                 minutes: 15,
                 condition: { variableAtLeast: { name: "money", value: 20 } },
                 effects: [
                     { type: "changeVariable", name: "money", amount: -20 },
-                    { type: "changeVariable", name: "stamina", amount: 20 }
+                    { type: "changeVariable", name: "stamina", amount: 20 },
+                    { type: "changeVariable", name: "mood", amount: 10 }
                 ],
                 reduceAfterTime: { fatigue: 10 },
                 restoreAfterTime: { thirst: 0 },
                 text: "Ты берёшь чашку кофе и устраиваешься у окна.",
                 image: "assets/images/locations/cafe-coffee.jpg"
+            },
+            {
+                id: "eat_at_cafe",
+                label: "Поесть в кафе",
+                hint: "50 ₽ · снимает голод · +25 настроения",
+                minutes: 40,
+                condition: { variableAtLeast: { name: "money", value: 50 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -50 },
+                    { type: "changeVariable", name: "mood", amount: 25 }
+                ],
+                reduceAfterTime: { hunger: 80 },
+                text: "Ты заказываешь горячий обед и не спеша ешь.",
+                image: "assets/images/locations/cafe-food.jpg"
             },
             {
                 id: "work_shift",

@@ -21,17 +21,19 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 50,
+      money: 99,
       lastClassDay: 0,
       lastHimariDay: 0,
       lastOrderDay: 0,
       lastShiftDay: 0,
+      lastTvDay: 0,
       classesAttended: 0,
       health: 100,
       stamina: 100,
       hunger: 20,
       thirst: 20,
       fatigue: 20,
+      mood: 70,
       foodPortions: 0
     },
     uiTab: "quests",
@@ -54,5 +56,12 @@ window.GAME_DATA = {
   needsMax: 100,
   healthMax: 100,
   staminaMax: 100,
-  damagePerHour: 10
+  damagePerHour: 10,
+  moodMax: 100,
+  moodRates: {
+    passive: 4,       // -4/час пассивно
+    perHighNeed: 4,   // -4/час за каждую потребность выше 80
+    highNeedThreshold: 80,
+    lowMoodMultiplier: 2  // при mood === 0 потребности растут ×2
+  }
 };

@@ -2,21 +2,21 @@ Object.assign(window.GAME_DATA.items, {
     keys: {
         name: "Ключи от квартиры",
         icon: "🔑",
-        description: "Обычная связка ключей. Лучше не потерять."
+        description: "Ключи от квартиры."
     },
     notebook: {
         name: "Блокнот",
         icon: "📓",
         description: (state) => {
             const count = Number(state.variables.classesAttended) || 0;
-            if (count === 0) return "Пока чистый. В нём можно делать заметки.";
-            return `Содержит заметки. Посещено занятий: ${count}.`;
+            if (count === 0) return "Пока чистый.";
+            return `Посещено занятий: ${count}.`;
         }
     },
     water: {
         name: "Бутылка воды",
         icon: "💧",
-        description: "Питьевая вода. Утоляет жажду.",
+        description: "−100 жажды.",
         consumable: true,
         use: {
             minutes: 2,
@@ -27,73 +27,82 @@ Object.assign(window.GAME_DATA.items, {
     energy_drink: {
         name: "Энергетический напиток",
         icon: "⚡",
-        description: "Бодрит: немного снимает усталость и возвращает выносливость.",
+        description: "−25 усталости, +30 выносливости, +10 настроения.",
         consumable: true,
         use: {
             minutes: 3,
             restoreAfterTime: { thirst: 0 },
             reduceAfterTime: { fatigue: 25 },
-            effects: [{ type: "changeVariable", name: "stamina", amount: 30 }],
+            effects: [
+                { type: "changeVariable", name: "stamina", amount: 30 },
+                { type: "changeVariable", name: "mood", amount: 10 }
+            ],
             text: "Ты выпиваешь банку энергетика. По телу разливается бодрость."
         }
     },
     chocolate: {
         name: "Шоколадный батончик",
         icon: "🍫",
-        description: "Быстрый перекус. Немного притупляет голод.",
+        description: "−10 голода, +5 настроения.",
         consumable: true,
         use: {
             minutes: 3,
             reduceAfterTime: { hunger: 10 },
+            effects: [
+                { type: "changeVariable", name: "mood", amount: 5 }
+            ],
             text: "Ты разворачиваешь шоколадный батончик и съедаешь его."
         }
     },
     sandwich: {
         name: "Сэндвич",
         icon: "🥪",
-        description: "Сытный сэндвич. Утоляет голод.",
+        description: "−25 голода, +15 настроения.",
         consumable: true,
         use: {
             minutes: 10,
             reduceAfterTime: { hunger: 25 },
+            effects: [{ type: "changeVariable", name: "mood", amount: 15 }],
             text: "Ты съедаешь сэндвич и чувствуешь себя сытым."
         }
     },
     pizza_slice: {
         name: "Кусочек пиццы",
-        consumable: true,
         icon: "🍕",
-        description: "Тёплый кусочек пиццы. Утоляет голод и немного бодрит.",
+        description: "−50 голода, +10 выносливости, +20 настроения.",
         consumable: true,
         use: {
             minutes: 10,
             reduceAfterTime: { hunger: 50 },
-            effects: [{ type: "changeVariable", name: "stamina", amount: 10 }],
+            effects: [
+                { type: "changeVariable", name: "stamina", amount: 10 },
+                { type: "changeVariable", name: "mood", amount: 20 }
+            ],
             text: "Ты съедаешь кусочек пиццы, смакуя каждый кусок."
         }
     },
     laptop: {
         name: "Ноутбук",
         icon: "💻",
-        description: "Портативный компьютер. Пригодится для учёбы и работы.",
+        description: "Портативный компьютер.",
         electronics: true
     },
     handheld_console: {
         name: "Портативная игровая консоль",
         icon: "🎮",
-        description: "Карманная консоль. Можно скоротать время.",
+        description: "Карманная игровая консоль.",
         electronics: true
     },
     smartphone: {
         name: "Смартфон",
         icon: "📱",
-        description: "Современный телефон. Всегда под рукой.",
+        description: "Современный телефон.",
         electronics: true
     },
     wireless_headphones: {
         name: "Беспроводные наушники",
         icon: "🎧",
-        description: "Удобные наушники без проводов.",
+        description: "Наушники без проводов.",
         electronics: true
     }
 });
