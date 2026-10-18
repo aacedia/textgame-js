@@ -22,9 +22,34 @@
     Rules.pickVariant(variants, state, gameData, actionId) -> { variant, index } | null
 
   Сообщения в messages — массив объектов { kind: "move" | "info", text }.
+    "move" — переход между локациями;
+    "info" — всё остальное (предметы, деньги, смена дня, урон и т.п.).
 
   Конец игры: если health <= 0, state.gameOver = true. При gameOver
   checkCondition возвращает false — все действия недоступны.
+
+  Поддерживаемые условия:
+    { item: "keys" }
+    { flag: "attendedClass", equals: true | false }
+    { not: <условие> }
+    { all: [<условие>, ...] }
+    { any: [<условие>, ...] }
+    { variableAtLeast: { name: "money", value: 100 } }
+    { variableEquals:  { name: "day",   value: 1   } }
+    { variableDiffers: { name: "lastClassDay", other: "day" } }
+    { locationOpen: "shop" }
+    { timeBetween: { from: 12*60, to: 18*60 } }
+
+  Поддерживаемые эффекты:
+    { type: "move", to: "locationId" }
+    { type: "giveItem", item: "itemId" }
+    { type: "removeItem", item: "itemId" }
+    { type: "setFlag", flag: "name", value: true }
+    { type: "changeVariable", name: "money", amount: -100 }
+    { type: "setVariable", name: "day", value: 1 }
+    { type: "setVariableFromVariable", name: "lastClassDay", from: "day" }
+    { type: "advanceTime", minutes: 480 }
+    { type: "completeOrder" }
 */
 window.Rules = (() => {
   "use strict";
@@ -50,6 +75,7 @@ window.Rules = (() => {
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   }
 
+  // Название месяца в родительном падеже: "сентября", "октября".
   function monthName(m) {
     const months = [
       "января", "февраля", "марта", "апреля", "мая", "июня",
@@ -58,6 +84,11 @@ window.Rules = (() => {
     return months[m - 1] || "";
   }
 
+  /*
+    Преобразует номер дня (1 — первый день игры) в календарную дату.
+    Возвращает { day, month, year, weekday, weekdayIndex, text }.
+    weekdayIndex: 0 = понедельник, 6 = воскресенье.
+  */
   function formatDate(dayNumber, gameData) {
     const start = gameData.startDate || { year: 2026, month: 9, day: 1 };
     const weekdays = gameData.weekdays || ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -70,6 +101,7 @@ window.Rules = (() => {
     const m = base.getMonth() + 1;
     const d = base.getDate();
 
+    // getDay(): 0 = воскресенье. Приводим к 0 = понедельник.
     const wdIndex = (base.getDay() + 6) % 7;
     const weekday = weekdays[wdIndex];
 
@@ -83,10 +115,15 @@ window.Rules = (() => {
     };
   }
 
+  /*
+    Проверяет, открыта ли локация: учитывает hours и closedWeekdays.
+    dayNumber нужен для определения дня недели.
+  */
   function isLocationOpen(gameData, id, minutes, dayNumber) {
     const loc = (gameData.locations || {})[id];
     if (!loc) return false;
 
+    // Закрытые дни недели (например, университет не работает по выходным).
     if (Array.isArray(loc.closedWeekdays) && dayNumber != null) {
       const date = formatDate(dayNumber, gameData);
       if (loc.closedWeekdays.includes(date.weekdayIndex)) return false;
@@ -96,6 +133,7 @@ window.Rules = (() => {
     const { from, to } = loc.hours;
     const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
     if (from <= to) return t >= from && t < to;
+    // Интервал через полночь: например, с 22:00 до 06:00.
     return t >= from || t < to;
   }
 
@@ -126,6 +164,7 @@ window.Rules = (() => {
 
   /* ---------- валидация ---------- */
 
+  // Предупреждение в консоль с указанием функции и проблемного объекта.
   function warn(message, payload) {
     if (payload !== undefined) {
       console.warn(`Rules: ${message}`, payload);
@@ -134,6 +173,7 @@ window.Rules = (() => {
     }
   }
 
+  // Проверяет, что у эффекта есть обязательные поля по его типу.
   function validateEffectShape(effect) {
     switch (effect.type) {
       case "move":
@@ -223,14 +263,25 @@ window.Rules = (() => {
     if (condition.locationOpen) {
       return isLocationOpen(gameData, condition.locationOpen, state.variables.minutes, state.variables.day);
     }
+    if (condition.timeBetween) {
+      const { from, to } = condition.timeBetween;
+      const t = ((Number(state.variables.minutes) || 0) % 1440 + 1440) % 1440;
+      if (from <= to) return t >= from && t < to;
+      return t >= from || t < to;
+    }
     warn(`неизвестное условие`, condition);
     return false;
   }
 
+  /*
+    Возвращает причину недоступности действия строкой или null, если условие
+    выполнено. Для all/any рекурсивно ищет первую невыполненную ветку.
+  */
   function describeConditionFailure(condition, state, gameData) {
     if (!condition) return null;
     if (checkCondition(condition, state, gameData)) return null;
 
+    // Явная причина, если разработчик данных её указал.
     if (condition.reason) return condition.reason;
 
     if (Array.isArray(condition.all)) {
@@ -248,6 +299,7 @@ window.Rules = (() => {
       return "Ни одно из условий не выполнено";
     }
 
+    // Отрицание: описываем то, что на самом деле выполнено.
     if (condition.not) {
       const inner = condition.not;
       if (inner.item) {
@@ -270,6 +322,10 @@ window.Rules = (() => {
       }
       if (loc && loc.hours) return `Откроется в ${formatTime(loc.hours.from)}`;
       return "Сейчас закрыто";
+    }
+    if (condition.timeBetween) {
+      const { from, to } = condition.timeBetween;
+      return `Доступно с ${formatTime(from)} до ${formatTime(to)}`;
     }
     if (condition.item) {
       const item = (gameData.items || {})[condition.item];
@@ -294,6 +350,15 @@ window.Rules = (() => {
 
   /* ---------- потребности ---------- */
 
+  /*
+    Начисляет рост потребностей за minutes игровых минут и наносит урон
+    здоровью за каждую минуту, проведённую на максимуме.
+
+    Во сне (state.sleeping):
+      - усталость не растёт и не наносит урон;
+      - голод растёт в 2 раза медленнее;
+      - урон уменьшается вдвое.
+  */
   function applyNeeds(state, minutes, gameData) {
     const next = deepClone(state);
     const messages = [];
@@ -313,7 +378,7 @@ window.Rules = (() => {
 
     ["hunger", "thirst", "fatigue"].forEach(key => {
       if (isSleeping && key === "fatigue") {
-        // Во сне усталость не растёт и не наносит урон.
+        // Во сне усталость заморожена.
         next.variables[key] = Math.min(needsMax, Math.max(0, Number(next.variables[key]) || 0));
         return;
       }
@@ -321,6 +386,7 @@ window.Rules = (() => {
       const rate = (Number(rates[key]) || 0) * (key === "hunger" ? hungerMultiplier : 1);
       const current = Number(next.variables[key]) || 0;
 
+      // Сколько минут из delta потребность была на максимуме.
       let minutesAtMax = 0;
       let grown;
       if (current >= needsMax) {
@@ -346,6 +412,7 @@ window.Rules = (() => {
 
     damage *= damageMultiplier;
 
+    // Минимум 1 урона, если что-то накопилось, — чтобы мелкие тики не терялись.
     const totalDamage = damage > 0 ? Math.max(1, Math.floor(damage)) : 0;
 
     if (totalDamage > 0) {
@@ -397,6 +464,7 @@ window.Rules = (() => {
           warn(`giveItem → неизвестный предмет "${effect.item}"`, effect);
           break;
         }
+        // Всегда добавляем — предметы могут накапливаться (расходники).
         next.inventory.push(effect.item);
         messages.push({ kind: "info", text: `Получен предмет: ${item.name}.` });
         break;
@@ -420,6 +488,7 @@ window.Rules = (() => {
         const after = before + effect.amount;
         next.variables[effect.name] = after;
 
+        // Сообщения только для денег: остальные переменные служебные.
         if (effect.name === "money") {
           const diff = after - before;
           if (diff > 0) {
@@ -471,6 +540,7 @@ window.Rules = (() => {
         break;
       }
 
+      // Выполнение активного заказа из библиотеки.
       case "completeOrder": {
         const size = Number(next.flags.orderSize) || 0;
         const reward = Number(next.flags.orderReward) || 0;
@@ -497,8 +567,8 @@ window.Rules = (() => {
         messages.push(...needsResult.messages);
 
         // Награда.
-        const before = Number(next.variables.money) || 0;
-        next.variables.money = before + reward;
+        const beforeMoney = Number(next.variables.money) || 0;
+        next.variables.money = beforeMoney + reward;
 
         // Сброс заказа.
         next.flags.hasActiveOrder = false;
@@ -554,6 +624,15 @@ window.Rules = (() => {
 
   /* ---------- выбор варианта ---------- */
 
+  /*
+    Выбирает случайный вариант из массива с учётом:
+      - condition каждого варианта (подходящие фильтруются);
+      - прошлого выбора для этого действия (state.lastVariant[actionId]).
+        Если у прошлого варианта не выставлен repeatable: true, он исключается
+        из выбора, когда есть альтернативы.
+
+    Возвращает { variant, index } или null, если подходящих нет.
+  */
   function pickVariant(variants, state, gameData, actionId) {
     if (!Array.isArray(variants) || !variants.length) return null;
 

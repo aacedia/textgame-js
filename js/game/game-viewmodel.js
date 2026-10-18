@@ -58,6 +58,16 @@ window.Game = window.Game || {};
       notice = `${loc.name} закрыт. Откроется в ${Rules.formatTime(loc.hours.from)}.`;
     }
 
+    // Основное описание + динамические дополнения из extraDescription.
+    const description = Array.isArray(loc.description) ? [...loc.description] : [];
+    if (Array.isArray(loc.extraDescription)) {
+      loc.extraDescription.forEach(rule => {
+        if (!rule.condition || Rules.checkCondition(rule.condition, state, GAME_DATA)) {
+          if (rule.text) description.push(rule.text);
+        }
+      });
+    }
+
     const infoVisible = Game.getInfo().length > 0;
     const showImage = !infoVisible && !!loc.image;
 
@@ -67,7 +77,7 @@ window.Game = window.Game || {};
       tagText,
       tagClass,
       notice,
-      description: loc.description,
+      description,
       image: showImage ? loc.image : "",
       imageAlt: showImage ? (loc.imageAlt || "") : "",
       imageCaption: showImage ? (loc.imageCaption || "") : ""

@@ -22,6 +22,7 @@ window.GAME_DATA = {
       minutes: 510,
       money: 99,
       lastClassDay: 0,
+      lastHimariDay: 0,
       classesAttended: 0,
       health: 100,
       stamina: 100,

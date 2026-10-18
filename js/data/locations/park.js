@@ -9,6 +9,12 @@ Object.assign(window.GAME_DATA.locations, {
             "Большой городской парк раскинулся между улицами. Вдоль аллей стоят скамейки, в кронах деревьев шумит ветер, где-то играют дети.",
             "Здесь можно спокойно прогуляться, отдохнуть от суеты и собраться с мыслями."
         ],
+        extraDescription: [
+            {
+                condition: { timeBetween: { from: 12 * 60, to: 18 * 60 } },
+                text: "На скамейке у фонтана сидит Химари с книгой — кажется, она никуда не спешит."
+            }
+        ],
         actions: [
             {
                 id: "walk_park",
@@ -19,6 +25,23 @@ Object.assign(window.GAME_DATA.locations, {
                 reduceAfterTime: { fatigue: 2, hunger: 4, thirst: 2 },
                 text: "Ты неспешно идёшь по аллее, вдыхая свежий воздух и слушая птиц. На душе становится спокойнее.",
                 image: "assets/images/locations/park-walk.jpg"
+            },
+            {
+                id: "talk_to_himari",
+                label: "Подойти к Химари",
+                hint: "Поговорить",
+                minutes: 15,
+                hiddenWhen: {
+                    any: [
+                        { not: { timeBetween: { from: 12 * 60, to: 18 * 60 } } },
+                        { not: { variableDiffers: { name: "lastHimariDay", other: "day" } } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastHimariDay", from: "day" }
+                ],
+                text: "Ты подходишь к Химари, и вы неспешно разговариваете о книгах, учёбе и планах. Она улыбается и говорит, что завтра снова будет здесь.",
+                image: "assets/images/characters/himari.png"
             },
             {
                 id: "park_look_around",
