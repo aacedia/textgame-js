@@ -187,6 +187,8 @@ window.Rules = (() => {
           return false;
         }
         return true;
+      case "completeOrder":
+        return true;
       default:
         warn(`неизвестный тип эффекта "${effect.type}"`, effect);
         return false;
@@ -466,6 +468,45 @@ window.Rules = (() => {
         next.variables = needsResult.state.variables;
         if (needsResult.state.gameOver) next.gameOver = true;
         messages.push(...needsResult.messages);
+        break;
+      }
+
+      case "completeOrder": {
+        const size = Number(next.flags.orderSize) || 0;
+        const reward = Number(next.flags.orderReward) || 0;
+        const name = String(next.flags.orderName || "Заказ");
+
+        if (!next.flags.hasActiveOrder || size <= 0) {
+          warn(`completeOrder: нет активного заказа`, effect);
+          break;
+        }
+
+        // Время.
+        const total = next.variables.minutes + size * 60;
+        const daysPassed = Math.floor(total / 1440);
+        next.variables.minutes = ((total % 1440) + 1440) % 1440;
+        if (daysPassed > 0) {
+          next.variables.day += daysPassed;
+          messages.push({ kind: "info", text: daysPassed === 1 ? "Наступает новый день." : `Проходит ${daysPassed} дн.` });
+        }
+
+        // Потребности и урон.
+        const needsResult = applyNeeds(next, size * 60, gameData);
+        next.variables = needsResult.state.variables;
+        if (needsResult.state.gameOver) next.gameOver = true;
+        messages.push(...needsResult.messages);
+
+        // Награда.
+        const before = Number(next.variables.money) || 0;
+        next.variables.money = before + reward;
+
+        // Сброс заказа.
+        next.flags.hasActiveOrder = false;
+        next.flags.orderSize = 0;
+        next.flags.orderReward = 0;
+        next.flags.orderName = "";
+
+        messages.push({ kind: "info", text: `Заказ «${name}» выполнен. Получено: ${reward} ₽.` });
         break;
       }
     }

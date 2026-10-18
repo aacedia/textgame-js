@@ -37,6 +37,52 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/university-classroom.jpg"
             },
             {
+                id: "look_orders",
+                label: "Искать заказы",
+                hint: "Найти студенческую работу на заказ",
+                minutes: 30,
+                condition: { not: { flag: "hasActiveOrder" } },
+                variants: [
+                    {
+                        text: "Ты обходишь доски объявлений, но ничего подходящего не находишь."
+                    },
+                    {
+                        effects: [
+                            { type: "setFlag", flag: "hasActiveOrder", value: true },
+                            { type: "setFlag", flag: "orderSize", value: 1 },
+                            { type: "setFlag", flag: "orderReward", value: 100 },
+                            { type: "setFlag", flag: "orderName", value: "Небольшой реферат" }
+                        ],
+                        text: "Тебе попадается небольшой заказ: реферат. Работы на час — заплатить обещают 100 ₽. Выполнить можно в библиотеке."
+                    },
+                    {
+                        effects: [
+                            { type: "setFlag", flag: "hasActiveOrder", value: true },
+                            { type: "setFlag", flag: "orderSize", value: 3 },
+                            { type: "setFlag", flag: "orderReward", value: 300 },
+                            { type: "setFlag", flag: "orderName", value: "Курсовая работа" }
+                        ],
+                        text: "Попадается курсач: три часа работы за 300 ₽. Искать материалы удобнее всего в библиотеке."
+                    },
+                    {
+                        effects: [
+                            { type: "setFlag", flag: "hasActiveOrder", value: true },
+                            { type: "setFlag", flag: "orderSize", value: 5 },
+                            { type: "setFlag", flag: "orderReward", value: 700 },
+                            { type: "setFlag", flag: "orderName", value: "Дипломная работа" }
+                        ],
+                        text: "Крупный заказ: дипломная работа. Пять часов за 700 ₽ — но и подход серьёзный. Всё делать — в библиотеке."
+                    }
+                ]
+            },
+            {
+                id: "go_library",
+                label: "Пойти в библиотеку",
+                hint: "Тишина, книги и заказы",
+                condition: { locationOpen: "library" },
+                effects: [{ type: "move", to: "library" }]
+            },
+            {
                 id: "return_street",
                 label: "Выйти на улицу",
                 hint: "Вернуться к перекрёстку",
@@ -47,5 +93,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    university: ["street"]
+    university: ["street", "library"]
 });

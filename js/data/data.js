@@ -10,7 +10,13 @@ window.GAME_DATA = {
   initialState: {
     location: "apartment",
     inventory: [],
-    flags: { hasInspectedTable: false },
+    flags: {
+      hasInspectedTable: false,
+      hasActiveOrder: false,
+      orderSize: 0,
+      orderReward: 0,
+      orderName: ""
+    },
     variables: {
       day: 1,
       minutes: 510,
