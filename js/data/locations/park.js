@@ -16,7 +16,7 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Проходит 30 минут",
                 minutes: 30,
                 effects: [],
-                reduceAfterTime: { fatigue: 10, hunger: 5, thirst: 5 },
+                reduceAfterTime: { fatigue: 2, hunger: 4, thirst: 2 },
                 text: "Ты неспешно идёшь по аллее, вдыхая свежий воздух и слушая птиц. На душе становится спокойнее.",
                 image: "assets/images/locations/park-walk.jpg"
             },

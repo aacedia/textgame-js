@@ -32,7 +32,7 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Проходит 15 минут · -5 усталости",
                 minutes: 15,
                 effects: [],
-                reduceAfterTime: { fatigue: 5 },
+                reduceAfterTime: { fatigue: 5, hunger: 2, thirst: 1 },
                 text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
                 image: "assets/images/locations/apartment-rest.jpg"
             },
@@ -43,7 +43,7 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 480,
                 effects: [],
                 reduceBeforeTime: { fatigue: 100 },
-                restoreAfterTime: { stamina: 100, health: 100 },
+                restoreAfterTime: { stamina: 100, health: 100, hunger: 32, thirst: 16 },
                 sleep: true,
                 text: "Ты ложишься спать и просыпаешься через восемь часов.",
                 image: "assets/images/locations/apartment-sleep.jpg"
