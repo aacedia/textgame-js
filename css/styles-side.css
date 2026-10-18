@@ -200,7 +200,9 @@
 .char-bar--thirst  .char-bar__fill{background:#7fb6d9}
 .char-bar--fatigue .char-bar__fill{background:#a89ad9}
 .char-bar--mood .char-bar__fill{background:#e8b86b}
-
+.char-bar--with-tooltip{
+  cursor:help;
+}
 /* Панель фильтров инвентаря */
 .inv-filters{
   display:flex;

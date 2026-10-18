@@ -166,6 +166,10 @@
     bars.forEach(bar => {
       const row = document.createElement("div");
       row.className = "char-bar char-bar--" + bar.color;
+      if (bar.tooltip) {
+        row.title = bar.tooltip;
+        row.classList.add("char-bar--with-tooltip");
+      }
 
       const label = document.createElement("div");
       label.className = "char-bar__label";
