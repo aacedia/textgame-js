@@ -43,9 +43,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "walk_park",
                 label: "Прогуляться по парку",
-                hint: "Проходит 30 минут",
+                hint: "Проходит 30 минут · +5 настроения",
                 minutes: 30,
-                effects: [],
+                effects: [
+                    { type: "changeVariable", name: "mood", amount: 5 }
+                ],
                 reduceAfterTime: { fatigue: 2, hunger: 4, thirst: 2 },
                 text: "Ты неспешно идёшь по аллее, вдыхая свежий воздух и слушая птиц. На душе становится спокойнее.",
                 image: "assets/images/locations/park-walk.jpg"
@@ -63,7 +65,8 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 effects: [
-                    { type: "setVariableFromVariable", name: "lastHimariDay", from: "day" }
+                    { type: "setVariableFromVariable", name: "lastHimariDay", from: "day" },
+                    { type: "changeVariable", name: "mood", amount: 10 }
                 ],
                 text: "Ты подходишь к Химари, и вы неспешно разговариваете о книгах, учёбе и планах. Она улыбается и говорит, что завтра снова будет здесь.",
                 image: "assets/images/characters/himari.png"

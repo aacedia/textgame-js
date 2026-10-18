@@ -35,10 +35,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "read_books",
                 label: "Почитать книги",
-                hint: "Проходит 30 минут",
+                hint: "Проходит 30 минут · +5 настроения",
                 minutes: 30,
                 text: "Ты берёшь с полки книгу и неспешно читаешь.",
-                image: "assets/images/locations/library-books.jpg"
+                image: "assets/images/locations/library-books.jpg",
+                effects: [{ type: "changeVariable", name: "mood", amount: 5 },]
             }
         ]
     }
