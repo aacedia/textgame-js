@@ -1,54 +1,82 @@
 /*
-  Панель «Описание локации»: .locbar, .locname, .tag, .description,
-  .location-notice, .location-image.
+  Панель «Описание локации»: шапка с названием и тегом, notice, описание, картинка.
 */
-.locbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px 0}
-.locname{font-size:23px;font-weight:700;letter-spacing:-.025em;color:var(--text)}
-.tag{
-  border:1px solid var(--accent);
-  color:var(--accent-3);
-  background:var(--accent-2);
-  padding:3px 8px;border-radius:99px;font-size:11px;
-}
-.tag.closed{
-  border-color:var(--notice-border);
-  color:var(--notice-text);
-  background:var(--notice-bg);
+
+.location-title {
+  justify-content: space-between;
 }
 
-.location-notice{
-  margin:12px 18px 0;
-  padding:8px 12px;
-  border:1px solid var(--notice-border);
-  border-radius:7px;
-  background:var(--notice-bg);
-  color:var(--notice-text);
-  font-size:12px;
+.locname {
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: -.02em;
 }
-.location-notice[hidden]{display:none}
 
-.description{padding:12px 18px 20px;color:#5c4b40;max-width:78ch}
-.description p{margin:0 0 10px}
-.description p:last-child{margin:0}
+.tag {
+  border: 1px solid var(--accent);
+  color: var(--accent-3);
+  background: var(--accent-2);
+  padding: 3px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+}
 
-/* Изображение локации: ограниченная ширина, фиксированные пропорции */
-.location-image{
-  margin:0 auto 18px;
-  max-width:min(560px, calc(100% - 36px));
-  border:1px solid var(--border);
-  border-radius:10px;
-  overflow:hidden;
-  background:var(--panel-2);
+.tag.closed {
+  border-color: var(--notice-border);
+  color: var(--notice-text);
+  background: var(--notice-bg);
 }
-.location-image img{
-  display:block;
-  width:100%;
-  aspect-ratio:16 / 9;
-  object-fit:cover;
+
+.location-notice {
+  margin: 12px 18px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--notice-border);
+  border-radius: 7px;
+  background: var(--notice-bg);
+  color: var(--notice-text);
+  font-size: 12px;
 }
-.location-image figcaption{
-  padding:8px 12px;
-  color:var(--muted);
-  font-size:12px;
-  border-top:1px solid var(--border);
+
+.location-notice[hidden] {
+  display: none
+}
+
+.description {
+  padding: 12px 18px 20px;
+  color: #5c4b40;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 78ch;
+}
+
+.description p {
+  margin: 0 0 10px
+}
+
+.description p:last-child {
+  margin: 0
+}
+
+.location-image {
+  margin: 0 auto 18px;
+  max-width: min(560px, calc(100% - 36px));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--panel-2);
+}
+
+.location-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.location-image figcaption {
+  padding: 8px 12px;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
 }

@@ -58,8 +58,6 @@ window.GAME_DATA = {
     apartment: {
       name: "Квартира", tag: "Безопасное место",
       image: "assets/images/locations/apartment.jpg",
-      imageAlt: "Уютная квартира утром: стол, окно, мягкий свет",
-      imageCaption: "Квартира утром: тихо и спокойно.",
       description: [
         "Небольшая, но уютная квартира. Утренний свет пробивается сквозь занавески, а на столе лежат ключи и телефон.",
         "Сегодня предстоит выбраться в город. Можно выйти на улицу или немного осмотреться перед дорогой."
@@ -76,7 +74,6 @@ window.GAME_DATA = {
           once: true,
           text: "На столе лежат ключи. Ты убираешь их в карман.",
           image: "assets/images/locations/apartment-table.jpg",
-          imageAlt: "Стол у окна с ключами и телефоном"
         },
         {
           id: "leave_home",
@@ -135,7 +132,6 @@ window.GAME_DATA = {
     street: {
       name: "Улица", tag: "Город",
       image: "assets/images/locations/street.jpg",
-      imageCaption: "Оживлённая улица: огни, прохожие и спешащий транспорт.",
       description: [
         "На улице уже шумно: проезжают автобусы, прохожие спешат по своим делам, а на перекрёстке мигает зелёный сигнал.",
         "Отсюда можно добраться до университета, зайти в магазин или в кафе на углу."
@@ -177,17 +173,14 @@ window.GAME_DATA = {
             {
               text: "Мимо проезжает автобус и останавливается на перекрёстке.",
               image: "assets/images/locations/street-scene-bus.jpg",
-              imageAlt: "Автобус на остановке"
             },
             {
               text: "На тротуар садится голубь, клюёт крошки и улетает.",
               image: "assets/images/locations/street-scene-pigeon.jpg",
-              imageAlt: "Голубь на тротуаре"
             },
             {
               text: "Мимо проходит студентка с рюкзаком и кивает тебе.",
               image: "assets/images/locations/street-scene-student.jpg",
-              imageAlt: "Студентка с рюкзаком на улице"
             },
             {
               condition: { not: { flag: "foundCoin" } },
@@ -197,7 +190,6 @@ window.GAME_DATA = {
               ],
               text: "На тротуаре что-то блестит. Ты наклоняешься и находишь монетку в 100 ₽. Вряд ли снова так повезёт.",
               image: "assets/images/locations/street-scene-coin.jpg",
-              imageAlt: "Монетка на асфальте"
             }
           ]
         }
@@ -208,7 +200,6 @@ window.GAME_DATA = {
       hours: { from: 8 * 60, to: 20 * 60 },
       defaultExit: "street",
       image: "assets/images/locations/university.jpg",
-      imageAlt: "Главное здание университета: вход и студенты",
       description: [
         "Перед тобой главное здание университета. У входа собрались студенты, а из открытых окон доносится гул голосов.",
         "До начала занятий ещё есть время. Можно осмотреть холл или вернуться на улицу."
@@ -221,7 +212,6 @@ window.GAME_DATA = {
           effects: [{ type: "setFlag", flag: "sawNoticeboard", value: true }],
           text: "На доске объявлений висят расписание и афиша студенческого клуба.",
           image: "assets/images/locations/university-hall.jpg",
-          imageAlt: "Светлый холл университета с доской объявлений"
         },
         {
           id: "attend_class",
@@ -240,7 +230,6 @@ window.GAME_DATA = {
           ],
           text: "Ты заходишь в аудиторию и проводишь полтора часа на занятии.",
           image: "assets/images/locations/university-classroom.jpg",
-          imageAlt: "Учебная аудитория: ряды столов и доска"
         },
         {
           id: "return_street",
@@ -255,7 +244,6 @@ window.GAME_DATA = {
       hours: { from: 8 * 60, to: 22 * 60 },
       defaultExit: "street",
       image: "assets/images/locations/shop.jpg",
-      imageAlt: "Небольшой магазин у перекрёстка: витрина и вход",
       description: [
         "Небольшой магазин у перекрёстка. На полках стоят напитки, снеки и самые разные мелочи. За кассой скучает продавец."
       ],
@@ -272,7 +260,6 @@ window.GAME_DATA = {
           ],
           text: "Ты покупаешь блокнот и убираешь его в сумку.",
           image: "assets/images/items/notebook.jpg",
-          imageAlt: "Новый блокнот в твёрдой обложке"
         },
         {
           id: "buy_snack",
@@ -307,7 +294,6 @@ window.GAME_DATA = {
           effects: [{ type: "setFlag", flag: "lookedAtShelves", value: true }],
           text: "На полках ты замечаешь воду, яблоки и блокноты.",
           image: "assets/images/locations/shop-shelves.jpg",
-          imageAlt: "Полки небольшого магазина с товарами"
         },
         {
           id: "return_street",
@@ -322,8 +308,6 @@ window.GAME_DATA = {
       hours: { from: 8 * 60, to: 23 * 60 },
       defaultExit: "street",
       image: "assets/images/locations/cafe.jpg",
-      imageAlt: "Небольшое кафе с тёплым светом и столиками у окна",
-      imageCaption: "Кафе: пахнет кофе и свежей выпечкой.",
       description: [
         "Небольшое кафе неподалёку от перекрёстка. У окна свободный столик, за стойкой скучает бариста.",
         "Здесь можно перекусить, а если повезёт — подработать пару часов за стойкой."
@@ -341,7 +325,6 @@ window.GAME_DATA = {
           restoreAfterTime: { hunger: 0 },
           text: "Ты заказываешь горячий обед и не спеша ешь.",
           image: "assets/images/locations/cafe-food.jpg",
-          imageAlt: "Обед на столике в кафе"
         },
         {
           id: "drink_at_cafe",
@@ -355,7 +338,6 @@ window.GAME_DATA = {
           restoreAfterTime: { thirst: 0 },
           text: "Ты берёшь чашку кофе и устраиваешься у окна.",
           image: "assets/images/locations/cafe-coffee.jpg",
-          imageAlt: "Чашка кофе на столике"
         },
         {
           id: "work_shift",
@@ -374,7 +356,6 @@ window.GAME_DATA = {
           ],
           text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату.",
           image: "assets/images/locations/cafe-work.jpg",
-          imageAlt: "Рабочая стойка кафе"
         },
         {
           id: "look_around_cafe",
@@ -383,7 +364,6 @@ window.GAME_DATA = {
           effects: [{ type: "setFlag", flag: "lookedAroundCafe", value: true }],
           text: "За соседним столиком пара обсуждает планы на вечер, у окна студент листает конспекты.",
           image: "assets/images/locations/cafe-inside.jpg",
-          imageAlt: "Посетители кафе"
         },
         {
           id: "cafe_return_street",

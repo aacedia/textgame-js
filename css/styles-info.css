@@ -1,42 +1,46 @@
 /*
   Панель «Информация»: результат последнего осмысленного действия.
 */
-.info{
-  padding:12px 18px 16px;
-  display:grid;
-  gap:10px;
+.info {
+  padding: 12px 18px 16px;
+  display: grid;
+  gap: 10px;
 }
-.infoentry{
-  margin:0;
-  color:#5c4b40;
-  font-size:14px;
-  line-height:1.5;
+
+.infoentry {
+  margin: 0;
+  color: #5c4b40;
+  font-size: 16px;
+  line-height: 1.5;
 }
-.infoentry--text{
-  border-left:3px solid var(--accent);
-  padding-left:11px;
+
+.infoentry--text {
+  border-left: 3px solid var(--accent);
+  padding-left: 11px;
 }
 
 /* Картинка: ограниченная ширина, фиксированные пропорции */
-.infoentry--image{
-  display:block;
-  margin:0 auto;
-  max-width:min(420px, 100%);
-  border:1px solid var(--border);
-  border-radius:8px;
-  overflow:hidden;
-  background:var(--panel-2);
+.infoentry--image {
+  display: block;
+  margin: 0 auto;
+  max-width: min(420px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--panel-2);
 }
-.infoentry-img{
-  display:block;
-  width:100%;
-  aspect-ratio:16 / 9;
-  object-fit:cover;
+
+.infoentry-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
-.infoentry-caption{
-  padding:6px 10px;
-  color:var(--muted);
-  font-size:12px;
-  border-top:1px solid var(--border);
-  background:var(--panel);
+
+.infoentry-caption {
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
 }

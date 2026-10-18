@@ -25,10 +25,9 @@
         <!-- Верхняя часть главной колонки: растягивается и скроллится -->
         <div class="main-top">
           <section class="panel">
-            <div class="heading"><span class="dot"></span> Описание локации</div>
-            <div class="locbar">
-              <div class="locname" id="location-name"></div>
-              <div class="tag" id="location-tag"></div>
+            <div class="heading-base location-title">
+              <span class="locname" id="location-name"></span>
+              <span class="tag" id="location-tag"></span>
             </div>
             <div class="location-notice" id="location-notice" hidden></div>
             <div class="description" id="description" aria-live="polite"></div>
@@ -38,20 +37,19 @@
             </figure>
           </section>
           <section class="panel" id="info-panel" hidden>
-            <div class="heading"><span class="dot"></span> Информация</div>
+            <div class="heading-base">Информация</div>
             <div class="info" id="info-list" aria-live="polite"></div>
           </section>
         </div>
         <!-- Нижняя часть главной колонки: прижата к низу -->
         <div class="main-bottom">
           <section class="panel">
-            <div class="heading"><span class="dot"></span> Доступные действия</div>
+            <div class="heading-base">Доступные действия</div>
             <div class="actions" id="actions"></div>
           </section>
           <section class="panel">
-            <button type="button" class="heading heading--toggle" id="log-toggle" aria-expanded="false"
+            <button type="button" class="heading-base heading--toggle" id="log-toggle" aria-expanded="false"
               aria-controls="log-body">
-              <span class="dot"></span>
               <span class="heading-label">История событий</span>
               <span class="heading-chevron" aria-hidden="true">▾</span>
             </button>
@@ -65,7 +63,7 @@
         <!-- Верхняя часть боковой колонки: растягивается и скроллится -->
         <div class="side-top">
           <section class="panel">
-            <div class="heading"><span class="dot"></span> Персонаж</div>
+            <div class="heading-base">Персонаж</div>
             <div class="status" id="status"></div>
             <div class="character-panel" id="character-content"></div>
           </section>
@@ -77,9 +75,8 @@
         <!-- Нижняя часть боковой колонки: прижата к низу -->
         <div class="side-bottom">
           <section class="panel">
-            <button type="button" class="heading heading--toggle" id="controls-toggle" aria-expanded="false"
+            <button type="button" class="heading-base heading--toggle" id="controls-toggle" aria-expanded="false"
               aria-controls="controls-content">
-              <span class="dot"></span>
               <span class="heading-label">Управление</span>
               <span class="heading-chevron" aria-hidden="true">▾</span>
             </button>
