@@ -47,7 +47,15 @@ Object.assign(window.GAME_DATA.locations, {
                 label: "Искать заказы",
                 hint: "Найти студенческую работу на заказ",
                 minutes: 30,
-                condition: { not: { flag: "hasActiveOrder" } },
+                condition: {
+                    all: [
+                        { not: { flag: "hasActiveOrder" } },
+                        { variableDiffers: { name: "lastOrderDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastOrderDay", from: "day" }
+                ],
                 variants: [
                     {
                         text: "Ты обходишь доски объявлений, но ничего подходящего не находишь."

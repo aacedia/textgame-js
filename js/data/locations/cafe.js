@@ -49,12 +49,13 @@ Object.assign(window.GAME_DATA.locations, {
                 condition: {
                     all: [
                         { variableAtLeast: { name: "stamina", value: 20 } },
-                        { variableAtLeast: { name: "money", value: 0 } }
+                        { variableDiffers: { name: "lastShiftDay", other: "day" } }
                     ]
                 },
                 effects: [
                     { type: "changeVariable", name: "money", amount: 300 },
-                    { type: "changeVariable", name: "stamina", amount: -20 }
+                    { type: "changeVariable", name: "stamina", amount: -20 },
+                    { type: "setVariableFromVariable", name: "lastShiftDay", from: "day" }
                 ],
                 text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату.",
                 image: "assets/images/locations/cafe-work.jpg"

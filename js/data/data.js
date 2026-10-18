@@ -23,6 +23,8 @@ window.GAME_DATA = {
       money: 99,
       lastClassDay: 0,
       lastHimariDay: 0,
+      lastOrderDay: 0,
+      lastShiftDay: 0,
       classesAttended: 0,
       health: 100,
       stamina: 100,
