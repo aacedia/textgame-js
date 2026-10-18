@@ -8,6 +8,13 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "leave_home",
+                label: "Выйти на улицу",
+                hint: "Отправиться в город",
+                condition: { item: "keys" },
+                effects: [{ type: "move", to: "street" }]
+            },
+            {
                 id: "inspect_table",
                 label: "Осмотреть стол",
                 hint: "Проверить, всё ли на месте",
@@ -19,13 +26,7 @@ Object.assign(window.GAME_DATA.locations, {
                 text: "На столе лежат ключи. Ты убираешь их в карман.",
                 image: "assets/images/locations/apartment-table.jpg"
             },
-            {
-                id: "leave_home",
-                label: "Выйти на улицу",
-                hint: "Отправиться в город",
-                condition: { item: "keys" },
-                effects: [{ type: "move", to: "street" }]
-            },
+
             {
                 id: "rest",
                 label: "Немного отдохнуть",

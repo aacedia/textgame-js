@@ -35,6 +35,12 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "park_return_street",
+                label: "Выйти на улицу",
+                hint: "Вернуться к перекрёстку",
+                effects: [{ type: "move", to: "street" }]
+            },
+            {
                 id: "walk_park",
                 label: "Прогуляться по парку",
                 hint: "Проходит 30 минут",
@@ -69,12 +75,6 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "setFlag", flag: "lookedAroundPark", value: true }],
                 text: "Ты оглядываешь людей, гуляющих по парку.",
                 image: "assets/images/locations/park-look.jpg"
-            },
-            {
-                id: "park_return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
             }
         ]
     }

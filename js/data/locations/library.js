@@ -11,6 +11,12 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "library_return_university",
+                label: "Вернуться в университет",
+                hint: "Назад в главное здание",
+                effects: [{ type: "move", to: "university" }]
+            },
+            {
                 id: "work_on_order",
                 label: "Выполнить заказ",
                 hint: "Завершить взятую работу",
@@ -27,12 +33,6 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 30,
                 text: "Ты берёшь с полки книгу и неспешно читаешь.",
                 image: "assets/images/locations/library-books.jpg"
-            },
-            {
-                id: "library_return_university",
-                label: "Вернуться в университет",
-                hint: "Назад в главное здание",
-                effects: [{ type: "move", to: "university" }]
             }
         ]
     }

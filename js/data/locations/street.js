@@ -8,11 +8,24 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "go_home",
+                label: "Вернуться домой",
+                hint: "Назад в квартиру",
+                effects: [{ type: "move", to: "apartment" }]
+            },
+            {
                 id: "go_university",
                 label: "Пойти в университет",
                 hint: "Занятия и знакомые лица",
                 condition: { locationOpen: "university" },
                 effects: [{ type: "move", to: "university" }]
+            },
+            {
+                id: "go_park",
+                label: "Пойти в парк",
+                hint: "Прогуляться по аллее",
+                condition: { locationOpen: "park" },
+                effects: [{ type: "move", to: "park" }]
             },
             {
                 id: "go_shop",
@@ -27,19 +40,6 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Перекусить и подработать",
                 condition: { locationOpen: "cafe" },
                 effects: [{ type: "move", to: "cafe" }]
-            },
-            {
-                id: "go_park",
-                label: "Пойти в парк",
-                hint: "Прогуляться по аллее",
-                condition: { locationOpen: "park" },
-                effects: [{ type: "move", to: "park" }]
-            },
-            {
-                id: "go_home",
-                label: "Вернуться домой",
-                hint: "Назад в квартиру",
-                effects: [{ type: "move", to: "apartment" }]
             },
             {
                 id: "look_around",

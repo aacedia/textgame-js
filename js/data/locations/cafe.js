@@ -10,6 +10,12 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "cafe_return_street",
+                label: "Выйти на улицу",
+                hint: "Вернуться к перекрёстку",
+                effects: [{ type: "move", to: "street" }]
+            },
+            {
                 id: "eat_at_cafe",
                 label: "Поесть в кафе",
                 hint: "50 ₽ · снимает голод",
@@ -60,12 +66,6 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "setFlag", flag: "lookedAroundCafe", value: true }],
                 text: "За соседним столиком пара обсуждает планы на вечер, у окна студент листает конспекты.",
                 image: "assets/images/locations/cafe-inside.jpg"
-            },
-            {
-                id: "cafe_return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
             }
         ]
     }

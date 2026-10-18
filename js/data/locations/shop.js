@@ -9,6 +9,12 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "return_street",
+                label: "Выйти на улицу",
+                hint: "Вернуться к перекрёстку",
+                effects: [{ type: "move", to: "street" }]
+            },
+            {
                 id: "buy_notebook",
                 label: "Купить блокнот",
                 hint: "100 ₽",
@@ -88,12 +94,6 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "setFlag", flag: "lookedAtShelves", value: true }],
                 text: "На полках ты замечаешь воду, снеки, шоколад и готовые сэндвичи.",
                 image: "assets/images/locations/shop-shelves.jpg"
-            },
-            {
-                id: "return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
             }
         ]
     }

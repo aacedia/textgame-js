@@ -11,6 +11,12 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "return_street",
+                label: "Выйти на улицу",
+                hint: "Вернуться к перекрёстку",
+                effects: [{ type: "move", to: "street" }]
+            },
+            {
                 id: "look_hall",
                 label: "Осмотреть холл",
                 hint: "Изучить доску объявлений",
@@ -81,12 +87,6 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Тишина, книги и заказы",
                 condition: { locationOpen: "library" },
                 effects: [{ type: "move", to: "library" }]
-            },
-            {
-                id: "return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
             }
         ]
     }
