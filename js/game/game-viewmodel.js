@@ -43,7 +43,7 @@ window.Game = window.Game || {};
 
   function buildLocationVM(loc) {
     const state = Game.getState();
-    const openNow = Rules.isLocationOpen(GAME_DATA, state.location, state.variables.minutes);
+    const openNow = Rules.isLocationOpen(GAME_DATA, state.location, state.variables.minutes, state.variables.day);
     const hoursText = loc.hours ? Rules.describeHours(loc.hours) : "";
 
     let tagText = loc.tag || "";
@@ -165,7 +165,7 @@ window.Game = window.Game || {};
       name: loc.name,
       current: state.location === id,
       reachable: Rules.isAdjacent(GAME_DATA, state.location, id),
-      open: Rules.isLocationOpen(GAME_DATA, id, state.variables.minutes)
+      open: Rules.isLocationOpen(GAME_DATA, id, state.variables.minutes, state.variables.day)
     }));
     return { type: "map", rows };
   }

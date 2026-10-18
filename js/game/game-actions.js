@@ -38,7 +38,7 @@ window.Game = window.Game || {};
   function evictIfClosed(state) {
     const loc = GAME_DATA.locations[state.location];
     if (!loc || !loc.hours) return { state, messages: [] };
-    if (Rules.isLocationOpen(GAME_DATA, state.location, state.variables.minutes)) {
+    if (Rules.isLocationOpen(GAME_DATA, state.location, state.variables.minutes, state.variables.day)) {
       return { state, messages: [] };
     }
     const target = loc.defaultExit;
@@ -198,7 +198,7 @@ window.Game = window.Game || {};
     if (state.gameOver) return;
     if (!GAME_DATA.locations[target]) return;
     if (!Rules.isAdjacent(GAME_DATA, state.location, target)) return;
-    if (!Rules.isLocationOpen(GAME_DATA, target, state.variables.minutes)) return;
+    if (!Rules.isLocationOpen(GAME_DATA, target, state.variables.minutes, state.variables.day)) return;
 
     const { state: nextState, messages } = Rules.applyEffects(
       [

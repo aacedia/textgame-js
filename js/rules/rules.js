@@ -7,7 +7,7 @@
     Rules.hasItem(state, id)
     Rules.isAdjacent(gameData, from, to)
     Rules.formatTime(minutes)
-    Rules.isLocationOpen(gameData, id, minutes)
+    Rules.isLocationOpen(gameData, id, minutes, dayNumber)
     Rules.describeHours(hours)
     Rules.getTimeOfDay(minutes)
     Rules.describeTimeOfDay(timeOfDay)
@@ -49,9 +49,18 @@ window.Rules = (() => {
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   }
 
-  function isLocationOpen(gameData, id, minutes) {
+  function isLocationOpen(gameData, id, minutes, dayNumber) {
     const loc = (gameData.locations || {})[id];
-    if (!loc || !loc.hours) return true;
+    if (!loc) return false;
+
+    // День недели: 0 = понедельник, ..., 6 = воскресенье.
+    if (Array.isArray(loc.closedWeekdays) && dayNumber != null) {
+      const date = formatDate(dayNumber, gameData);
+      const idx = (date.weekday && (gameData.weekdays || []).indexOf(date.weekday)) ?? -1;
+      if (loc.closedWeekdays.includes(idx)) return false;
+    }
+
+    if (!loc.hours) return true;
     const { from, to } = loc.hours;
     const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
     if (from <= to) return t >= from && t < to;
@@ -178,7 +187,7 @@ window.Rules = (() => {
       return state.variables[name] !== state.variables[other];
     }
     if (condition.locationOpen) {
-      return isLocationOpen(gameData, condition.locationOpen, state.variables.minutes);
+      return isLocationOpen(gameData, condition.locationOpen, state.variables.minutes, state.variables.day);
     }
     warn(`неизвестное условие`, condition);
     return false;
@@ -219,6 +228,13 @@ window.Rules = (() => {
 
     if (condition.locationOpen) {
       const loc = (gameData.locations || {})[condition.locationOpen];
+      if (loc && Array.isArray(loc.closedWeekdays) && state.variables.day != null) {
+        const date = formatDate(state.variables.day, gameData);
+        const idx = (gameData.weekdays || []).indexOf(date.weekday);
+        if (loc.closedWeekdays.includes(idx)) {
+          return "Сегодня закрыто";
+        }
+      }
       if (loc && loc.hours) return `Откроется в ${formatTime(loc.hours.from)}`;
       return "Сейчас закрыто";
     }

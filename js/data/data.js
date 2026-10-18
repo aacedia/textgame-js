@@ -200,6 +200,7 @@ window.GAME_DATA = {
     university: {
       name: "Университет", tag: "Учёба",
       hours: { from: 8 * 60, to: 20 * 60 },
+      closedWeekdays: [5, 6],
       defaultExit: "street",
       image: "assets/images/locations/university.jpg",
       description: [
