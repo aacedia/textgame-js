@@ -112,7 +112,8 @@
                         name === "health" ? " здоровья" :
                             name === "hunger" ? " голода" :
                                 name === "thirst" ? " жажды" :
-                                    name === "fatigue" ? " усталости" : "";
+                                    name === "fatigue" ? " усталости" :
+                                        name === "foodPortions" ? " порций еды" : "";
             return `Нужно ${value}${suffix}`;
         }
         if (condition.variableDiffers) return "Уже сделано сегодня";

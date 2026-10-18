@@ -15,6 +15,18 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "street" }]
             },
             {
+                id: "buy_food",
+                label: "Купить продукты",
+                hint: "100 ₽ · +5 порций еды",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 100 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -100 },
+                    { type: "changeVariable", name: "foodPortions", amount: 5 }
+                ],
+                text: "Ты покупаешь продукты: крупы, овощи, что-то к чаю. Хватит на несколько дней."
+            },
+            {
                 id: "buy_notebook",
                 label: "Купить блокнот",
                 hint: "100 ₽",

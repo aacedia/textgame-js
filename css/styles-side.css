@@ -199,3 +199,24 @@
 .char-bar--hunger  .char-bar__fill{background:#d9a35b}
 .char-bar--thirst  .char-bar__fill{background:#7fb6d9}
 .char-bar--fatigue .char-bar__fill{background:#a89ad9}
+
+/* Панель фильтров инвентаря */
+.inv-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:10px;
+}
+.inv-filter{
+  font-size:11px;
+  padding:4px 9px;
+  border-radius:99px;
+  text-align:center;
+  background:var(--panel);
+}
+.inv-filter.active{
+  background:var(--accent-2);
+  border-color:var(--accent);
+  color:var(--accent-3);
+  font-weight:650;
+}

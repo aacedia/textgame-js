@@ -1,7 +1,7 @@
 /*
   UI — боковая панель.
   Регистрирует методы в window.UI:
-    renderSide, renderTabs, renderInventory, renderMap, renderQuests,
+    renderSide, renderTabs, renderInventory, renderQuests,
     renderCharacterPanel.
   Панель «Персонаж» — отдельное окно в правой колонке (не вкладка).
   Зависит от window.UI.escapeHtml и window.UI.getHandlers.
@@ -22,7 +22,7 @@
     const root = UI.$("side-content");
     root.replaceChildren();
     switch (side.content.type) {
-      case "inventory": renderInventory(root, side.content.items); break;
+      case "inventory": renderInventory(root, side.content); break;
       case "quests": renderQuests(root, side.content.quests); break;
     }
   }
@@ -42,11 +42,35 @@
 
   /* ---------- вкладка «Инвентарь» ---------- */
 
-  function renderInventory(root, items) {
+  function renderInventory(root, content) {
+    const items = content.items || [];
+    const filter = content.filter || "all";
+    const filters = content.filters || [];
+
+    // Панель фильтров
+    if (filters.length) {
+      const bar = document.createElement("div");
+      bar.className = "inv-filters";
+      filters.forEach(f => {
+        const b = document.createElement("button");
+        b.className = "inv-filter" + (f.id === filter ? " active" : "");
+        b.textContent = f.label;
+        b.addEventListener("click", () => getHandlers().onCommand("inventory:filter:" + f.id));
+        bar.appendChild(b);
+      });
+      root.appendChild(bar);
+    }
+
     if (!items.length) {
-      root.innerHTML = '<p class="empty">Пока пусто. Найденные предметы появятся здесь.</p>';
+      const p = document.createElement("p");
+      p.className = "empty";
+      p.textContent = filter === "all"
+        ? "Пока пусто. Найденные предметы появятся здесь."
+        : "В этой категории пусто.";
+      root.appendChild(p);
       return;
     }
+
     const ul = document.createElement("ul");
     ul.className = "inventory";
     items.forEach(item => {
@@ -77,34 +101,6 @@
       ul.appendChild(li);
     });
     root.appendChild(ul);
-  }
-
-  /* ---------- вкладка «Карта» ---------- */
-
-  function renderMap(root, rows) {
-    const list = document.createElement("div");
-    list.className = "maplist";
-    rows.forEach(row => {
-      const rowEl = document.createElement("div");
-      rowEl.className = "maprow" + (row.current ? " current" : "");
-      const closedMark = row.open === false
-        ? ' <small class="closed">· закрыто</small>'
-        : "";
-      rowEl.innerHTML =
-        `<span>${escapeHtml(row.name)}` +
-        `${row.current ? " <small>· здесь</small>" : ""}` +
-        `${closedMark}</span>`;
-      const btn = document.createElement("button");
-      btn.textContent = row.current ? "Текущая" : "Перейти";
-      btn.disabled = row.current || !row.reachable;
-      btn.title = !row.reachable && !row.current
-        ? (row.open === false ? "Локация закрыта" : "Сюда нельзя попасть напрямую")
-        : "";
-      btn.addEventListener("click", () => getHandlers().onAction("goto:" + row.id));
-      rowEl.appendChild(btn);
-      list.appendChild(rowEl);
-    });
-    root.appendChild(list);
   }
 
   /* ---------- вкладка «Задания» ---------- */
@@ -142,6 +138,7 @@
     }
     root.appendChild(avatarEl);
 
+    // Имя
     if (info.name) {
       const nameEl = document.createElement("div");
       nameEl.className = "character-name";
@@ -149,6 +146,7 @@
       root.appendChild(nameEl);
     }
 
+    // Описание
     if (info.description) {
       const descEl = document.createElement("p");
       descEl.className = "character-desc";
@@ -156,6 +154,7 @@
       root.appendChild(descEl);
     }
 
+    // Полоски характеристик
     if (Array.isArray(info.bars)) {
       root.appendChild(buildBars(info.bars));
     }
@@ -198,7 +197,6 @@
     renderSide,
     renderTabs,
     renderInventory,
-    renderMap,
     renderQuests,
     renderCharacterPanel
   });

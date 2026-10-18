@@ -42,6 +42,13 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "cafe" }]
             },
             {
+                id: "go_electronics",
+                label: "Зайти в магазин электроники",
+                hint: "Техника и гаджеты",
+                condition: { locationOpen: "electronics" },
+                effects: [{ type: "move", to: "electronics" }]
+            },
+            {
                 id: "look_around",
                 label: "Осмотреться",
                 hint: "Случайное событие",
@@ -75,5 +82,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    street: ["apartment", "university", "shop", "cafe", "park"]
+    street: ["apartment", "university", "shop", "cafe", "park", "electronics"]
 });

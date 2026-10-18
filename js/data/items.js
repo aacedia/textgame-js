@@ -61,6 +61,7 @@ Object.assign(window.GAME_DATA.items, {
     },
     pizza_slice: {
         name: "Кусочек пиццы",
+        consumable: true,
         icon: "🍕",
         description: "Тёплый кусочек пиццы. Утоляет голод и немного бодрит.",
         consumable: true,
@@ -70,5 +71,29 @@ Object.assign(window.GAME_DATA.items, {
             effects: [{ type: "changeVariable", name: "stamina", amount: 10 }],
             text: "Ты съедаешь кусочек пиццы, смакуя каждый кусок."
         }
+    },
+    laptop: {
+        name: "Ноутбук",
+        icon: "💻",
+        description: "Портативный компьютер. Пригодится для учёбы и работы.",
+        electronics: true
+    },
+    handheld_console: {
+        name: "Портативная игровая консоль",
+        icon: "🎮",
+        description: "Карманная консоль. Можно скоротать время.",
+        electronics: true
+    },
+    smartphone: {
+        name: "Смартфон",
+        icon: "📱",
+        description: "Современный телефон. Всегда под рукой.",
+        electronics: true
+    },
+    wireless_headphones: {
+        name: "Беспроводные наушники",
+        icon: "🎧",
+        description: "Удобные наушники без проводов.",
+        electronics: true
     }
 });

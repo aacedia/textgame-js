@@ -12,6 +12,7 @@ window.GAME_DATA = {
     inventory: [],
     flags: {
       hasInspectedTable: false,
+      tvAtHome: false,
       hasActiveOrder: false,
       orderSize: 0,
       orderReward: 0,
@@ -20,7 +21,7 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 99,
+      money: 9999999,
       lastClassDay: 0,
       lastHimariDay: 0,
       lastOrderDay: 0,
@@ -30,9 +31,11 @@ window.GAME_DATA = {
       stamina: 100,
       hunger: 20,
       thirst: 20,
-      fatigue: 20
+      fatigue: 20,
+      foodPortions: 0
     },
     uiTab: "quests",
+    inventoryFilter: "all",
     controlsOpen: false,
     logOpen: false,
     lastVariant: {}

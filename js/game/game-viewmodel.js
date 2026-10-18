@@ -11,6 +11,8 @@ window.Game = window.Game || {};
   if (!GAME_DATA) { console.error("game-viewmodel.js: window.GAME_DATA не найден."); return; }
   if (!Rules) { console.error("game-viewmodel.js: window.Rules не найден."); return; }
 
+  /* ---------- главный сборщик ---------- */
+
   function buildViewModel() {
     const state = Game.getState();
     const loc = GAME_DATA.locations[state.location];
@@ -27,6 +29,8 @@ window.Game = window.Game || {};
     };
   }
 
+  /* ---------- статус ---------- */
+
   function buildStatusVM() {
     const state = Game.getState();
     const timeOfDay = Rules.getTimeOfDay(state.variables.minutes);
@@ -39,6 +43,16 @@ window.Game = window.Game || {};
       timeIcon: Rules.describeTimeOfDay(timeOfDay),
       money: state.variables.money
     };
+  }
+
+  /* ---------- локация ---------- */
+
+  // Подставляет {varName} из state.variables в строку.
+  function interpolate(text, state) {
+    return String(text).replace(/\{(\w+)\}/g, (_, key) => {
+      const v = state.variables[key];
+      return v != null ? String(v) : `{${key}}`;
+    });
   }
 
   function buildLocationVM(loc) {
@@ -59,6 +73,7 @@ window.Game = window.Game || {};
     }
 
     const description = [];
+
     (loc.description || []).forEach(p => {
       if (p) description.push({ type: "text", text: p });
     });
@@ -69,7 +84,7 @@ window.Game = window.Game || {};
         if (Array.isArray(rule.parts)) {
           description.push({ type: "parts", parts: rule.parts });
         } else if (rule.text) {
-          description.push({ type: "text", text: rule.text });
+          description.push({ type: "text", text: interpolate(rule.text, state) });
         }
       });
     }
@@ -90,10 +105,14 @@ window.Game = window.Game || {};
     };
   }
 
+  /* ---------- информация ---------- */
+
   function buildInfoVM() {
     const entries = Game.getInfo();
     return { visible: entries.length > 0, entries: entries.slice() };
   }
+
+  /* ---------- действия ---------- */
 
   function buildActionsVM(loc) {
     const state = Game.getState();
@@ -130,6 +149,8 @@ window.Game = window.Game || {};
     return result;
   }
 
+  /* ---------- боковая панель ---------- */
+
   function buildSideVM() {
     const state = Game.getState();
     return {
@@ -152,10 +173,19 @@ window.Game = window.Game || {};
     }
   }
 
+  /* ---------- инвентарь ---------- */
+
   function buildInventoryVM() {
     const state = Game.getState();
+    const filter = state.inventoryFilter || "all";
     const counts = {};
+
     state.inventory.forEach(id => {
+      const item = GAME_DATA.items[id];
+      if (!item) return;
+      if (filter === "consumable" && !item.consumable) return;
+      if (filter === "electronics" && !item.electronics) return;
+      if (filter === "other" && (item.consumable || item.electronics)) return;
       counts[id] = (counts[id] || 0) + 1;
     });
 
@@ -169,12 +199,23 @@ window.Game = window.Game || {};
           icon: item.icon,
           description: resolveDescription(item.description, state),
           count,
-          consumable: !!item.consumable
+          consumable: !!item.consumable,
+          electronics: !!item.electronics
         };
       })
       .filter(Boolean);
 
-    return { type: "inventory", items };
+    return {
+      type: "inventory",
+      items,
+      filter,
+      filters: [
+        { id: "all", label: "Все" },
+        { id: "consumable", label: "Расходуемые" },
+        { id: "electronics", label: "Электроника" },
+        { id: "other", label: "Прочее" }
+      ]
+    };
   }
 
   function resolveDescription(description, state) {
@@ -185,17 +226,7 @@ window.Game = window.Game || {};
     return String(description || "");
   }
 
-  function buildMapVM() {
-    const state = Game.getState();
-    const rows = Object.entries(GAME_DATA.locations).map(([id, loc]) => ({
-      id,
-      name: loc.name,
-      current: state.location === id,
-      reachable: Rules.isAdjacent(GAME_DATA, state.location, id),
-      open: Rules.isLocationOpen(GAME_DATA, id, state.variables.minutes, state.variables.day)
-    }));
-    return { type: "map", rows };
-  }
+  /* ---------- задания ---------- */
 
   function buildQuestsVM() {
     const state = Game.getState();
@@ -220,6 +251,8 @@ window.Game = window.Game || {};
     };
   }
 
+  /* ---------- персонаж ---------- */
+
   function buildCharacterVM() {
     const state = Game.getState();
     const ch = GAME_DATA.character || {};
@@ -240,6 +273,8 @@ window.Game = window.Game || {};
     };
   }
 
+  /* ---------- экспорт ---------- */
+
   Object.assign(window.Game, {
     buildViewModel,
     buildStatusVM,
@@ -249,7 +284,6 @@ window.Game = window.Game || {};
     buildSideVM,
     buildSideContentVM,
     buildInventoryVM,
-    buildMapVM,
     buildQuestsVM,
     buildCharacterVM
   });

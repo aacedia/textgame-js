@@ -3,8 +3,21 @@ Object.assign(window.GAME_DATA.locations, {
         name: "Квартира", tag: "Безопасное место",
         image: "assets/images/locations/apartment.jpg",
         description: [
-            "Небольшая, но уютная квартира. Утренний свет пробивается сквозь занавески, а на столе лежат ключи и телефон.",
-            "Сегодня предстоит выбраться в город. Можно выйти на улицу или немного осмотреться перед дорогой."
+            "Небольшая, но уютная квартира. Утренний свет пробивается сквозь занавески, а на столе лежат ключи и телефон."
+        ],
+        extraDescription: [
+            {
+                condition: { variableAtLeast: { name: "foodPortions", value: 1 } },
+                text: "В шкафу есть продукты. Хватит ещё на {foodPortions} приёмов пищи."
+            },
+            {
+                condition: { variableEquals: { name: "foodPortions", value: 0 } },
+                text: "Продукты закончились. Стоит зайти в магазин."
+            },
+            {
+                condition: { flag: "tvAtHome" },
+                text: "В углу комнаты стоит новый телевизор — можно скоротать вечер за просмотром."
+            }
         ],
         actions: [
             {
@@ -26,7 +39,16 @@ Object.assign(window.GAME_DATA.locations, {
                 text: "На столе лежат ключи. Ты убираешь их в карман.",
                 image: "assets/images/locations/apartment-table.jpg"
             },
-
+            {
+                id: "watch_tv",
+                label: "Смотреть телевизор",
+                hint: "Проходит 1 час · снимает усталость",
+                minutes: 60,
+                hiddenWhen: { not: { flag: "tvAtHome" } },
+                reduceAfterTime: { fatigue: 20 },
+                text: "Ты устраиваешься перед телевизором и неспешно смотришь передачу. Время летит незаметно.",
+                image: "assets/images/locations/apartment-tv.jpg"
+            },
             {
                 id: "rest",
                 label: "Немного отдохнуть",
@@ -56,10 +78,12 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "eat_at_home",
                 label: "Поесть",
-                hint: "Снимает голод · 20 ₽",
+                hint: "Снимает голод · нужны продукты",
                 minutes: 30,
-                condition: { variableAtLeast: { name: "money", value: 20 } },
-                effects: [{ type: "changeVariable", name: "money", amount: -20 }],
+                condition: { variableAtLeast: { name: "foodPortions", value: 1 } },
+                effects: [
+                    { type: "changeVariable", name: "foodPortions", amount: -1 }
+                ],
                 reduceAfterTime: { hunger: 80 },
                 text: "Ты готовишь простой ужин и ешь.",
                 image: "assets/images/locations/apartment-rest.jpg"

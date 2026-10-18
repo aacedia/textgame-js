@@ -1,6 +1,6 @@
 /*
   Команды UI: сохранение/загрузка/рестарт/справка, переключение вкладок,
-  сворачивание панелей «Управление» и «История событий».
+  сворачивание панелей «Управление» и «История событий», фильтр инвентаря.
 
   Публичный API:
     Game.onCommand(command)
@@ -12,13 +12,14 @@
     Game.validateSnapshot(snapshot)
 
   Команды, которые обрабатывает onCommand:
-    "tab:<id>"           — переключить вкладку боковой панели
-    "controls:toggle"    — свернуть/развернуть панель «Управление»
-    "log:toggle"         — свернуть/развернуть панель «История событий»
-    "save"               — сохранить игру
-    "load"               — загрузить игру
-    "restart"            — начать заново (с подтверждением)
-    "help"               — показать справку
+    "tab:<id>"                   — переключить вкладку боковой панели
+    "inventory:filter:<id>"      — установить фильтр инвентаря
+    "controls:toggle"            — свернуть/развернуть панель «Управление»
+    "log:toggle"                 — свернуть/развернуть панель «История событий»
+    "save"                       — сохранить игру
+    "load"                       — загрузить игру
+    "restart"                    — начать заново (с подтверждением)
+    "help"                       — показать справку
 */
 window.Game = window.Game || {};
 
@@ -38,6 +39,9 @@ window.Game = window.Game || {};
   const LOG_LIMIT = Game.LOG_LIMIT;
   const INFO_LIMIT = Game.INFO_LIMIT;
 
+  const VALID_TABS = ["quests", "inventory"];
+  const VALID_FILTERS = ["all", "consumable", "electronics", "other"];
+
   /* ---------- диспетчер команд ---------- */
 
   function onCommand(command) {
@@ -46,6 +50,16 @@ window.Game = window.Game || {};
       Game.render();
       return;
     }
+
+    if (command.startsWith("inventory:filter:")) {
+      const filter = command.slice("inventory:filter:".length);
+      if (VALID_FILTERS.includes(filter)) {
+        Game.patchState({ inventoryFilter: filter });
+        Game.render();
+      }
+      return;
+    }
+
     if (command === "controls:toggle") {
       const state = Game.getState();
       Game.patchState({ controlsOpen: !state.controlsOpen });
@@ -58,6 +72,7 @@ window.Game = window.Game || {};
       Game.render();
       return;
     }
+
     switch (command) {
       case "save": saveGame(); break;
       case "load": loadGame(); break;
@@ -107,9 +122,11 @@ window.Game = window.Game || {};
     merged.flags = Object.assign({}, base.flags, merged.flags || {});
     merged.variables = Object.assign({}, base.variables, merged.variables || {});
 
-    const VALID_TABS = ["quests", "inventory"];
     if (!VALID_TABS.includes(merged.uiTab)) {
       merged.uiTab = "quests";
+    }
+    if (!VALID_FILTERS.includes(merged.inventoryFilter)) {
+      merged.inventoryFilter = "all";
     }
 
     const logs = Array.isArray(snapshot.logEntries)
@@ -144,7 +161,6 @@ window.Game = window.Game || {};
 
   function loadGame() {
     const result = Save.read();
-
     if (!result.ok) {
       UI.showDialog("Не удалось загрузить", messageForLoadError(result.error), [
         { label: "Понятно", primary: true }
@@ -196,7 +212,7 @@ window.Game = window.Game || {};
   function showHelp() {
     UI.showDialog(
       "Справка",
-      "Выбирай действия в центральном окне. Серые действия пока недоступны: обычно не выполнены условия или не хватает предмета. В правом окне переключаются инвентарь, карта, задания и сведения о персонаже. Сохранение хранится в localStorage этого браузера.",
+      "Выбирай действия в центральном окне. Серые действия пока недоступны: обычно не выполнены условия или не хватает предмета. В правом окне — персонаж и вкладки с заданиями и инвентарём. В инвентаре можно фильтровать предметы по типу. Сохранение хранится в localStorage этого браузера.",
       [{ label: "Понятно", primary: true }]
     );
   }
