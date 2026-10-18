@@ -1,0 +1,76 @@
+Object.assign(window.GAME_DATA.locations, {
+    cafe: {
+        name: "Кафе", tag: "Уютное место",
+        hours: { from: 8 * 60, to: 23 * 60 },
+        defaultExit: "street",
+        image: "assets/images/locations/cafe.jpg",
+        description: [
+            "Небольшое кафе неподалёку от перекрёстка. У окна свободный столик, за стойкой скучает бариста.",
+            "Здесь можно перекусить, а если повезёт — подработать пару часов за стойкой."
+        ],
+        actions: [
+            {
+                id: "eat_at_cafe",
+                label: "Поесть в кафе",
+                hint: "50 ₽ · снимает голод",
+                minutes: 40,
+                condition: { variableAtLeast: { name: "money", value: 50 } },
+                effects: [{ type: "changeVariable", name: "money", amount: -50 }],
+                restoreAfterTime: { hunger: 0 },
+                text: "Ты заказываешь горячий обед и не спеша ешь.",
+                image: "assets/images/locations/cafe-food.jpg"
+            },
+            {
+                id: "drink_at_cafe",
+                label: "Выпить кофе",
+                hint: "20 ₽ · -10 усталости · +20 выносливости",
+                minutes: 15,
+                condition: { variableAtLeast: { name: "money", value: 20 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -20 },
+                    { type: "changeVariable", name: "stamina", amount: 20 }
+                ],
+                reduceAfterTime: { fatigue: 10 },
+                restoreAfterTime: { thirst: 0 },
+                text: "Ты берёшь чашку кофе и устраиваешься у окна.",
+                image: "assets/images/locations/cafe-coffee.jpg"
+            },
+            {
+                id: "work_shift",
+                label: "Подработать",
+                hint: "3 часа · +300 ₽ · тратит выносливость",
+                minutes: 180,
+                condition: {
+                    all: [
+                        { variableAtLeast: { name: "stamina", value: 20 } },
+                        { variableAtLeast: { name: "money", value: 0 } }
+                    ]
+                },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: 300 },
+                    { type: "changeVariable", name: "stamina", amount: -20 }
+                ],
+                text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату.",
+                image: "assets/images/locations/cafe-work.jpg"
+            },
+            {
+                id: "look_around_cafe",
+                label: "Осмотреться",
+                hint: "Понаблюдать за гостями",
+                effects: [{ type: "setFlag", flag: "lookedAroundCafe", value: true }],
+                text: "За соседним столиком пара обсуждает планы на вечер, у окна студент листает конспекты.",
+                image: "assets/images/locations/cafe-inside.jpg"
+            },
+            {
+                id: "cafe_return_street",
+                label: "Выйти на улицу",
+                hint: "Вернуться к перекрёстку",
+                effects: [{ type: "move", to: "street" }]
+            }
+        ]
+    }
+});
+
+Object.assign(window.GAME_DATA.links, {
+    cafe: ["street"]
+});

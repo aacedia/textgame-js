@@ -1,0 +1,51 @@
+Object.assign(window.GAME_DATA.locations, {
+    university: {
+        name: "Университет", tag: "Учёба",
+        hours: { from: 8 * 60, to: 20 * 60 },
+        closedWeekdays: [5, 6],
+        defaultExit: "street",
+        image: "assets/images/locations/university.jpg",
+        description: [
+            "Перед тобой главное здание университета. У входа собрались студенты, а из открытых окон доносится гул голосов.",
+            "До начала занятий ещё есть время. Можно осмотреть холл или вернуться на улицу."
+        ],
+        actions: [
+            {
+                id: "look_hall",
+                label: "Осмотреть холл",
+                hint: "Изучить доску объявлений",
+                effects: [{ type: "setFlag", flag: "sawNoticeboard", value: true }],
+                text: "На доске объявлений висят расписание и афиша студенческого клуба.",
+                image: "assets/images/locations/university-hall.jpg"
+            },
+            {
+                id: "attend_class",
+                label: "Посетить занятие",
+                hint: "Один раз в день · нужен блокнот",
+                minutes: 90,
+                condition: {
+                    all: [
+                        { item: "notebook" },
+                        { variableDiffers: { name: "lastClassDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastClassDay", from: "day" },
+                    { type: "changeVariable", name: "classesAttended", amount: 1 }
+                ],
+                text: "Ты заходишь в аудиторию и проводишь полтора часа на занятии.",
+                image: "assets/images/locations/university-classroom.jpg"
+            },
+            {
+                id: "return_street",
+                label: "Выйти на улицу",
+                hint: "Вернуться к перекрёстку",
+                effects: [{ type: "move", to: "street" }]
+            }
+        ]
+    }
+});
+
+Object.assign(window.GAME_DATA.links, {
+    university: ["street"]
+});
