@@ -332,12 +332,14 @@ window.GAME_DATA = {
         {
           id: "drink_at_cafe",
           label: "Выпить кофе",
-          hint: "20 ₽ · снимает жажду",
+          hint: "20 ₽ · -10 усталости · +20 выносливости",
           minutes: 15,
           condition: { variableAtLeast: { name: "money", value: 20 } },
           effects: [
-            { type: "changeVariable", name: "money", amount: -20 }
+            { type: "changeVariable", name: "money", amount: -20 },
+            { type: "changeVariable", name: "stamina", amount: 20 }
           ],
+          reduceAfterTime: { fatigue: 10 },
           restoreAfterTime: { thirst: 0 },
           text: "Ты берёшь чашку кофе и устраиваешься у окна.",
           image: "assets/images/locations/cafe-coffee.jpg",
