@@ -29,16 +29,15 @@ window.Game = window.Game || {};
 
   function buildStatusVM() {
     const state = Game.getState();
-    const loc = GAME_DATA.locations[state.location];
     const timeOfDay = Rules.getTimeOfDay(state.variables.minutes);
+    const date = Rules.formatDate(state.variables.day, GAME_DATA);
     return {
       day: state.variables.day,
+      date,
       time: Rules.formatTime(state.variables.minutes),
       timeOfDay,
       timeIcon: Rules.describeTimeOfDay(timeOfDay),
-      money: state.variables.money,
-      locationName: loc.name,
-      inventoryCount: state.inventory.length
+      money: state.variables.money
     };
   }
 

@@ -200,6 +200,7 @@ button.heading--toggle:hover:not(:disabled) {
   font-weight: 500;
   opacity: .75;
   letter-spacing: .02em;
+  white-space: nowrap;
 }
 
 .badge--time.badge--time--morning {

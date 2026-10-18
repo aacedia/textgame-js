@@ -9,6 +9,8 @@
 */
 window.GAME_DATA = {
   start: "apartment",
+  startDate: { year: 2026, month: 9, day: 1 },
+  weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
   initialState: {
     location: "apartment",
     inventory: [],

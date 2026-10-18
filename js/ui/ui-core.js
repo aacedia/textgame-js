@@ -91,9 +91,11 @@ window.UI = (() => {
     const root = $("status");
     root.replaceChildren();
 
+    const dateText = status.date && status.date.text ? status.date.text : `день ${status.day}`;
+
     const timeBadge = buildBadge({
       main: `${status.timeIcon ? status.timeIcon + " " : ""}${status.time}`,
-      sub: `день ${status.day}`,
+      sub: dateText,
       modifier: "badge--time" + (status.timeOfDay ? " badge--time--" + status.timeOfDay : "")
     });
     root.appendChild(timeBadge);
@@ -103,18 +105,6 @@ window.UI = (() => {
       modifier: "badge--money"
     });
     root.appendChild(moneyBadge);
-
-    const locationBadge = buildBadge({
-      main: status.locationName,
-      modifier: "badge--location"
-    });
-    root.appendChild(locationBadge);
-
-    const inventoryBadge = buildBadge({
-      main: `💼 ${status.inventoryCount}`,
-      modifier: "badge--inventory"
-    });
-    root.appendChild(inventoryBadge);
   }
 
   function buildBadge({ main, sub, modifier }) {

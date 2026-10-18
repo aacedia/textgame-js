@@ -492,6 +492,42 @@ window.Rules = (() => {
     return { variant: variants[index], index };
   }
 
+  function formatDate(dayNumber, gameData) {
+    const start = gameData.startDate || { year: 2026, month: 9, day: 1 };
+    const weekdays = gameData.weekdays || ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+    // Разница в днях от начала игры. dayNumber = 1 — первый день.
+    const offset = Math.max(0, Number(dayNumber) - 1);
+
+    // Считаем дату через Date — надёжно и с корректными переходами между месяцами.
+    const base = new Date(start.year, start.month - 1, start.day);
+    base.setDate(base.getDate() + offset);
+
+    const y = base.getFullYear();
+    const m = base.getMonth() + 1;
+    const d = base.getDate();
+
+    // День недели: 0 = воскресенье, 1 = понедельник. Приводим к нашему массиву.
+    const wdIndex = (base.getDay() + 6) % 7;
+    const weekday = weekdays[wdIndex];
+
+    return {
+      day: d,
+      month: m,
+      year: y,
+      weekday,
+      text: `${weekday}, ${d} ${monthName(m)} ${y}`
+    };
+  }
+
+  function monthName(m) {
+    const months = [
+      "января", "февраля", "марта", "апреля", "мая", "июня",
+      "июля", "августа", "сентября", "октября", "ноября", "декабря"
+    ];
+    return months[m - 1] || "";
+  }
+
   /* ---------- экспорт ---------- */
 
   return {
@@ -499,6 +535,7 @@ window.Rules = (() => {
     hasItem,
     isAdjacent,
     formatTime,
+    formatDate,
     isLocationOpen,
     describeHours,
     getTimeOfDay,
