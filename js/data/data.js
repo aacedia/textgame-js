@@ -25,6 +25,7 @@ window.GAME_DATA = {
       lastShiftDay: 0,
       lastElectronicsShiftDay: 0,
       lastTvDay: 0,
+      lastShowerDay: 0,
       classesAttended: 0,
       health: 100,
       stamina: 100,

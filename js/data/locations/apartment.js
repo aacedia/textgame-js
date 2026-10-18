@@ -86,6 +86,23 @@ Object.assign(window.GAME_DATA.locations, {
                 ]
             },
             {
+                id: "take_shower",
+                label: "Принять душ",
+                hint: "Проходит 15 минут · −10 усталости · +10 выносливости · +10 настроения",
+                minutes: 15,
+                condition: {
+                    variableDiffers: { name: "lastShowerDay", other: "day" }
+                },
+                effects: [
+                    { type: "changeVariable", name: "stamina", amount: 10 },
+                    { type: "changeVariable", name: "mood", amount: 10 },
+                    { type: "setVariableFromVariable", name: "lastShowerDay", from: "day" }
+                ],
+                reduceAfterTime: { fatigue: 10 },
+                text: "Ты встаёшь под душ, и тёплые струи воды смывают усталость. Голова проясняется, настроение улучшается.",
+                image: "assets/images/locations/apartment-shower.jpg"
+            },
+            {
                 id: "eat_at_home",
                 label: "Поесть",
                 hint: "Снимает голод · нужны продукты",
