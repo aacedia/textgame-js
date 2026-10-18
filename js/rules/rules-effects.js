@@ -16,6 +16,15 @@
 
     /* ---------- потребности ---------- */
 
+    /*
+      Начисляет рост потребностей и настроения за minutes игровых минут.
+      Наносит урон здоровью за каждую минуту, проведённую на максимуме потребностей.
+    
+      Во сне (state.sleeping):
+        - усталость не растёт и не наносит урон;
+        - голод, жажда и настроение меняются в 10 раз медленнее;
+        - урон здоровью уменьшается вдвое.
+    */
     function applyNeeds(state, minutes, gameData) {
         const next = deepClone(state);
         const messages = [];
@@ -29,7 +38,8 @@
         const isSleeping = !!next.sleeping;
         const rateMultiplier = isSleeping ? 0.1 : 1;
 
-        // ---- Настроение ----
+        /* ---- Настроение ---- */
+
         const moodMax = Number(gameData.moodMax ?? 100);
         const moodRates = gameData.moodRates || {};
         const passiveLoss = Number(moodRates.passive ?? 0);
@@ -41,11 +51,17 @@
             const v = Number(next.variables[key]) || 0;
             if (v > highThreshold) moodLoss += perHighNeed;
         });
+
         const hours = delta / 60;
-        next.variables.mood = Math.max(0, Math.min(moodMax, (Number(next.variables.mood) || 0) - moodLoss * hours));
+        const moodMultiplier = isSleeping ? 0.1 : 1;
+        next.variables.mood = Math.max(
+            0,
+            Math.min(moodMax, (Number(next.variables.mood) || 0) - moodLoss * hours * moodMultiplier)
+        );
         const lowMood = next.variables.mood <= 0;
 
-        // ---- Потребности ----
+        /* ---- Потребности ---- */
+
         const lowMoodMultiplier = lowMood ? Number(moodRates.lowMoodMultiplier ?? 2) : 1;
         const combinedMultiplier = rateMultiplier * lowMoodMultiplier;
 
@@ -53,7 +69,7 @@
 
         ["hunger", "thirst", "fatigue"].forEach(key => {
             if (isSleeping && key === "fatigue") {
-                // Во сне усталость не растёт (она снижается отдельно).
+                // Во сне усталость заморожена.
                 next.variables[key] = Math.min(needsMax, Math.max(0, Number(next.variables[key]) || 0));
                 return;
             }
@@ -61,6 +77,7 @@
             const rate = (Number(rates[key]) || 0) * combinedMultiplier;
             const current = Number(next.variables[key]) || 0;
 
+            // Сколько минут из delta потребность была на максимуме.
             let minutesAtMax = 0;
             let grown;
             if (current >= needsMax) {
@@ -81,6 +98,8 @@
             next.variables[key] = Math.min(needsMax, Math.max(0, grown));
             damage += (Math.max(0, minutesAtMax) / 60) * damagePerHour;
         });
+
+        damage *= isSleeping ? 0.5 : 1;
 
         const totalDamage = damage > 0 ? Math.max(1, Math.floor(damage)) : 0;
 
