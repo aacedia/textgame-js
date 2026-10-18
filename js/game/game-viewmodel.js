@@ -22,7 +22,8 @@ window.Game = window.Game || {};
       log: Game.getLog().slice(0, Game.LOG_LIMIT),
       side: buildSideVM(),
       controlsOpen: !!state.controlsOpen,
-      logOpen: !!state.logOpen
+      logOpen: !!state.logOpen,
+      gameOver: !!state.gameOver
     };
   }
 
@@ -89,7 +90,6 @@ window.Game = window.Game || {};
       if (action.hiddenWhen && Rules.checkCondition(action.hiddenWhen, state, GAME_DATA)) return;
 
       const available = Rules.checkCondition(action.condition, state, GAME_DATA);
-
       const isRecent = !!(last && last.id === action.id && last.location === state.location);
       const count = isRecent ? (state.streakCount || 0) : 0;
 
@@ -195,12 +195,22 @@ window.Game = window.Game || {};
   }
 
   function buildCharacterVM() {
+    const state = Game.getState();
     const ch = GAME_DATA.character || {};
+    const v = state.variables;
+    const needsMax = GAME_DATA.needsMax ?? 100;
     return {
       name: ch.name || "",
       avatar: ch.avatar || "",
       avatarAlt: ch.avatarAlt || "",
-      description: ch.description || ""
+      description: ch.description || "",
+      bars: [
+        { key: "health", label: "Здоровье", value: v.health ?? 0, max: GAME_DATA.healthMax ?? 100, color: "health" },
+        { key: "stamina", label: "Выносливость", value: v.stamina ?? 0, max: GAME_DATA.staminaMax ?? 100, color: "stamina" },
+        { key: "hunger", label: "Голод", value: v.hunger ?? 0, max: needsMax, color: "hunger" },
+        { key: "thirst", label: "Жажда", value: v.thirst ?? 0, max: needsMax, color: "thirst" },
+        { key: "fatigue", label: "Усталость", value: v.fatigue ?? 0, max: needsMax, color: "fatigue" }
+      ]
     };
   }
 

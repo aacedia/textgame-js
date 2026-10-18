@@ -142,3 +142,44 @@
   max-width:34ch;
   line-height:1.45;
 }
+
+/* ---------- Полоски характеристик ---------- */
+.character-bars{
+  display:grid;
+  gap:6px;
+  width:100%;
+  margin-top:10px;
+}
+.char-bar{
+  display:grid;
+  grid-template-columns:88px 1fr 48px;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+}
+.char-bar__label{white-space:nowrap}
+.char-bar__track{
+  height:8px;
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  border-radius:99px;
+  overflow:hidden;
+}
+.char-bar__fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width .25s ease;
+  background:var(--border);
+}
+.char-bar__value{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+
+.char-bar--health  .char-bar__fill{background:#e07a6b}
+.char-bar--stamina .char-bar__fill{background:#8fc7a3}
+.char-bar--hunger  .char-bar__fill{background:#d9a35b}
+.char-bar--thirst  .char-bar__fill{background:#7fb6d9}
+.char-bar--fatigue .char-bar__fill{background:#a89ad9}

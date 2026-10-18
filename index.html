@@ -5,9 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Жизнь студента</title>
-
   <link rel="icon" type="image/png" href="assets/favicon.png">
-
   <link rel="stylesheet" href="css/styles-base.css">
   <link rel="stylesheet" href="css/styles-location.css">
   <link rel="stylesheet" href="css/styles-actions.css">
@@ -22,14 +20,10 @@
 
 <body>
   <div class="game">
-
     <div class="layout">
-
       <main class="main">
-
         <!-- Верхняя часть главной колонки: растягивается и скроллится -->
         <div class="main-top">
-
           <section class="panel">
             <div class="heading"><span class="dot"></span> Описание локации</div>
             <div class="locbar">
@@ -43,22 +37,17 @@
               <figcaption id="location-image-caption"></figcaption>
             </figure>
           </section>
-
           <section class="panel" id="info-panel" hidden>
             <div class="heading"><span class="dot"></span> Информация</div>
             <div class="info" id="info-list" aria-live="polite"></div>
           </section>
-
         </div>
-
         <!-- Нижняя часть главной колонки: прижата к низу -->
         <div class="main-bottom">
-
           <section class="panel">
             <div class="heading"><span class="dot"></span> Доступные действия</div>
             <div class="actions" id="actions"></div>
           </section>
-
           <section class="panel">
             <button type="button" class="heading heading--toggle" id="log-toggle" aria-expanded="false"
               aria-controls="log-body">
@@ -70,32 +59,23 @@
               <div class="log" id="log" aria-live="polite"></div>
             </div>
           </section>
-
         </div>
-
       </main>
-
       <aside class="side">
-
         <!-- Верхняя часть боковой колонки: растягивается и скроллится -->
         <div class="side-top">
-
           <section class="panel">
             <div class="heading"><span class="dot"></span> Персонаж</div>
             <div class="status" id="status"></div>
             <div class="character-panel" id="character-content"></div>
           </section>
-
           <section class="panel">
             <div class="tabs" id="tabs"></div>
             <div class="tabcontent" id="side-content"></div>
           </section>
-
         </div>
-
         <!-- Нижняя часть боковой колонки: прижата к низу -->
         <div class="side-bottom">
-
           <section class="panel">
             <button type="button" class="heading heading--toggle" id="controls-toggle" aria-expanded="false"
               aria-controls="controls-content">
@@ -112,13 +92,18 @@
               </div>
             </div>
           </section>
-
         </div>
-
       </aside>
-
     </div>
+  </div>
 
+  <!-- Оверлей «Игра окончена» -->
+  <div class="game-over" id="game-over" hidden>
+    <div class="game-over__card">
+      <h2>Игра окончена</h2>
+      <p>Ты потерял сознание. Здоровье на нуле.</p>
+      <button id="game-over-restart">Начать заново</button>
+    </div>
   </div>
 
   <dialog id="dialog">
@@ -131,12 +116,10 @@
   <script src="js/data/data-validation.js"></script>
   <script src="js/rules/rules.js"></script>
   <script src="js/save/save.js"></script>
-
   <script src="js/ui/ui-core.js"></script>
   <script src="js/ui/ui-side.js"></script>
   <script src="js/ui/ui-controls.js"></script>
   <script src="js/ui/ui.js"></script>
-
   <script src="js/game/game-state.js"></script>
   <script src="js/game/game-viewmodel.js"></script>
   <script src="js/game/game-actions.js"></script>

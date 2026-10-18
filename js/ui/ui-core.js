@@ -3,8 +3,7 @@
   Публикует window.UI с общими методами и вызывает соседние модули
   (ui-side.js, ui-controls.js) через тот же объект UI.
 
-  Этот файл подключается первым среди ui-*.js, но ui.js (точка входа)
-  — последним.
+  Этот файл подключается первым среди ui-*.js, ui.js — последним.
 
   Публичный API:
     UI.init({ onAction, onCommand })
@@ -14,26 +13,18 @@
     UI.$(id)
     UI.getHandlers()
 
-  viewModel — объект со всеми данными для одного кадра:
+  viewModel:
     {
-      status: { day, time, money, locationName },
-      location: {
-        name, tag, tagText?, tagClass?, notice?,
-        description[], image?, imageAlt?, imageCaption?
-      },
+      status: { day, time, money, locationName, inventoryCount, timeOfDay, timeIcon },
+      location: { name, tag, tagText?, tagClass?, notice?, description[], image?, imageAlt?, imageCaption? },
       info: { visible, entries: [{ kind: "text" | "image", ... }] },
-      actions: [{ id, label, hint, available, unavailableReason? }],
+      actions: [{ id, label, hint, available, unavailableReason?, accent?, recent?, count? }],
       log: [ "строка", ... ],
       logOpen: boolean,
-      side: {
-        activeTab: "inventory" | "map" | "quests" | "status",
-        tabs: [{ id, label }],
-        content: { type: "...", ... }
-      },
-      controlsOpen: boolean
+      side: { activeTab, tabs: [{ id, label }], content: { type, ... }, character: {...} },
+      controlsOpen: boolean,
+      gameOver: boolean
     }
-
-  UI не хранит состояние. Он просто рисует то, что ему передали.
 */
 window.UI = (() => {
   "use strict";
@@ -47,24 +38,25 @@ window.UI = (() => {
   function init(opts) {
     handlers = Object.assign(handlers, opts || {});
 
-    // Кнопки панели «Управление» — сохранить/загрузить/справка/рестарт.
     document.querySelectorAll("[data-command]").forEach(btn => {
       btn.addEventListener("click", () => handlers.onCommand(btn.dataset.command));
     });
 
-    // Заголовок «Управление» — сворачивание/разворачивание.
     const controlsToggle = $("controls-toggle");
     if (controlsToggle) {
       controlsToggle.addEventListener("click", () => handlers.onCommand("controls:toggle"));
     }
 
-    // Заголовок «История событий» — сворачивание/разворачивание.
     const logToggle = $("log-toggle");
     if (logToggle) {
       logToggle.addEventListener("click", () => handlers.onCommand("log:toggle"));
     }
 
-    // Делегируем инициализацию соседним модулям, если они есть.
+    const gameOverRestart = $("game-over-restart");
+    if (gameOverRestart) {
+      gameOverRestart.addEventListener("click", () => handlers.onCommand("restart"));
+    }
+
     if (typeof UI.initSide === "function") UI.initSide(handlers);
     if (typeof UI.initControls === "function") UI.initControls(handlers);
   }
@@ -90,6 +82,7 @@ window.UI = (() => {
     if (typeof UI.renderCharacterPanel === "function") UI.renderCharacterPanel(vm.side.character);
     if (typeof UI.renderSide === "function") UI.renderSide(vm.side);
     if (typeof UI.renderControls === "function") UI.renderControls(vm.controlsOpen);
+    renderGameOver(vm.gameOver);
   }
 
   /* ---------- статус (шапка) ---------- */
@@ -98,7 +91,6 @@ window.UI = (() => {
     const root = $("status");
     root.replaceChildren();
 
-    // Время + день
     const timeBadge = buildBadge({
       main: `${status.timeIcon ? status.timeIcon + " " : ""}${status.time}`,
       sub: `день ${status.day}`,
@@ -106,21 +98,18 @@ window.UI = (() => {
     });
     root.appendChild(timeBadge);
 
-    // Деньги
     const moneyBadge = buildBadge({
       main: `${status.money} ₽`,
       modifier: "badge--money"
     });
     root.appendChild(moneyBadge);
 
-    // Локация
     const locationBadge = buildBadge({
       main: status.locationName,
       modifier: "badge--location"
     });
     root.appendChild(locationBadge);
 
-    // Инвентарь: рюкзак + количество предметов
     const inventoryBadge = buildBadge({
       main: `💼 ${status.inventoryCount}`,
       modifier: "badge--inventory"
@@ -131,19 +120,16 @@ window.UI = (() => {
   function buildBadge({ main, sub, modifier }) {
     const badge = document.createElement("span");
     badge.className = "badge" + (modifier ? " " + modifier : "");
-
     const mainEl = document.createElement("span");
     mainEl.className = "badge__main";
     mainEl.textContent = main || "";
     badge.appendChild(mainEl);
-
     if (sub) {
       const subEl = document.createElement("span");
       subEl.className = "badge__sub";
       subEl.textContent = sub;
       badge.appendChild(subEl);
     }
-
     return badge;
   }
 
@@ -226,7 +212,6 @@ window.UI = (() => {
   function buildInfoImage(entry) {
     const figure = document.createElement("figure");
     figure.className = "infoentry infoentry--image";
-
     const img = document.createElement("img");
     img.className = "infoentry-img";
     img.src = entry.src;
@@ -234,14 +219,12 @@ window.UI = (() => {
     img.loading = "lazy";
     img.onerror = () => { figure.hidden = true; };
     figure.appendChild(img);
-
     if (entry.caption) {
       const cap = document.createElement("figcaption");
       cap.className = "infoentry-caption";
       cap.textContent = entry.caption;
       figure.appendChild(cap);
     }
-
     return figure;
   }
 
@@ -294,6 +277,14 @@ window.UI = (() => {
       div.textContent = entry;
       root.appendChild(div);
     });
+  }
+
+  /* ---------- «Игра окончена» ---------- */
+
+  function renderGameOver(active) {
+    const root = $("game-over");
+    if (!root) return;
+    root.hidden = !active;
   }
 
   /* ---------- диалоги ---------- */

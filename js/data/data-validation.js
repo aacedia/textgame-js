@@ -123,13 +123,13 @@ window.DataValidation = (() => {
         if (!effect || typeof effect !== "object") return;
 
         if (effect.type === "move") {
-            if (effect.to && !gameData.locations[effect.to]) {
+            if (effect.to && !(gameData.locations || {})[effect.to]) {
                 pushError(errors, path, `move → несуществующая локация "${effect.to}"`);
             }
         }
 
         if (effect.type === "giveItem" || effect.type === "removeItem") {
-            if (effect.item && !gameData.items[effect.item]) {
+            if (effect.item && !(gameData.items || {})[effect.item]) {
                 pushError(errors, path, `${effect.type} → несуществующий предмет "${effect.item}"`);
             }
         }
@@ -149,10 +149,10 @@ window.DataValidation = (() => {
         if (condition.not) {
             validateConditionRefs(`${path}.not`, condition.not, gameData, errors);
         }
-        if (condition.item && !gameData.items[condition.item]) {
+        if (condition.item && !(gameData.items || {})[condition.item]) {
             pushError(errors, path, `condition.item → несуществующий предмет "${condition.item}"`);
         }
-        if (condition.locationOpen && !gameData.locations[condition.locationOpen]) {
+        if (condition.locationOpen && !(gameData.locations || {})[condition.locationOpen]) {
             pushError(errors, path, `condition.locationOpen → несуществующая локация "${condition.locationOpen}"`);
         }
     }
@@ -174,14 +174,14 @@ window.DataValidation = (() => {
             pushError(errors, "initialState", "секция initialState отсутствует или не объект");
             return;
         }
-        if (!gameData.locations[s.location]) {
+        if (!(gameData.locations || {})[s.location]) {
             pushError(errors, "initialState.location", `несуществующая локация "${s.location}"`);
         }
         if (!Array.isArray(s.inventory)) {
             pushError(errors, "initialState.inventory", "inventory должен быть массивом");
         } else {
             s.inventory.forEach(id => {
-                if (!gameData.items[id]) {
+                if (!(gameData.items || {})[id]) {
                     pushError(errors, "initialState.inventory", `несуществующий предмет "${id}"`);
                 }
             });
@@ -189,7 +189,7 @@ window.DataValidation = (() => {
     }
 
     function validateStart(gameData, errors) {
-        if (gameData.start && !gameData.locations[gameData.start]) {
+        if (gameData.start && !(gameData.locations || {})[gameData.start]) {
             pushError(errors, "start", `стартовая локация "${gameData.start}" не существует`);
         }
     }

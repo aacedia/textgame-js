@@ -24,3 +24,35 @@ dialog::backdrop{background:var(--backdrop)}
   padding:0 16px 16px;
 }
 .dialogactions button{min-width:90px;text-align:center}
+/* Оверлей «Игра окончена» */
+.game-over{
+  position:fixed;
+  inset:0;
+  background:var(--backdrop);
+  display:grid;
+  place-items:center;
+  z-index:50;
+}
+.game-over[hidden]{display:none}
+.game-over__card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--shadow-strong);
+  padding:24px 28px;
+  max-width:380px;
+  text-align:center;
+}
+.game-over__card h2{
+  margin:0 0 8px;
+  color:var(--accent-3);
+  font-size:22px;
+}
+.game-over__card p{
+  margin:0 0 16px;
+  color:var(--muted);
+}
+.game-over__card button{
+  min-width:160px;
+  text-align:center;
+}

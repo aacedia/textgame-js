@@ -1,9 +1,23 @@
 /*
-  Действия игрока.
+  Действия игрока. Принимает id от UI, находит действие в GAME_DATA,
+  применяет эффекты через Rules, обновляет состояние и лог.
+
+  Время действия — свойство action.minutes, по умолчанию 1 минута.
+  Применяется после эффектов.
+
+  restoreBeforeTime / reduceBeforeTime — применить до advanceTime.
+  restoreAfterTime / reduceAfterTime   — применить после advanceTime.
+  Формат: { ключ_переменной: значение }. restore ставит, reduce вычитает
+  (с ограничением по [0, ∞)).
 
   Серия нажатий: если жать одно и то же действие подряд (в той же локации),
   счётчик растёт. Любое другое действие, переход через карту или смена
   локации сбрасывают серию.
+
+  После gameOver все действия заблокированы.
+
+  Если после действия текущая локация оказалась закрыта по расписанию,
+  игрока автоматически перемещает в defaultExit этой локации (обычно street).
 */
 window.Game = window.Game || {};
 
@@ -21,7 +35,50 @@ window.Game = window.Game || {};
     return loc.actions.find(a => a.id === id) || null;
   }
 
+  function evictIfClosed(state) {
+    const loc = GAME_DATA.locations[state.location];
+    if (!loc || !loc.hours) return { state, messages: [] };
+    if (Rules.isLocationOpen(GAME_DATA, state.location, state.variables.minutes)) {
+      return { state, messages: [] };
+    }
+    const target = loc.defaultExit;
+    if (!target || !GAME_DATA.locations[target]) {
+      return { state, messages: [] };
+    }
+    const fromName = loc.name;
+    const toName = GAME_DATA.locations[target].name;
+    const next = {
+      ...state,
+      location: target,
+      lastAction: null,
+      streakAction: null,
+      streakCount: 0
+    };
+    return {
+      state: next,
+      messages: [`Переход: ${fromName} -> ${toName} (закрыто)`]
+    };
+  }
+
+  function applyRestore(vars, spec) {
+    if (!spec || typeof spec !== "object") return;
+    Object.entries(spec).forEach(([key, value]) => {
+      vars[key] = value;
+    });
+  }
+
+  function applyReduce(vars, spec) {
+    if (!spec || typeof spec !== "object") return;
+    Object.entries(spec).forEach(([key, value]) => {
+      const current = Number(vars[key]) || 0;
+      vars[key] = Math.max(0, current - Number(value));
+    });
+  }
+
   function onAction(id) {
+    const initial = Game.getState();
+    if (initial.gameOver) return;
+
     if (id.startsWith("goto:")) {
       handleGoto(id.slice(5));
       return;
@@ -47,8 +104,7 @@ window.Game = window.Game || {};
       };
     }
 
-    // Серия нажатий: продолжается только если то же действие подряд
-    // в той же локации. Иначе — начинается заново.
+    // Серия нажатий
     const sameStreak =
       working.streakAction === action.id &&
       working.lastAction &&
@@ -67,6 +123,17 @@ window.Game = window.Game || {};
       ...(variant && variant.effects ? variant.effects : [])
     ];
 
+    // Восстановление/снижение до времени.
+    if (action.restoreBeforeTime || action.reduceBeforeTime) {
+      working = { ...working, variables: { ...working.variables } };
+      applyRestore(working.variables, action.restoreBeforeTime);
+      applyReduce(working.variables, action.reduceBeforeTime);
+    }
+
+    if (action.sleep) {
+      working = { ...working, sleeping: true };
+    }
+
     const minutes = Number(action.minutes) || 1;
     effectList.push({ type: "advanceTime", minutes });
 
@@ -77,7 +144,25 @@ window.Game = window.Game || {};
     );
     Game.setState(nextState);
 
-    const moveMessages = messages.filter(m => m.kind === "move").map(m => m.text);
+    // Восстановление/снижение после времени.
+    if (action.restoreAfterTime || action.reduceAfterTime || nextState.sleeping) {
+      const after = { ...nextState, variables: { ...nextState.variables } };
+      applyRestore(after.variables, action.restoreAfterTime);
+      applyReduce(after.variables, action.reduceAfterTime);
+      after.sleeping = false;
+      Game.setState(after);
+    }
+
+    // Если локация закрылась по времени — выгоняем игрока на улицу.
+    const evicted = evictIfClosed(Game.getState());
+    if (evicted.messages.length) {
+      Game.setState(evicted.state);
+    }
+
+    const moveMessages = [
+      ...messages.filter(m => m.kind === "move").map(m => m.text),
+      ...evicted.messages
+    ];
     const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
 
     const locName = GAME_DATA.locations[state.location].name;
@@ -109,8 +194,9 @@ window.Game = window.Game || {};
   }
 
   function handleGoto(target) {
-    if (!GAME_DATA.locations[target]) return;
     const state = Game.getState();
+    if (state.gameOver) return;
+    if (!GAME_DATA.locations[target]) return;
     if (!Rules.isAdjacent(GAME_DATA, state.location, target)) return;
     if (!Rules.isLocationOpen(GAME_DATA, target, state.variables.minutes)) return;
 
@@ -123,14 +209,15 @@ window.Game = window.Game || {};
       GAME_DATA
     );
 
-    // Переход сбрасывает и серию, и lastAction.
+    const evicted = evictIfClosed(nextState);
+
     Game.setState({
-      ...nextState,
+      ...evicted.state,
       lastAction: null,
       streakAction: null,
       streakCount: 0
     });
-    Game.pushLog(messages.map(m => m.text));
+    Game.pushLog([...messages.map(m => m.text), ...evicted.messages]);
     Game.clearInfo();
     Game.render();
   }

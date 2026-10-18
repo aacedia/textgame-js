@@ -112,7 +112,6 @@
     const hasAvatar = !!info.avatar;
     const avatarEl = document.createElement("div");
     avatarEl.className = "character-avatar" + (hasAvatar ? "" : " character-avatar--empty");
-
     if (hasAvatar) {
       const img = document.createElement("img");
       img.id = "character-avatar-img";
@@ -129,7 +128,6 @@
     }
     root.appendChild(avatarEl);
 
-    // Имя
     if (info.name) {
       const nameEl = document.createElement("div");
       nameEl.className = "character-name";
@@ -137,13 +135,47 @@
       root.appendChild(nameEl);
     }
 
-    // Описание
     if (info.description) {
       const descEl = document.createElement("p");
       descEl.className = "character-desc";
       descEl.textContent = info.description;
       root.appendChild(descEl);
     }
+
+    if (Array.isArray(info.bars)) {
+      root.appendChild(buildBars(info.bars));
+    }
+  }
+
+  function buildBars(bars) {
+    const wrap = document.createElement("div");
+    wrap.className = "character-bars";
+    bars.forEach(bar => {
+      const row = document.createElement("div");
+      row.className = "char-bar char-bar--" + bar.color;
+
+      const label = document.createElement("div");
+      label.className = "char-bar__label";
+      label.textContent = bar.label;
+
+      const track = document.createElement("div");
+      track.className = "char-bar__track";
+      const fill = document.createElement("div");
+      fill.className = "char-bar__fill";
+      const pct = Math.max(0, Math.min(100, (Number(bar.value) / Math.max(1, Number(bar.max))) * 100));
+      fill.style.width = pct + "%";
+      track.appendChild(fill);
+
+      const value = document.createElement("div");
+      value.className = "char-bar__value";
+      value.textContent = `${Math.round(Number(bar.value) || 0)}/${bar.max}`;
+
+      row.appendChild(label);
+      row.appendChild(track);
+      row.appendChild(value);
+      wrap.appendChild(row);
+    });
+    return wrap;
   }
 
   /* ---------- экспорт ---------- */

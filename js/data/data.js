@@ -1,11 +1,10 @@
 /*
   ДАННЫЕ ИГРЫ. Здесь только контент: локации, предметы, персонаж, стартовое состояние.
-
   Структура действия:
     id, label, hint?, condition?, effects[], text?, once?,
     minutes?,               // время действия в минутах; по умолчанию 1
+    restoreAfterTime?,      // { hunger|thirst|fatigue|stamina: value } — применить после времени
     image?, imageAlt?, imageCaption?
-
   Пути к изображениям указываются относительно index.html, а не data.js.
 */
 window.GAME_DATA = {
@@ -19,7 +18,12 @@ window.GAME_DATA = {
       minutes: 510,
       money: 99,
       lastClassDay: 0,
-      classesAttended: 0
+      classesAttended: 0,
+      health: 100,
+      stamina: 100,
+      hunger: 20,
+      thirst: 20,
+      fatigue: 20
     },
     uiTab: "quests",
     controlsOpen: false,
@@ -84,20 +88,47 @@ window.GAME_DATA = {
         {
           id: "rest",
           label: "Немного отдохнуть",
-          hint: "Проходит 15 минут",
+          hint: "Проходит 15 минут · -5 усталости",
           minutes: 15,
           effects: [],
+          reduceAfterTime: { fatigue: 5 },
           text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
           image: "assets/images/locations/apartment-rest.jpg"
         },
         {
           id: "sleep_8h",
           label: "Лечь спать",
-          hint: "Проходит 8 часов",
+          hint: "Проходит 8 часов · -100 усталости",
           minutes: 480,
           effects: [],
+          reduceBeforeTime: { fatigue: 100 },
+          restoreAfterTime: { stamina: 100, health: 100 },
+          sleep: true,
           text: "Ты ложишься спать и просыпаешься через восемь часов.",
           image: "assets/images/locations/apartment-sleep.jpg"
+        },
+        {
+          id: "eat_at_home",
+          label: "Поесть",
+          hint: "Снимает голод · 20 ₽",
+          minutes: 30,
+          condition: { variableAtLeast: { name: "money", value: 20 } },
+          effects: [
+            { type: "changeVariable", name: "money", amount: -20 }
+          ],
+          restoreAfterTime: { hunger: 0 },
+          text: "Ты готовишь простой ужин и ешь.",
+          image: "assets/images/locations/apartment-rest.jpg"
+        },
+        {
+          id: "drink_at_home",
+          label: "Попить",
+          hint: "Снимает жажду",
+          minutes: 5,
+          effects: [],
+          restoreAfterTime: { thirst: 0 },
+          text: "Ты выпиваешь стакан воды.",
+          image: "assets/images/locations/apartment-rest.jpg"
         }
       ]
     },
@@ -107,7 +138,7 @@ window.GAME_DATA = {
       imageCaption: "Оживлённая улица: огни, прохожие и спешащий транспорт.",
       description: [
         "На улице уже шумно: проезжают автобусы, прохожие спешат по своим делам, а на перекрёстке мигает зелёный сигнал.",
-        "Отсюда можно добраться до университета или зайти в небольшой магазин на соседней улице."
+        "Отсюда можно добраться до университета, зайти в магазин или в кафе на углу."
       ],
       actions: [
         {
@@ -123,6 +154,13 @@ window.GAME_DATA = {
           hint: "Посмотреть товары",
           condition: { locationOpen: "shop" },
           effects: [{ type: "move", to: "shop" }]
+        },
+        {
+          id: "go_cafe",
+          label: "Зайти в кафе",
+          hint: "Перекусить и подработать",
+          condition: { locationOpen: "cafe" },
+          effects: [{ type: "move", to: "cafe" }]
         },
         {
           id: "go_home",
@@ -155,9 +193,9 @@ window.GAME_DATA = {
               condition: { not: { flag: "foundCoin" } },
               effects: [
                 { type: "setFlag", flag: "foundCoin", value: true },
-                { type: "changeVariable", name: "money", amount: 1 }
+                { type: "changeVariable", name: "money", amount: 100 }
               ],
-              text: "На тротуаре что-то блестит. Ты наклоняешься и находишь монетку в 1 ₽. Вряд ли снова так повезёт.",
+              text: "На тротуаре что-то блестит. Ты наклоняешься и находишь монетку в 100 ₽. Вряд ли снова так повезёт.",
               image: "assets/images/locations/street-scene-coin.jpg",
               imageAlt: "Монетка на асфальте"
             }
@@ -168,6 +206,7 @@ window.GAME_DATA = {
     university: {
       name: "Университет", tag: "Учёба",
       hours: { from: 8 * 60, to: 20 * 60 },
+      defaultExit: "street",
       image: "assets/images/locations/university.jpg",
       imageAlt: "Главное здание университета: вход и студенты",
       description: [
@@ -214,6 +253,7 @@ window.GAME_DATA = {
     shop: {
       name: "Магазин", tag: "Покупки",
       hours: { from: 8 * 60, to: 22 * 60 },
+      defaultExit: "street",
       image: "assets/images/locations/shop.jpg",
       imageAlt: "Небольшой магазин у перекрёстка: витрина и вход",
       description: [
@@ -235,6 +275,32 @@ window.GAME_DATA = {
           imageAlt: "Новый блокнот в твёрдой обложке"
         },
         {
+          id: "buy_snack",
+          label: "Купить перекус",
+          hint: "30 ₽ · снимает голод",
+          minutes: 5,
+          condition: { variableAtLeast: { name: "money", value: 30 } },
+          effects: [
+            { type: "changeVariable", name: "money", amount: -30 }
+          ],
+          restoreAfterTime: { hunger: 0 },
+          text: "Ты покупаешь булочку и быстро перекусываешь.",
+          image: "assets/images/locations/shop-shelves.jpg"
+        },
+        {
+          id: "buy_water",
+          label: "Купить воду",
+          hint: "15 ₽ · снимает жажду",
+          minutes: 2,
+          condition: { variableAtLeast: { name: "money", value: 15 } },
+          effects: [
+            { type: "changeVariable", name: "money", amount: -15 }
+          ],
+          restoreAfterTime: { thirst: 0 },
+          text: "Ты покупаешь бутылку воды и пьёшь.",
+          image: "assets/images/locations/shop-shelves.jpg"
+        },
+        {
           id: "look_shelves",
           label: "Осмотреть полки",
           hint: "Изучить ассортимент",
@@ -250,12 +316,98 @@ window.GAME_DATA = {
           effects: [{ type: "move", to: "street" }]
         }
       ]
+    },
+    cafe: {
+      name: "Кафе", tag: "Уютное место",
+      hours: { from: 8 * 60, to: 23 * 60 },
+      defaultExit: "street",
+      image: "assets/images/locations/cafe.jpg",
+      imageAlt: "Небольшое кафе с тёплым светом и столиками у окна",
+      imageCaption: "Кафе: пахнет кофе и свежей выпечкой.",
+      description: [
+        "Небольшое кафе неподалёку от перекрёстка. У окна свободный столик, за стойкой скучает бариста.",
+        "Здесь можно перекусить, а если повезёт — подработать пару часов за стойкой."
+      ],
+      actions: [
+        {
+          id: "eat_at_cafe",
+          label: "Поесть в кафе",
+          hint: "50 ₽ · снимает голод",
+          minutes: 40,
+          condition: { variableAtLeast: { name: "money", value: 50 } },
+          effects: [
+            { type: "changeVariable", name: "money", amount: -50 }
+          ],
+          restoreAfterTime: { hunger: 0 },
+          text: "Ты заказываешь горячий обед и не спеша ешь.",
+          image: "assets/images/locations/cafe-food.jpg",
+          imageAlt: "Обед на столике в кафе"
+        },
+        {
+          id: "drink_at_cafe",
+          label: "Выпить кофе",
+          hint: "20 ₽ · снимает жажду",
+          minutes: 15,
+          condition: { variableAtLeast: { name: "money", value: 20 } },
+          effects: [
+            { type: "changeVariable", name: "money", amount: -20 }
+          ],
+          restoreAfterTime: { thirst: 0 },
+          text: "Ты берёшь чашку кофе и устраиваешься у окна.",
+          image: "assets/images/locations/cafe-coffee.jpg",
+          imageAlt: "Чашка кофе на столике"
+        },
+        {
+          id: "work_shift",
+          label: "Подработать",
+          hint: "3 часа · +300 ₽ · тратит выносливость",
+          minutes: 180,
+          condition: {
+            all: [
+              { variableAtLeast: { name: "stamina", value: 20 } },
+              { variableAtLeast: { name: "money", value: 0 } }
+            ]
+          },
+          effects: [
+            { type: "changeVariable", name: "money", amount: 300 },
+            { type: "changeVariable", name: "stamina", amount: -20 }
+          ],
+          text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату.",
+          image: "assets/images/locations/cafe-work.jpg",
+          imageAlt: "Рабочая стойка кафе"
+        },
+        {
+          id: "look_around_cafe",
+          label: "Осмотреться",
+          hint: "Понаблюдать за гостями",
+          effects: [{ type: "setFlag", flag: "lookedAroundCafe", value: true }],
+          text: "За соседним столиком пара обсуждает планы на вечер, у окна студент листает конспекты.",
+          image: "assets/images/locations/cafe-inside.jpg",
+          imageAlt: "Посетители кафе"
+        },
+        {
+          id: "cafe_return_street",
+          label: "Выйти на улицу",
+          hint: "Вернуться к перекрёстку",
+          effects: [{ type: "move", to: "street" }]
+        }
+      ]
     }
   },
   links: {
     apartment: ["street"],
-    street: ["apartment", "university", "shop"],
+    street: ["apartment", "university", "shop", "cafe"],
     university: ["street"],
-    shop: ["street"]
-  }
+    shop: ["street"],
+    cafe: ["street"]
+  },
+  needsRates: {
+    hunger: 100 / 720,
+    thirst: 100 / 1440,
+    fatigue: 100 / 1440
+  },
+  needsMax: 100,
+  healthMax: 100,
+  staminaMax: 100,
+  damagePerHour: 10
 };

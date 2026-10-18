@@ -13,6 +13,7 @@
     Rules.describeTimeOfDay(timeOfDay)
     Rules.checkCondition(condition, state, gameData)
     Rules.describeConditionFailure(condition, state, gameData)
+    Rules.applyNeeds(state, minutes, gameData)   -> { state, messages }
     Rules.applyEffect(effect, state, gameData)   -> { state, messages }
     Rules.applyEffects(effects, state, gameData) -> { state, messages }
     Rules.classifyEffect(effect)                 -> "move" | "item" | "money" | "time" | "state"
@@ -20,33 +21,9 @@
     Rules.pickVariant(variants, state, gameData, actionId) -> { variant, index } | null
 
   Сообщения в messages — массив объектов { kind: "move" | "info", text }.
-    "move"  — переход между локациями (для «Истории событий»);
-    "info"  — всё остальное (для «Истории событий»).
 
-  Валидация. При опечатках в типе эффекта/условия или при отсутствии
-  обязательного поля функция пишет console.warn и обрабатывает случай
-  как «ничего не произошло». Это безопасно для игры и заметно в консоли.
-
-  Поддерживаемые условия:
-    { item: "keys" }
-    { flag: "attendedClass", equals: true | false }
-    { not: <условие> }
-    { all: [<условие>, ...] }
-    { any: [<условие>, ...] }
-    { variableAtLeast: { name: "money", value: 100 } }
-    { variableEquals:  { name: "day",   value: 1   } }
-    { variableDiffers: { name: "lastClassDay", other: "day" } }
-    { locationOpen: "shop" }
-
-  Поддерживаемые эффекты:
-    { type: "move", to: "locationId" }
-    { type: "giveItem", item: "itemId" }
-    { type: "removeItem", item: "itemId" }
-    { type: "setFlag", flag: "name", value: true }
-    { type: "changeVariable", name: "money", amount: -100 }
-    { type: "setVariable", name: "day", value: 1 }
-    { type: "setVariableFromVariable", name: "lastClassDay", from: "day" }
-    { type: "advanceTime", minutes: 480 }
+  Конец игры: если health <= 0, state.gameOver = true. При gameOver
+  checkCondition возвращает false — все действия недоступны.
 */
 window.Rules = (() => {
   "use strict";
@@ -62,7 +39,7 @@ window.Rules = (() => {
   }
 
   function isAdjacent(gameData, from, to) {
-    return (gameData.links[from] || []).includes(to);
+    return ((gameData.links || {})[from] || []).includes(to);
   }
 
   function formatTime(minutes) {
@@ -73,7 +50,7 @@ window.Rules = (() => {
   }
 
   function isLocationOpen(gameData, id, minutes) {
-    const loc = gameData.locations[id];
+    const loc = (gameData.locations || {})[id];
     if (!loc || !loc.hours) return true;
     const { from, to } = loc.hours;
     const t = ((Number(minutes) || 0) % 1440 + 1440) % 1440;
@@ -108,7 +85,6 @@ window.Rules = (() => {
 
   /* ---------- валидация ---------- */
 
-  // Предупреждение в консоль с указанием функции и проблемного объекта.
   function warn(message, payload) {
     if (payload !== undefined) {
       console.warn(`Rules: ${message}`, payload);
@@ -117,8 +93,6 @@ window.Rules = (() => {
     }
   }
 
-  // Проверяет, что у эффекта есть обязательные поля по его типу.
-  // Возвращает true, если структура корректна.
   function validateEffectShape(effect) {
     switch (effect.type) {
       case "move":
@@ -181,6 +155,7 @@ window.Rules = (() => {
   /* ---------- условия ---------- */
 
   function checkCondition(condition, state, gameData) {
+    if (state && state.gameOver) return false;
     if (!condition) return true;
     if (condition.all) return condition.all.every(c => checkCondition(c, state, gameData));
     if (condition.any) return condition.any.some(c => checkCondition(c, state, gameData));
@@ -205,7 +180,6 @@ window.Rules = (() => {
     if (condition.locationOpen) {
       return isLocationOpen(gameData, condition.locationOpen, state.variables.minutes);
     }
-    // Условие не распознано — предупреждаем и считаем невыполненным.
     warn(`неизвестное условие`, condition);
     return false;
   }
@@ -214,10 +188,8 @@ window.Rules = (() => {
     if (!condition) return null;
     if (checkCondition(condition, state, gameData)) return null;
 
-    // Явная причина, если разработчик данных её указал.
     if (condition.reason) return condition.reason;
 
-    // Составное условие: находим первую невыполненную ветку и описываем её.
     if (Array.isArray(condition.all)) {
       for (const c of condition.all) {
         const reason = describeConditionFailure(c, state, gameData);
@@ -233,12 +205,10 @@ window.Rules = (() => {
       return "Ни одно из условий не выполнено";
     }
 
-    // Отрицание: описываем то, что на самом деле выполнено.
-    // Например, not { item: "notebook" } при наличии блокнота → "Уже есть: Блокнот".
     if (condition.not) {
       const inner = condition.not;
       if (inner.item) {
-        const item = gameData.items[inner.item];
+        const item = (gameData.items || {})[inner.item];
         return `Уже есть: ${item ? item.name : inner.item}`;
       }
       if (inner.flag) return "Уже сделано";
@@ -248,23 +218,100 @@ window.Rules = (() => {
     }
 
     if (condition.locationOpen) {
-      const loc = gameData.locations[condition.locationOpen];
+      const loc = (gameData.locations || {})[condition.locationOpen];
       if (loc && loc.hours) return `Откроется в ${formatTime(loc.hours.from)}`;
       return "Сейчас закрыто";
     }
     if (condition.item) {
-      const item = gameData.items[condition.item];
+      const item = (gameData.items || {})[condition.item];
       const name = item ? item.name : condition.item;
       return `Нужен предмет: ${name}`;
     }
     if (condition.variableAtLeast) {
       const { name, value } = condition.variableAtLeast;
-      const suffix = name === "money" ? " ₽" : "";
+      const suffix =
+        name === "money" ? " ₽" :
+          name === "stamina" ? " выносливости" :
+            name === "health" ? " здоровья" :
+              name === "hunger" ? " голода" :
+                name === "thirst" ? " жажды" :
+                  name === "fatigue" ? " усталости" : "";
       return `Нужно ${value}${suffix}`;
     }
     if (condition.variableDiffers) return "Уже сделано сегодня";
     if (condition.flag && condition.equals === false) return "Уже сделано";
     return null;
+  }
+
+  /* ---------- потребности ---------- */
+
+  function applyNeeds(state, minutes, gameData) {
+    const next = deepClone(state);
+    const messages = [];
+
+    const needsMax = Number(gameData.needsMax ?? 100);
+    const healthMax = Number(gameData.healthMax ?? 100);
+    const rates = gameData.needsRates || {};
+    const damagePerHour = Number(gameData.damagePerHour ?? 10);
+    const delta = Number(minutes) || 0;
+
+    const isSleeping = !!next.sleeping;
+    const hungerMultiplier = isSleeping ? 0.5 : 1;
+    const damageMultiplier = isSleeping ? 0.5 : 1;
+    const fatigueDamages = !isSleeping;
+
+    let damage = 0;
+
+    ["hunger", "thirst", "fatigue"].forEach(key => {
+      if (isSleeping && key === "fatigue") {
+        // Во сне усталость не растёт и не наносит урон.
+        next.variables[key] = Math.min(needsMax, Math.max(0, Number(next.variables[key]) || 0));
+        return;
+      }
+
+      const rate = (Number(rates[key]) || 0) * (key === "hunger" ? hungerMultiplier : 1);
+      const current = Number(next.variables[key]) || 0;
+
+      let minutesAtMax = 0;
+      let grown;
+      if (current >= needsMax) {
+        minutesAtMax = delta;
+        grown = needsMax;
+      } else if (rate > 0) {
+        const minutesToMax = (needsMax - current) / rate;
+        if (minutesToMax >= delta) {
+          grown = current + rate * delta;
+        } else {
+          grown = needsMax;
+          minutesAtMax = delta - minutesToMax;
+        }
+      } else {
+        grown = current;
+      }
+
+      next.variables[key] = Math.min(needsMax, Math.max(0, grown));
+
+      if (key === "fatigue" && !fatigueDamages) return;
+      damage += (Math.max(0, minutesAtMax) / 60) * damagePerHour;
+    });
+
+    damage *= damageMultiplier;
+
+    const totalDamage = damage > 0 ? Math.max(1, Math.floor(damage)) : 0;
+
+    if (totalDamage > 0) {
+      const hp = Number(next.variables.health) || 0;
+      const nextHp = Math.max(0, Math.min(healthMax, hp - totalDamage));
+      next.variables.health = nextHp;
+      messages.push({ kind: "info", text: `Здоровье -${totalDamage}.` });
+
+      if (nextHp <= 0 && !next.gameOver) {
+        next.gameOver = true;
+        messages.push({ kind: "info", text: "Ты теряешь сознание. Игра окончена." });
+      }
+    }
+
+    return { state: next, messages };
   }
 
   /* ---------- эффекты ---------- */
@@ -273,7 +320,6 @@ window.Rules = (() => {
     const next = deepClone(state);
     const messages = [];
 
-    // Проверка структуры: если эффект сломан, ничего не делаем.
     if (!effect || typeof effect !== "object") {
       warn(`эффект не является объектом`, effect);
       return { state: next, messages };
@@ -284,8 +330,8 @@ window.Rules = (() => {
 
     switch (effect.type) {
       case "move": {
-        const target = gameData.locations[effect.to];
-        const from = gameData.locations[next.location];
+        const target = (gameData.locations || {})[effect.to];
+        const from = (gameData.locations || {})[next.location];
         if (!target) {
           warn(`move → неизвестная локация "${effect.to}"`, effect);
           break;
@@ -297,7 +343,7 @@ window.Rules = (() => {
       }
 
       case "giveItem": {
-        const item = gameData.items[effect.item];
+        const item = (gameData.items || {})[effect.item];
         if (!item) {
           warn(`giveItem → неизвестный предмет "${effect.item}"`, effect);
           break;
@@ -324,7 +370,6 @@ window.Rules = (() => {
         const after = before + effect.amount;
         next.variables[effect.name] = after;
 
-        // Сообщения только для денег: остальные переменные служебные.
         if (effect.name === "money") {
           const diff = after - before;
           if (diff > 0) {
@@ -333,11 +378,20 @@ window.Rules = (() => {
             messages.push({ kind: "info", text: `Потрачено: ${-diff} ₽` });
           }
         }
+
+        if (effect.name === "health" && after <= 0 && !next.gameOver) {
+          next.gameOver = true;
+          messages.push({ kind: "info", text: "Ты теряешь сознание. Игра окончена." });
+        }
         break;
       }
 
       case "setVariable": {
         next.variables[effect.name] = effect.value;
+        if (effect.name === "health" && Number(effect.value) <= 0 && !next.gameOver) {
+          next.gameOver = true;
+          messages.push({ kind: "info", text: "Ты теряешь сознание. Игра окончена." });
+        }
         break;
       }
 
@@ -359,6 +413,11 @@ window.Rules = (() => {
             messages.push({ kind: "info", text: `Проходит ${daysPassed} дн.` });
           }
         }
+
+        const needsResult = applyNeeds(next, effect.minutes, gameData);
+        next.variables = needsResult.state.variables;
+        if (needsResult.state.gameOver) next.gameOver = true;
+        messages.push(...needsResult.messages);
         break;
       }
     }
@@ -406,16 +465,6 @@ window.Rules = (() => {
 
   /* ---------- выбор варианта ---------- */
 
-  /*
-    Выбирает случайный вариант из массива с учётом:
-      - condition каждого варианта (подходящие фильтруются);
-      - прошлого выбора для этого действия (state.lastVariant[actionId]).
-        Если у прошлого варианта не выставлен repeatable: true, он исключается
-        из выбора, когда есть альтернативы.
-
-    Возвращает { variant, index } или null, если подходящих нет.
-    index — позиция варианта в исходном массиве (для сохранения в state).
-  */
   function pickVariant(variants, state, gameData, actionId) {
     if (!Array.isArray(variants) || !variants.length) return null;
 
@@ -456,6 +505,7 @@ window.Rules = (() => {
     describeTimeOfDay,
     checkCondition,
     describeConditionFailure,
+    applyNeeds,
     applyEffect,
     applyEffects,
     classifyEffect,
