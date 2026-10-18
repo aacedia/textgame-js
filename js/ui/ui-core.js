@@ -381,17 +381,35 @@ window.UI = (() => {
 
     input.value = "";
 
+    let submitted = false;
     const onSubmit = () => {
+      if (submitted) return;
+      submitted = true;
       const command = input.value.trim();
       dialog.close();
-      if (command) handlers.onCommand("cheat:apply:" + command);
+      if (command) {
+        // Даём браузеру завершить закрытие cheat-dialog,
+        // чтобы showModal на #dialog не бросал InvalidStateError.
+        setTimeout(() => handlers.onCommand("cheat:apply:" + command), 0);
+      }
     };
 
-    apply.onclick = onSubmit;
-    cancel.onclick = () => dialog.close();
+    apply.onclick = e => {
+      e.preventDefault();
+      onSubmit();
+    };
+    cancel.onclick = e => {
+      e.preventDefault();
+      dialog.close();
+    };
     input.onkeydown = e => {
-      if (e.key === "Enter") onSubmit();
-      if (e.key === "Escape") dialog.close();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        onSubmit();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        dialog.close();
+      }
     };
 
     dialog.showModal();
