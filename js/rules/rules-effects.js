@@ -215,41 +215,6 @@
                 break;
             }
 
-            case "completeOrder": {
-                const size = Number(next.flags.orderSize) || 0;
-                const reward = Number(next.flags.orderReward) || 0;
-                const name = String(next.flags.orderName || "Заказ");
-
-                if (!next.flags.hasActiveOrder || size <= 0) {
-                    warn(`completeOrder: нет активного заказа`, effect);
-                    break;
-                }
-
-                const total = next.variables.minutes + size * 60;
-                const daysPassed = Math.floor(total / 1440);
-                next.variables.minutes = ((total % 1440) + 1440) % 1440;
-                if (daysPassed > 0) {
-                    next.variables.day += daysPassed;
-                    messages.push({ kind: "info", text: daysPassed === 1 ? "Наступает новый день." : `Проходит ${daysPassed} дн.` });
-                }
-
-                const needsResult = applyNeeds(next, size * 60, gameData);
-                next.variables = needsResult.state.variables;
-                if (needsResult.state.gameOver) next.gameOver = true;
-                messages.push(...needsResult.messages);
-
-                const beforeMoney = Number(next.variables.money) || 0;
-                next.variables.money = beforeMoney + reward;
-
-                next.flags.hasActiveOrder = false;
-                next.flags.orderSize = 0;
-                next.flags.orderReward = 0;
-                next.flags.orderName = "";
-
-                messages.push({ kind: "info", text: `Заказ «${name}» выполнен. Получено: ${reward} ₽.` });
-                break;
-            }
-
             case "addRandomMoney": {
                 const min = Math.max(0, Number(effect.min) || 0);
                 const max = Math.max(min, Number(effect.max) || min);

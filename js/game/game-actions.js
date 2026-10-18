@@ -4,20 +4,17 @@
     - "sleep:<minutes>"     — сон с выбранной длительностью;
     - иначе                 — id действия из текущей локации.
 
-  Время действия — action.minutes, по умолчанию 1 минута, применяется
-  после эффектов.
+  Порядок эффектов:
+    advanceTime идёт ПЕРВЫМ (время тратится, потребности растут),
+    потом эффекты действия / варианта. Это нужно, чтобы бонусы к настроению
+    и другим переменным применялись уже после снижения за прошедшее время
+    и могли достичь максимума.
 
   restoreBeforeTime / reduceBeforeTime — до advanceTime.
-  restoreAfterTime / reduceAfterTime   — после advanceTime.
+  restoreAfterTime / reduceAfterTime   — после всех эффектов.
   restore ставит значение, reduce вычитает (с ограничением по [0, ∞)).
 
-  Серия нажатий: если жать одно и то же действие подряд (в той же локации),
-  счётчик растёт. Любое другое действие или смена локации сбрасывают серию.
-
-  После gameOver действия заблокированы.
-
-  Если после действия текущая локация оказалась закрыта по расписанию,
-  игрока автоматически перемещает в defaultExit этой локации.
+  Серия нажатий, gameOver, evictIfClosed — как раньше.
 */
 window.Game = window.Game || {};
 
@@ -129,11 +126,7 @@ window.Game = window.Game || {};
       lastAction: { id: action.id, location: state.location }
     };
 
-    const effectList = [
-      ...(action.effects || []),
-      ...(variant && variant.effects ? variant.effects : [])
-    ];
-
+    // restore/reduce до времени.
     if (action.restoreBeforeTime || action.reduceBeforeTime) {
       working = { ...working, variables: { ...working.variables } };
       applyRestore(working.variables, action.restoreBeforeTime);
@@ -144,8 +137,13 @@ window.Game = window.Game || {};
       working = { ...working, sleeping: true };
     }
 
+    // advanceTime — первым, потом эффекты действия и варианта.
     const minutes = Number(action.minutes) || 1;
-    effectList.push({ type: "advanceTime", minutes });
+    const effectList = [
+      { type: "advanceTime", minutes },
+      ...(action.effects || []),
+      ...(variant && variant.effects ? variant.effects : [])
+    ];
 
     const { state: nextState, messages } = Rules.applyEffects(
       effectList,
@@ -228,9 +226,12 @@ window.Game = window.Game || {};
       working = { ...working, sleeping: true };
     }
 
-    const effectList = [...(use.effects || [])];
+    // advanceTime — первым, потом эффекты предмета.
     const minutes = Number(use.minutes) || 1;
-    effectList.push({ type: "advanceTime", minutes });
+    const effectList = [
+      { type: "advanceTime", minutes },
+      ...(use.effects || [])
+    ];
 
     const { state: nextState, messages } = Rules.applyEffects(effectList, working, GAME_DATA);
     Game.setState(nextState);
@@ -286,12 +287,12 @@ window.Game = window.Game || {};
     if (state.location !== "apartment") return;
 
     const safeMinutes = Math.max(60, Math.min(720, Number(minutes) || 480));
-
     const fatigueReduction = (safeMinutes / 60) * 12.5;
 
     let working = { ...state, sleeping: true, variables: { ...state.variables } };
     working.variables.fatigue = Math.max(0, (Number(working.variables.fatigue) || 0) - fatigueReduction);
 
+    // Время сна.
     const { state: nextState, messages } = Rules.applyEffects(
       [{ type: "advanceTime", minutes: safeMinutes }],
       working,
@@ -299,6 +300,7 @@ window.Game = window.Game || {};
     );
     Game.setState(nextState);
 
+    // После сна: восстанавливаем stamina и health.
     const after = { ...nextState, variables: { ...nextState.variables }, sleeping: false };
     after.variables.stamina = 100;
     after.variables.health = 100;

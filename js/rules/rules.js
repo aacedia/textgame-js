@@ -181,8 +181,6 @@ window.Rules = (() => {
           return false;
         }
         return true;
-      case "completeOrder":
-        return true;
       case "addRandomMoney":
         if (typeof effect.min !== "number" || Number.isNaN(effect.min)) {
           warn(`addRandomMoney без числового "min"`, effect);

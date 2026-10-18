@@ -49,8 +49,8 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 30,
                 condition: {
                     all: [
-                        { not: { flag: "hasActiveOrder" } },
-                        { variableDiffers: { name: "lastOrderDay", other: "day" } }
+                        { variableDiffers: { name: "lastOrderDay", other: "day" } },
+                        { not: { flag: "hasActiveOrder" } }
                     ]
                 },
                 effects: [
@@ -62,10 +62,7 @@ Object.assign(window.GAME_DATA.locations, {
                     },
                     {
                         effects: [
-                            { type: "setFlag", flag: "hasActiveOrder", value: true },
-                            { type: "setFlag", flag: "orderSize", value: 1 },
-                            { type: "setFlag", flag: "orderReward", value: 100 },
-                            { type: "setFlag", flag: "orderName", value: "Небольшой реферат" }
+                            { type: "setFlag", flag: "hasActiveOrder", value: true }
                         ],
                         text: "Тебе попадается заказ на реферат. Работы на час — заплатить обещают 100 ₽. Выполнить можно в библиотеке."
                     }

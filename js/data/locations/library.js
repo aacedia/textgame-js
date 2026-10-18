@@ -19,7 +19,8 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_on_order",
                 label: "Выполнить заказ",
-                hint: "Завершить взятую работу · −10 выносливости",
+                hint: "1 час · +100 ₽ · −10 выносливости",
+                minutes: 60,
                 condition: {
                     all: [
                         { flag: "hasActiveOrder" },
@@ -28,7 +29,8 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 effects: [
                     { type: "changeVariable", name: "stamina", amount: -10 },
-                    { type: "completeOrder" }
+                    { type: "changeVariable", name: "money", amount: 100 },
+                    { type: "setFlag", flag: "hasActiveOrder", value: false }
                 ],
                 text: "Ты садишься за стол, раскладываешь материалы и работаешь над заказом. Когда всё готово, ты получаешь оплату."
             },

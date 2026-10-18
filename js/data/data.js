@@ -13,10 +13,7 @@ window.GAME_DATA = {
     flags: {
       hasInspectedTable: false,
       tvAtHome: false,
-      hasActiveOrder: false,
-      orderSize: 0,
-      orderReward: 0,
-      orderName: ""
+      hasActiveOrder: false
     },
     variables: {
       day: 1,
