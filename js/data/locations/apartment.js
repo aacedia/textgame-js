@@ -37,16 +37,20 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/apartment-rest.jpg"
             },
             {
-                id: "sleep_8h",
+                id: "sleep",
+                type: "choice",
                 label: "Лечь спать",
-                hint: "Проходит 8 часов · -100 усталости",
-                minutes: 480,
-                effects: [],
-                reduceBeforeTime: { fatigue: 100 },
-                restoreAfterTime: { stamina: 100, health: 100, hunger: 32, thirst: 16 },
-                sleep: true,
-                text: "Ты ложишься спать и просыпаешься через восемь часов.",
-                image: "assets/images/locations/apartment-sleep.jpg"
+                hint: "Выбрать, сколько спать",
+                image: "assets/images/locations/apartment-sleep.jpg",
+                choices: [
+                    { label: "1 час", minutes: 60 },
+                    { label: "2 часа", minutes: 120 },
+                    { label: "4 часа", minutes: 240 },
+                    { label: "6 часов", minutes: 360 },
+                    { label: "8 часов", minutes: 480 },
+                    { label: "10 часов", minutes: 600 },
+                    { label: "12 часов", minutes: 720 }
+                ]
             },
             {
                 id: "eat_at_home",

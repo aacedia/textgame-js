@@ -27,19 +27,18 @@
         const delta = Number(minutes) || 0;
 
         const isSleeping = !!next.sleeping;
-        const hungerMultiplier = isSleeping ? 0.5 : 1;
-        const damageMultiplier = isSleeping ? 0.5 : 1;
-        const fatigueDamages = !isSleeping;
+        const rateMultiplier = isSleeping ? 0.1 : 1;
 
         let damage = 0;
 
         ["hunger", "thirst", "fatigue"].forEach(key => {
             if (isSleeping && key === "fatigue") {
+                // Во сне усталость не растёт (она снижается отдельно).
                 next.variables[key] = Math.min(needsMax, Math.max(0, Number(next.variables[key]) || 0));
                 return;
             }
 
-            const rate = (Number(rates[key]) || 0) * (key === "hunger" ? hungerMultiplier : 1);
+            const rate = (Number(rates[key]) || 0) * rateMultiplier;
             const current = Number(next.variables[key]) || 0;
 
             let minutesAtMax = 0;
@@ -60,12 +59,8 @@
             }
 
             next.variables[key] = Math.min(needsMax, Math.max(0, grown));
-
-            if (key === "fatigue" && !fatigueDamages) return;
             damage += (Math.max(0, minutesAtMax) / 60) * damagePerHour;
         });
-
-        damage *= damageMultiplier;
 
         const totalDamage = damage > 0 ? Math.max(1, Math.floor(damage)) : 0;
 

@@ -1,8 +1,8 @@
 /*
   Действия игрока. Принимает id от UI:
-    - "goto:<locationId>" — переход через карту;
-    - "use:<itemId>"      — использование расходника из инвентаря;
-    - иначе               — id действия из текущей локации.
+    - "use:<itemId>"        — использование расходника из инвентаря;
+    - "sleep:<minutes>"     — сон с выбранной длительностью;
+    - иначе                 — id действия из текущей локации.
 
   Время действия — action.minutes, по умолчанию 1 минута, применяется
   после эффектов.
@@ -12,8 +12,7 @@
   restore ставит значение, reduce вычитает (с ограничением по [0, ∞)).
 
   Серия нажатий: если жать одно и то же действие подряд (в той же локации),
-  счётчик растёт. Любое другое действие, переход через карту или смена
-  локации сбрасывают серию.
+  счётчик растёт. Любое другое действие или смена локации сбрасывают серию.
 
   После gameOver действия заблокированы.
 
@@ -76,12 +75,24 @@ window.Game = window.Game || {};
     });
   }
 
+  function plural(n, one, few, many) {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return one;
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+    return many;
+  }
+
   function onAction(id) {
     const initial = Game.getState();
     if (initial.gameOver) return;
 
     if (id.startsWith("use:")) {
       handleUse(id.slice(4));
+      return;
+    }
+    if (id.startsWith("sleep:")) {
+      handleSleep(Number(id.slice(6)));
       return;
     }
 
@@ -207,7 +218,6 @@ window.Game = window.Game || {};
 
     let working = { ...state, inventory };
 
-    // restore/reduce до времени (если заданы в use).
     if (use.restoreBeforeTime || use.reduceBeforeTime) {
       working = { ...working, variables: { ...working.variables } };
       applyRestore(working.variables, use.restoreBeforeTime);
@@ -270,5 +280,67 @@ window.Game = window.Game || {};
     Game.render();
   }
 
-  Object.assign(window.Game, { onAction, handleUse, findAction });
+  function handleSleep(minutes) {
+    const state = Game.getState();
+    if (state.gameOver) return;
+    if (state.location !== "apartment") return;
+
+    const safeMinutes = Math.max(60, Math.min(720, Number(minutes) || 480));
+
+    const fatigueReduction = (safeMinutes / 60) * 12.5;
+
+    let working = { ...state, sleeping: true, variables: { ...state.variables } };
+    working.variables.fatigue = Math.max(0, (Number(working.variables.fatigue) || 0) - fatigueReduction);
+
+    const { state: nextState, messages } = Rules.applyEffects(
+      [{ type: "advanceTime", minutes: safeMinutes }],
+      working,
+      GAME_DATA
+    );
+    Game.setState(nextState);
+
+    const after = { ...nextState, variables: { ...nextState.variables }, sleeping: false };
+    after.variables.stamina = 100;
+    after.variables.health = 100;
+    Game.setState(after);
+
+    const evicted = evictIfClosed(Game.getState());
+    if (evicted.messages.length) {
+      Game.setState(evicted.state);
+    }
+
+    const moveMessages = evicted.messages;
+    const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
+
+    const hours = safeMinutes / 60;
+    const hoursText = `${hours} ${plural(hours, "час", "часа", "часов")}`;
+
+    Game.pushLog([
+      `Действие: Сон (${hoursText})`,
+      ...moveMessages,
+      ...infoMessages
+    ]);
+
+    // Картинка и alt берутся из действия sleep, если заданы.
+    const apartment = GAME_DATA.locations["apartment"];
+    const sleepAction = apartment && apartment.actions
+      ? apartment.actions.find(a => a.id === "sleep")
+      : null;
+
+    const batch = [];
+    batch.push({ kind: "text", text: `Ты ложишься спать и просыпаешься через ${hoursText}.` });
+    if (sleepAction && sleepAction.image) {
+      batch.push({
+        kind: "image",
+        src: sleepAction.image,
+        alt: sleepAction.imageAlt || "Сон",
+        caption: sleepAction.imageCaption || ""
+      });
+    }
+
+    Game.setInfo(batch);
+    Game.render();
+  }
+
+  Object.assign(window.Game, { onAction, handleUse, handleSleep, findAction });
 })();

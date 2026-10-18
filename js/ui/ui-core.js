@@ -267,9 +267,47 @@ window.UI = (() => {
         `<span class="action-title">${escapeHtml(action.label)}${countHtml}</span>` +
         `<span class="hint">${escapeHtml(hintText)}</span>`;
       button.title = action.available ? action.label : hintText;
-      button.addEventListener("click", () => handlers.onAction(action.id));
+
+      button.addEventListener("click", () => {
+        if (action.type === "choice" && Array.isArray(action.choices)) {
+          openChoice(action);
+        } else {
+          handlers.onAction(action.id);
+        }
+      });
+
       root.appendChild(button);
     });
+  }
+
+  function openChoice(action) {
+    const dialog = $("dialog");
+    $("dialog-title").textContent = action.label;
+    $("dialog-body").replaceChildren();
+
+    const wrap = document.createElement("div");
+    wrap.className = "choice-list";
+    action.choices.forEach(choice => {
+      const b = document.createElement("button");
+      b.textContent = choice.label;
+      b.className = "choice-item";
+      b.addEventListener("click", () => {
+        dialog.close();
+        handlers.onAction(action.id + ":" + choice.minutes);
+      });
+      wrap.appendChild(b);
+    });
+
+    $("dialog-body").appendChild(wrap);
+
+    const actionsEl = $("dialog-actions");
+    actionsEl.replaceChildren();
+    const cancel = document.createElement("button");
+    cancel.textContent = "Отмена";
+    cancel.addEventListener("click", () => dialog.close());
+    actionsEl.appendChild(cancel);
+
+    dialog.showModal();
   }
 
   /* ---------- «История событий» ---------- */

@@ -121,7 +121,9 @@ window.Game = window.Game || {};
           : (Rules.describeConditionFailure(action.condition, state, GAME_DATA) || ""),
         accent: Rules.classifyAction(action),
         count,
-        recent: isRecent
+        recent: isRecent,
+        type: action.type || "action",
+        choices: action.choices || null
       });
     });
 

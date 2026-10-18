@@ -56,3 +56,13 @@ dialog::backdrop{background:var(--backdrop)}
   min-width:160px;
   text-align:center;
 }
+.choice-list{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.choice-item{
+  text-align:center;
+  padding:10px;
+  font-size:14px;
+}
