@@ -29,6 +29,13 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "cafe" }]
             },
             {
+                id: "go_park",
+                label: "Пойти в парк",
+                hint: "Прогуляться по аллее",
+                condition: { locationOpen: "park" },
+                effects: [{ type: "move", to: "park" }]
+            },
+            {
                 id: "go_home",
                 label: "Вернуться домой",
                 hint: "Назад в квартиру",
@@ -68,5 +75,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    street: ["apartment", "university", "shop", "cafe"]
+    street: ["apartment", "university", "shop", "cafe", "park"]
 });
