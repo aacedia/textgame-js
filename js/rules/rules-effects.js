@@ -249,6 +249,22 @@
                 messages.push({ kind: "info", text: `Заказ «${name}» выполнен. Получено: ${reward} ₽.` });
                 break;
             }
+
+            case "addRandomMoney": {
+                const min = Math.max(0, Number(effect.min) || 0);
+                const max = Math.max(min, Number(effect.max) || min);
+                const amount = min + Math.floor(Math.random() * (max - min + 1));
+
+                const before = Number(next.variables.money) || 0;
+                next.variables.money = before + amount;
+
+                if (amount > 0) {
+                    messages.push({ kind: "info", text: `Чаевые: ${amount} ₽.` });
+                } else {
+                    messages.push({ kind: "info", text: "Чаевых не было." });
+                }
+                break;
+            }
         }
 
         return { state: next, messages };

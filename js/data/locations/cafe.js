@@ -58,7 +58,7 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 effects: [
                     { type: "changeVariable", name: "money", amount: 300 },
-                    { type: "changeVariable", name: "stamina", amount: -20 },
+                    { type: "changeVariable", name: "stamina", amount: -30 },
                     { type: "setVariableFromVariable", name: "lastShiftDay", from: "day" }
                 ],
                 text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату.",

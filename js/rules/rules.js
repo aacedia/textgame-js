@@ -183,6 +183,16 @@ window.Rules = (() => {
         return true;
       case "completeOrder":
         return true;
+      case "addRandomMoney":
+        if (typeof effect.min !== "number" || Number.isNaN(effect.min)) {
+          warn(`addRandomMoney без числового "min"`, effect);
+          return false;
+        }
+        if (typeof effect.max !== "number" || Number.isNaN(effect.max)) {
+          warn(`addRandomMoney без числового "max"`, effect);
+          return false;
+        }
+        return true;
       default:
         warn(`неизвестный тип эффекта "${effect.type}"`, effect);
         return false;

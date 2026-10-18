@@ -17,6 +17,26 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "street" }]
             },
             {
+                id: "work_electronics",
+                label: "Подработать продавцом",
+                hint: "3 часа · +300 ₽ · −50 выносливости · возможны чаевые до 400₽",
+                minutes: 180,
+                condition: {
+                    all: [
+                        { variableAtLeast: { name: "stamina", value: 50 } },
+                        { variableDiffers: { name: "lastElectronicsShiftDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: 300 },
+                    { type: "changeVariable", name: "stamina", amount: -50 },
+                    { type: "setVariableFromVariable", name: "lastElectronicsShiftDay", from: "day" },
+                    { type: "addRandomMoney", min: 0, max: 400 }
+                ],
+                text: "Ты отрабатываешь смену продавцом-консультантом: помогаешь покупателям с выбором техники, отвечаешь на вопросы. В конце смены получаешь оплату.",
+                image: "assets/images/locations/electronics-work.jpg"
+            },
+            {
                 id: "buy_laptop",
                 label: "Купить ноутбук",
                 hint: "50000 ₽",
