@@ -15,6 +15,19 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "residential" }]
             },
             {
+                id: "buy_notebook",
+                label: "Купить блокнот",
+                hint: "100 ¥ · Нужен для занятий",
+                hiddenWhen: { item: "notebook" },
+                condition: { variableAtLeast: { name: "money", value: 100 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -100 },
+                    { type: "giveItem", item: "notebook" }
+                ],
+                text: "Ты покупаешь блокнот и убираешь его в сумку.",
+                image: "assets/images/items/notebook.jpg"
+            },
+            {
                 id: "buy_food",
                 label: "Купить продукты",
                 hint: "100 ¥ · +5 порций еды",
@@ -25,19 +38,6 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "changeVariable", name: "foodPortions", amount: 5 }
                 ],
                 text: "Ты покупаешь продукты: крупы, овощи, что-то к чаю. Хватит на несколько дней."
-            },
-            {
-                id: "buy_notebook",
-                label: "Купить блокнот",
-                hint: "100 ¥",
-                hiddenWhen: { item: "notebook" },
-                condition: { variableAtLeast: { name: "money", value: 100 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -100 },
-                    { type: "giveItem", item: "notebook" }
-                ],
-                text: "Ты покупаешь блокнот и убираешь его в сумку.",
-                image: "assets/images/items/notebook.jpg"
             },
             {
                 id: "buy_water",
@@ -52,18 +52,6 @@ Object.assign(window.GAME_DATA.locations, {
                 text: "Ты берёшь с полки бутылку воды и кладёшь её в сумку."
             },
             {
-                id: "buy_energy_drink",
-                label: "Купить энергетик",
-                hint: "40 ¥",
-                minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 40 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -40 },
-                    { type: "giveItem", item: "energy_drink" }
-                ],
-                text: "Ты берёшь банку энергетика и убираешь её в сумку."
-            },
-            {
                 id: "buy_chocolate",
                 label: "Купить шоколадный батончик",
                 hint: "25 ¥",
@@ -74,38 +62,6 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "giveItem", item: "chocolate" }
                 ],
                 text: "Ты берёшь шоколадный батончик и убираешь его в сумку."
-            },
-            {
-                id: "buy_sandwich",
-                label: "Купить сэндвич",
-                hint: "60 ¥",
-                minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 60 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -60 },
-                    { type: "giveItem", item: "sandwich" }
-                ],
-                text: "Ты берёшь сэндвич и убираешь его в сумку."
-            },
-            {
-                id: "buy_pizza_slice",
-                label: "Купить кусочек пиццы",
-                hint: "80 ¥",
-                minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 80 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -80 },
-                    { type: "giveItem", item: "pizza_slice" }
-                ],
-                text: "Ты берёшь кусочек пиццы и убираешь его в сумку."
-            },
-            {
-                id: "look_shelves",
-                label: "Осмотреть полки",
-                hint: "Изучить ассортимент",
-                effects: [{ type: "setFlag", flag: "lookedAtShelves", value: true }],
-                text: "На полках ты замечаешь воду, снеки, шоколад и готовые сэндвичи.",
-                image: "assets/images/locations/shop-shelves.jpg"
             }
         ]
     }

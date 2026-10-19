@@ -23,6 +23,13 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "cafe" }]
             },
             {
+                id: "center_to_shop",
+                label: "Зайти в магазин",
+                hint: "Продукты",
+                condition: { locationOpen: "shop-center" },
+                effects: [{ type: "move", to: "shop-center" }]
+            },
+            {
                 id: "center_to_electronics",
                 label: "Зайти в магазин электроники",
                 hint: "Техника и гаджеты",
@@ -30,15 +37,15 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "electronics" }]
             },
             {
-                id: "center_to_gloomy",
-                label: "Пойти на мрачную улицу",
-                hint: "К перекрёстку",
-                effects: [{ type: "move", to: "gloomy-street" }]
+                id: "center_to_residential",
+                label: "Пойти в спальный район",
+                hint: "Дома, магазин, парк",
+                effects: [{ type: "move", to: "residential" }]
             }
         ]
     }
 });
 
 Object.assign(window.GAME_DATA.links, {
-    center: ["university", "cafe", "electronics", "gloomy-street"]
+    center: ["university", "cafe", "electronics", "shop-center"]
 });

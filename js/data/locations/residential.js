@@ -27,6 +27,12 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "park" }]
             },
             {
+                id: "residential_to_center",
+                label: "Пойти в центр",
+                hint: "Кафе, магазины, университет",
+                effects: [{ type: "move", to: "center" }]
+            },
+            {
                 id: "residential_to_gloomy",
                 label: "Пойти на мрачную улицу",
                 hint: "К перекрёстку",
@@ -37,5 +43,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    residential: ["apartment", "shop", "park", "gloomy-street"]
+    residential: ["apartment", "shop", "park", "center", "gloomy-street"]
 });
