@@ -20,7 +20,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "train_at_gym",
                 label: "Тренироваться",
-                hint: "1 час · +2 к максимуму выносливости · −20 выносливости",
+                hint: "1 час · +5 к максимуму выносливости · −20 выносливости",
                 minutes: 60,
                 condition: {
                     all: [
