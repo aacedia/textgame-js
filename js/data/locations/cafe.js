@@ -18,7 +18,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "drink_at_cafe",
                 label: "Выпить кофе",
-                hint: "20 ₽ · -10 усталости · +20 выносливости · +10 настроения",
+                hint: "20 ¥ · -10 усталости · +20 выносливости · +10 настроения",
                 minutes: 15,
                 condition: { variableAtLeast: { name: "money", value: 20 } },
                 effects: [
@@ -34,7 +34,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "eat_at_cafe",
                 label: "Поесть в кафе",
-                hint: "50 ₽ · снимает голод · +25 настроения",
+                hint: "50 ¥ · снимает голод · +25 настроения",
                 minutes: 40,
                 condition: { variableAtLeast: { name: "money", value: 50 } },
                 effects: [
@@ -48,7 +48,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_shift",
                 label: "Подработать",
-                hint: "3 часа · +300 ₽ · тратит выносливость",
+                hint: "3 часа · +300 ¥ · тратит выносливость",
                 minutes: 180,
                 condition: {
                     all: [

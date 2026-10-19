@@ -19,7 +19,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_on_order",
                 label: "Выполнить заказ",
-                hint: "1 час · +100 ₽ · −10 выносливости",
+                hint: "1 час · +100 ¥ · −10 выносливости",
                 minutes: 60,
                 condition: {
                     all: [

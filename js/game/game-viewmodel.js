@@ -245,7 +245,7 @@ window.Game = window.Game || {};
           done: notebookDone,
           text: notebookDone
             ? "Блокнот куплен."
-            : "Найди магазин и купи блокнот за 100 ₽."
+            : "Найди магазин и купи блокнот за 100 ¥."
         }
       ]
     };

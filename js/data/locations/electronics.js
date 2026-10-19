@@ -19,7 +19,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_electronics",
                 label: "Подработать продавцом",
-                hint: "3 часа · +300 ₽ · −50 выносливости · возможны чаевые до 400₽",
+                hint: "3 часа · +300 ¥ · −50 выносливости · возможны чаевые до 400¥",
                 minutes: 180,
                 condition: {
                     all: [
@@ -39,7 +39,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_laptop",
                 label: "Купить ноутбук",
-                hint: "50000 ₽",
+                hint: "50000 ¥",
                 minutes: 5,
                 hiddenWhen: { item: "laptop" },
                 condition: { variableAtLeast: { name: "money", value: 50000 } },
@@ -52,7 +52,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_console",
                 label: "Купить портативную консоль",
-                hint: "25000 ₽",
+                hint: "25000 ¥",
                 minutes: 5,
                 hiddenWhen: { item: "handheld_console" },
                 condition: { variableAtLeast: { name: "money", value: 25000 } },
@@ -65,7 +65,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_smartphone",
                 label: "Купить смартфон",
-                hint: "30000 ₽",
+                hint: "30000 ¥",
                 minutes: 5,
                 hiddenWhen: { item: "smartphone" },
                 condition: { variableAtLeast: { name: "money", value: 30000 } },
@@ -78,7 +78,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_headphones",
                 label: "Купить беспроводные наушники",
-                hint: "8000 ₽",
+                hint: "8000 ¥",
                 minutes: 5,
                 hiddenWhen: { item: "wireless_headphones" },
                 condition: { variableAtLeast: { name: "money", value: 8000 } },
@@ -91,7 +91,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_tv",
                 label: "Купить телевизор",
-                hint: "40000 ₽ · доставка домой",
+                hint: "40000 ¥ · доставка домой",
                 minutes: 5,
                 hiddenWhen: { flag: "tvAtHome" },
                 condition: { variableAtLeast: { name: "money", value: 40000 } },

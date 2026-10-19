@@ -17,7 +17,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_food",
                 label: "Купить продукты",
-                hint: "100 ₽ · +5 порций еды",
+                hint: "100 ¥ · +5 порций еды",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [
@@ -29,7 +29,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_notebook",
                 label: "Купить блокнот",
-                hint: "100 ₽",
+                hint: "100 ¥",
                 hiddenWhen: { item: "notebook" },
                 condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [
@@ -42,7 +42,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_water",
                 label: "Купить бутылку воды",
-                hint: "15 ₽",
+                hint: "15 ¥",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 15 } },
                 effects: [
@@ -54,7 +54,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_energy_drink",
                 label: "Купить энергетик",
-                hint: "40 ₽",
+                hint: "40 ¥",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 40 } },
                 effects: [
@@ -66,7 +66,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_chocolate",
                 label: "Купить шоколадный батончик",
-                hint: "25 ₽",
+                hint: "25 ¥",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 25 } },
                 effects: [
@@ -78,7 +78,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_sandwich",
                 label: "Купить сэндвич",
-                hint: "60 ₽",
+                hint: "60 ¥",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 60 } },
                 effects: [
@@ -90,7 +90,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_pizza_slice",
                 label: "Купить кусочек пиццы",
-                hint: "80 ₽",
+                hint: "80 ¥",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 80 } },
                 effects: [

@@ -107,7 +107,7 @@
         if (condition.variableAtLeast) {
             const { name, value } = condition.variableAtLeast;
             const suffix =
-                name === "money" ? " ₽" :
+                name === "money" ? " ¥" :
                     name === "stamina" ? " выносливости" :
                         name === "health" ? " здоровья" :
                             name === "hunger" ? " голода" :
