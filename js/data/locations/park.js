@@ -36,9 +36,9 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "park_return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
+                label: "Выйти из парка",
+                hint: "Вернуться в район",
+                effects: [{ type: "move", to: "residential" }]
             },
             {
                 id: "walk_park",
@@ -84,5 +84,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    park: ["street"]
+    park: ["residential"]
 });

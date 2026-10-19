@@ -11,9 +11,9 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "cafe_return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
+                label: "Выйти из кафе",
+                hint: "Вернуться в центр",
+                effects: [{ type: "move", to: "center" }]
             },
             {
                 id: "drink_at_cafe",
@@ -77,5 +77,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    cafe: ["street"]
+    cafe: ["center"]
 });

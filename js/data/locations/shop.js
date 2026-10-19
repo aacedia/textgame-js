@@ -11,8 +11,8 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "return_street",
                 label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
+                hint: "Вернуться в район",
+                effects: [{ type: "move", to: "residential" }]
             },
             {
                 id: "buy_food",
@@ -112,5 +112,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    shop: ["street"]
+    shop: ["residential"]
 });

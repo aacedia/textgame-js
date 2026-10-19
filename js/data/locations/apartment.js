@@ -25,7 +25,7 @@ Object.assign(window.GAME_DATA.locations, {
                 label: "Выйти на улицу",
                 hint: "Отправиться в город",
                 condition: { item: "keys" },
-                effects: [{ type: "move", to: "street" }]
+                effects: [{ type: "move", to: "residential" }]
             },
             {
                 id: "inspect_table",
@@ -130,5 +130,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    apartment: ["street"]
+    apartment: ["residential"]
 });

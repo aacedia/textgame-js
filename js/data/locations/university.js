@@ -11,9 +11,9 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
+                label: "Выйти из университета",
+                hint: "Вернуться в центр",
+                effects: [{ type: "move", to: "center" }]
             },
             {
                 id: "look_hall",
@@ -86,5 +86,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    university: ["street", "library", "gym"]
+    university: ["center", "library", "gym"]
 });

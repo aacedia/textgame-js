@@ -12,9 +12,9 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "electronics_return_street",
-                label: "Выйти на улицу",
-                hint: "Вернуться к перекрёстку",
-                effects: [{ type: "move", to: "street" }]
+                label: "Выйти из магазина",
+                hint: "Вернуться в центр",
+                effects: [{ type: "move", to: "center" }]
             },
             {
                 id: "work_electronics",
@@ -113,5 +113,5 @@ Object.assign(window.GAME_DATA.locations, {
 });
 
 Object.assign(window.GAME_DATA.links, {
-    electronics: ["street"]
+    electronics: ["center"]
 });
