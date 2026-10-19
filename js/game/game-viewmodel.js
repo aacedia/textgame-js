@@ -293,9 +293,11 @@ window.Game = window.Game || {};
         },
         {
           key: "stamina", label: "Выносливость",
-          value: stamina, max: GAME_DATA.staminaMax ?? 100, color: "stamina",
+          value: stamina,
+          max: v.staminaMax ?? GAME_DATA.staminaMax ?? 100,
+          color: "stamina",
           level: level(stamina, "low"),
-          tooltip: "Тратится на подработку. Восстанавливается сном и некоторыми напитками."
+          tooltip: "Тратится на подработку. Растёт от тренировок в спортзале."
         },
         {
           key: "mood", label: "Настроение",

@@ -302,7 +302,7 @@ window.Game = window.Game || {};
 
     // После сна: восстанавливаем stamina и health.
     const after = { ...nextState, variables: { ...nextState.variables }, sleeping: false };
-    after.variables.stamina = 100;
+    after.variables.stamina = Number(after.variables.staminaMax ?? 100);
     after.variables.health = 100;
     Game.setState(after);
 

@@ -73,11 +73,18 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Тишина, книги и заказы",
                 condition: { locationOpen: "library" },
                 effects: [{ type: "move", to: "library" }]
+            },
+            {
+                id: "go_gym",
+                label: "Пойти в спортзал",
+                hint: "Размяться и стать выносливее",
+                condition: { locationOpen: "gym" },
+                effects: [{ type: "move", to: "gym" }]
             }
         ]
     }
 });
 
 Object.assign(window.GAME_DATA.links, {
-    university: ["street", "library"]
+    university: ["street", "library", "gym"]
 });

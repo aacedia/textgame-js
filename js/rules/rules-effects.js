@@ -170,14 +170,24 @@
                 break;
             }
 
-            case "changeVariable": {
+            case "changeVariable": case "changeVariable": {
                 const before = Number(next.variables[effect.name] || 0);
                 let after = before + effect.amount;
 
-                // Зажим для настроения по [0, moodMax].
                 if (effect.name === "mood") {
                     const max = Number(gameData.moodMax ?? 100);
                     after = Math.max(0, Math.min(max, after));
+                }
+                if (effect.name === "stamina") {
+                    const max = Number(next.variables.staminaMax ?? gameData.staminaMax ?? 100);
+                    after = Math.max(0, Math.min(max, after));
+                }
+                if (effect.name === "staminaMax") {
+                    const max = Number(gameData.staminaMax ?? 100);
+                    after = Math.max(0, Math.min(max, after));
+                    // Если текущая стамина стала больше нового максимума — обрезаем.
+                    const cur = Number(next.variables.stamina) || 0;
+                    next.variables.stamina = Math.min(cur, after);
                 }
 
                 next.variables[effect.name] = after;
