@@ -21,6 +21,18 @@ window.GAME_DATA.dialogues.yui = {
                 { text: "О видеоиграх", next: "games", condition: { not: { flag: "yui_games_done" } } },
                 { text: "О музыке", next: "music", condition: { not: { flag: "yui_music_done" } } },
                 { text: "О жизни в городе", next: "city", condition: { not: { flag: "yui_city_done" } } },
+                {
+                    text: "Просто поболтать",
+                    next: "smalltalk",
+                    condition: {
+                        all: [
+                            { flag: "yui_study_done" },
+                            { flag: "yui_games_done" },
+                            { flag: "yui_music_done" },
+                            { flag: "yui_city_done" }
+                        ]
+                    }
+                },
                 { text: "Попрощаться", close: true }
             ]
         },
@@ -176,6 +188,23 @@ window.GAME_DATA.dialogues.yui = {
         city_bad: {
             text: "Юи опускает взгляд. — Может, ты и прав… — тихо говорит она и замолкает.",
             choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Просто поболтать ---------- */
+
+        smalltalk: {
+            text: "Вы болтаете о мелочах: о музыке, которая играет у неё в наушниках, о новом кафе неподалёку, о планах на выходные. Юи улыбается — ей приятно просто поговорить.",
+            choices: [
+                {
+                    text: "Попрощаться",
+                    next: "smalltalk_result",
+                    effects: [{ type: "changeVariable", name: "relationship_yui", amount: 2 }]
+                }
+            ]
+        },
+        smalltalk_result: {
+            text: "Вы прощаетесь. Юи машет рукой и снова надевает наушники.",
+            choices: [{ text: "Закрыть", close: true }]
         }
     }
 };

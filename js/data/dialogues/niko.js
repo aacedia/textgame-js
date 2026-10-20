@@ -36,6 +36,18 @@ window.GAME_DATA.dialogues.niko = {
                 { text: "О любимых видах спорта", next: "favorites", condition: { not: { flag: "niko_favorites_done" } } },
                 { text: "О её мечте", next: "dream", condition: { not: { flag: "niko_dream_done" } } },
                 { text: "О пассивных людях", next: "passive", condition: { not: { flag: "niko_passive_done" } } },
+                {
+                    text: "Просто поболтать",
+                    next: "smalltalk",
+                    condition: {
+                        all: [
+                            { flag: "niko_sport_done" },
+                            { flag: "niko_favorites_done" },
+                            { flag: "niko_dream_done" },
+                            { flag: "niko_passive_done" }
+                        ]
+                    }
+                },
                 { text: "Попрощаться", close: true }
             ]
         },
@@ -216,6 +228,23 @@ window.GAME_DATA.dialogues.niko = {
         passive_bad: {
             text: "Нико хмурится. — Вот из-за такого отношения люди и запускают себя.",
             choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Просто поболтать ---------- */
+
+        smalltalk: {
+            text: "Вы болтаете о тренировках, о том, кто сегодня в зале, о планах на неделю. Нико оживлённо жестикулирует и смеётся.",
+            choices: [
+                {
+                    text: "Попрощаться",
+                    next: "smalltalk_result",
+                    effects: [{ type: "changeVariable", name: "relationship_niko", amount: 2 }]
+                }
+            ]
+        },
+        smalltalk_result: {
+            text: "Вы прощаетесь. Нико хлопает тебя по плечу и возвращается к тренировке.",
+            choices: [{ text: "Закрыть", close: true }]
         }
     }
 };

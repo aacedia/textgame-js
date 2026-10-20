@@ -21,6 +21,18 @@ window.GAME_DATA.dialogues.hinako = {
                 { text: "О книгах по управлению", next: "books", condition: { not: { flag: "hinako_books_done" } } },
                 { text: "О её мечте", next: "dream", condition: { not: { flag: "hinako_dream_done" } } },
                 { text: "О лени и безделье", next: "lazy", condition: { not: { flag: "hinako_lazy_done" } } },
+                {
+                    text: "Просто поболтать",
+                    next: "smalltalk",
+                    condition: {
+                        all: [
+                            { flag: "hinako_study_done" },
+                            { flag: "hinako_books_done" },
+                            { flag: "hinako_dream_done" },
+                            { flag: "hinako_lazy_done" }
+                        ]
+                    }
+                },
                 { text: "Попрощаться", close: true }
             ]
         },
@@ -200,6 +212,23 @@ window.GAME_DATA.dialogues.hinako = {
         lazy_bad: {
             text: "Хинако хмурится. — Вот из-за такого отношения люди и застревают на месте.",
             choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Просто поболтать ---------- */
+
+        smalltalk: {
+            text: "Вы неспешно беседуете о том о сём: о расписании, о книгах, о планах на семестр. Хинако держится спокойно и доброжелательно.",
+            choices: [
+                {
+                    text: "Попрощаться",
+                    next: "smalltalk_result",
+                    effects: [{ type: "changeVariable", name: "relationship_hinako", amount: 2 }]
+                }
+            ]
+        },
+        smalltalk_result: {
+            text: "Вы прощаетесь. Хинако кивает и возвращается к книге.",
+            choices: [{ text: "Закрыть", close: true }]
         }
     }
 };

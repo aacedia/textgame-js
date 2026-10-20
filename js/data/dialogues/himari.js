@@ -20,6 +20,17 @@ window.GAME_DATA.dialogues.himari = {
                 { text: "О книгах", next: "books", condition: { not: { flag: "himari_books_done" } } },
                 { text: "О спорте", next: "sport", condition: { not: { flag: "himari_sport_done" } } },
                 { text: "Об учёбе", next: "study", condition: { not: { flag: "himari_study_done" } } },
+                {
+                    text: "Просто поболтать",
+                    next: "smalltalk",
+                    condition: {
+                        all: [
+                            { flag: "himari_books_done" },
+                            { flag: "himari_sport_done" },
+                            { flag: "himari_study_done" }
+                        ]
+                    }
+                },
                 { text: "Попрощаться", close: true }
             ]
         },
@@ -119,6 +130,23 @@ window.GAME_DATA.dialogues.himari = {
         study_bad: {
             text: "Химари пожимает плечами. — Ну, кому как.",
             choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Просто поболтать ---------- */
+
+        smalltalk: {
+            text: "Вы болтаете о всяких мелочах: о погоде, о планах на неделю, о книге, которую она дочитывает. Разговор ни о чём, но приятный.",
+            choices: [
+                {
+                    text: "Попрощаться",
+                    next: "smalltalk_result",
+                    effects: [{ type: "changeVariable", name: "relationship_himari", amount: 2 }]
+                }
+            ]
+        },
+        smalltalk_result: {
+            text: "Вы прощаетесь. Химари улыбается — кажется, ей было приятно.",
+            choices: [{ text: "Закрыть", close: true }]
         }
     }
 };
