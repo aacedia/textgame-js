@@ -20,6 +20,12 @@ Object.assign(window.GAME_DATA.character, {
             avatar: "assets/images/characters/hinako.png",
             avatarAlt: "Портрет Хинако",
             description: "Студентка, много читает и готовится к занятиям. Мечтает стать директором."
+        },
+        niko: {
+            name: "Нико",
+            avatar: "assets/images/characters/niko.png",
+            avatarAlt: "Портрет Нико",
+            description: "Спортивная девушка, тренируется в зале. Мечтает стать профессиональной волейболисткой."
         }
     }
 });

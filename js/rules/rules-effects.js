@@ -19,7 +19,7 @@
     /*
       Начисляет рост потребностей и настроения за minutes игровых минут.
       Наносит урон здоровью за каждую минуту, проведённую на максимуме потребностей.
-    
+  
       Во сне (state.sleeping):
         - усталость не растёт и не наносит урон;
         - голод, жажда и настроение меняются в 10 раз медленнее;
@@ -178,6 +178,9 @@
                 if (effect.name === "mood") {
                     const max = Number(gameData.moodMax ?? 100);
                     after = Math.max(0, Math.min(max, after));
+                }
+                if (effect.name.startsWith("relationship_")) {
+                    after = Math.max(0, Math.min(100, after));
                 }
                 if (effect.name === "stamina") {
                     const max = Number(next.variables.staminaMax ?? gameData.staminaMax ?? 100);
