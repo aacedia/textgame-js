@@ -3,16 +3,10 @@
 */
 .actions{padding:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .action-title{display:block;font-weight:650;color:var(--text)}
-.hint{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+.hint{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 
 /* Цветные полосы по категории действия */
-.action{
-  padding:7px 11px;
-  font-size:14px;
-  border-left-width:4px;
-  border-left-style:solid;
-  border-left-color:var(--border);
-}
+.action{border-left-width:4px;border-left-style:solid;border-left-color:var(--border)}
 .action--move  {border-left-color:#7fb6d9}
 .action--item  {border-left-color:#8fc7a3}
 .action--money {border-left-color:#d9a35b}
