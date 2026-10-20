@@ -199,9 +199,9 @@
                 if (effect.name === "money") {
                     const diff = after - before;
                     if (diff > 0) {
-                        messages.push({ kind: "info", text: `Получено: ${diff} ₽` });
+                        messages.push({ kind: "info", text: `Получено: ${diff} ¥` });
                     } else if (diff < 0) {
-                        messages.push({ kind: "info", text: `Потрачено: ${-diff} ₽` });
+                        messages.push({ kind: "info", text: `Потрачено: ${-diff} ¥` });
                     }
                 }
 

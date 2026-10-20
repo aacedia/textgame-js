@@ -121,7 +121,7 @@ window.UI = (() => {
     root.appendChild(timeBadge);
 
     const moneyBadge = buildBadge({
-      main: `${status.money} ₽`,
+      main: `${status.money} ¥`,
       modifier: "badge--money"
     });
     root.appendChild(moneyBadge);

@@ -174,8 +174,8 @@ window.Game = window.Game || {};
       Game.patchState({
         variables: { ...state.variables, money: before + amount }
       });
-      Game.pushLog([`Чит: добавлено ${amount} ₽`]);
-      UI.showDialog("Чит-код", `Добавлено ${amount} ₽.`, [{ label: "ОК", primary: true }]);
+      Game.pushLog([`Чит: добавлено ${amount} ¥`]);
+      UI.showDialog("Чит-код", `Добавлено ${amount} ¥.`, [{ label: "ОК", primary: true }]);
       Game.render();
       return;
     }
