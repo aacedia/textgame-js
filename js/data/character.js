@@ -1,7 +1,6 @@
 Object.assign(window.GAME_DATA.character, {
     name: "",
     avatar: "assets/images/characters/hero.png",
-    avatarAlt: "Портрет героя",
     description: "",
     npcs: {
         himari: {
@@ -15,6 +14,12 @@ Object.assign(window.GAME_DATA.character, {
             avatar: "assets/images/characters/yui.png",
             avatarAlt: "Портрет Юи",
             description: "Соседка, приехала в город из деревни. Учится и слушает музыку."
+        },
+        hinako: {
+            name: "Хинако",
+            avatar: "assets/images/characters/hinako.png",
+            avatarAlt: "Портрет Хинако",
+            description: "Студентка, много читает и готовится к занятиям. Мечтает стать директором."
         }
     }
 });

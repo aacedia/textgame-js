@@ -170,10 +170,11 @@
                 break;
             }
 
-            case "changeVariable": case "changeVariable": {
+            case "changeVariable": {
                 const before = Number(next.variables[effect.name] || 0);
                 let after = before + effect.amount;
 
+                // Зажимы по максимуму.
                 if (effect.name === "mood") {
                     const max = Number(gameData.moodMax ?? 100);
                     after = Math.max(0, Math.min(max, after));
@@ -183,22 +184,21 @@
                     after = Math.max(0, Math.min(max, after));
                 }
                 if (effect.name === "staminaMax") {
-                    const max = Number(gameData.staminaMax ?? 100);
-                    after = Math.max(0, Math.min(max, after));
-                    // Если текущая стамина стала больше нового максимума — обрезаем.
+                    const cap = Number(gameData.staminaMax ?? 100);
+                    after = Math.max(0, Math.min(cap, after));
                     const cur = Number(next.variables.stamina) || 0;
-                    next.variables.stamina = Math.min(cur, after);
+                    if (cur > after) next.variables.stamina = after;
                 }
 
                 next.variables[effect.name] = after;
 
-                // Сообщения только для денег: остальные переменные служебные.
+                // Сообщения только для денег.
                 if (effect.name === "money") {
                     const diff = after - before;
                     if (diff > 0) {
-                        messages.push({ kind: "info", text: `Получено: ${diff} ¥` });
+                        messages.push({ kind: "info", text: `Получено: ${diff} ₽` });
                     } else if (diff < 0) {
-                        messages.push({ kind: "info", text: `Потрачено: ${-diff} ¥` });
+                        messages.push({ kind: "info", text: `Потрачено: ${-diff} ₽` });
                     }
                 }
 

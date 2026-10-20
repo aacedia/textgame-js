@@ -8,13 +8,54 @@ Object.assign(window.GAME_DATA.locations, {
         description: [
             "Главное здание университета. У входа собрались студенты."
         ],
+        extraDescription: [
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 14 * 60 } },
+                        { variableDiffers: { name: "lastHinakoDay", other: "day" } }
+                    ]
+                },
+                parts: [
+                    { text: "В холле за столом сидит " },
+                    { link: { action: "hinako_talk", text: "Хинако" } },
+                    { text: " с учебником — она всегда приходит заранее." }
+                ]
+            },
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 14 * 60 } },
+                        { not: { variableDiffers: { name: "lastHinakoDay", other: "day" } } }
+                    ]
+                },
+                text: "В холле за столом сидит Хинако с книгой. Ты уже говорил с ней сегодня."
+            }
+        ],
         actions: [
+
             {
                 id: "return_street",
                 type: "back",
                 label: "Выйти из университета",
                 hint: "Вернуться в центр",
                 effects: [{ type: "move", to: "center" }]
+            },
+            {
+                id: "hinako_talk",
+                type: "link",
+                label: "Поговорить с Хинако",
+                hint: "Начать разговор",
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 14 * 60 } },
+                        { variableDiffers: { name: "lastHinakoDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastHinakoDay", from: "day" }
+                ],
+                dialogue: "hinako"
             },
             {
                 id: "look_hall",

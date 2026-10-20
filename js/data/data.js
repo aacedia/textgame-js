@@ -23,6 +23,7 @@ window.GAME_DATA = {
       lastClassDay: 0,
       lastHimariDay: 0,
       lastYuiDay: 0,
+      lastHinakoDay: 0,
       lastOrderDay: 0,
       lastShiftDay: 0,
       lastElectronicsShiftDay: 0,
@@ -39,7 +40,8 @@ window.GAME_DATA = {
       mood: 90,
       foodPortions: 5,
       relationship_himari: 0,
-      relationship_yui: 10
+      relationship_yui: 10,
+      relationship_hinako: 0
     },
     uiTab: "quests",
     inventoryFilter: "all",
