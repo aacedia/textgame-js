@@ -1,6 +1,7 @@
 /*
   Команды UI: сохранение/загрузка/рестарт/справка, переключение вкладок,
-  сворачивание панелей «Управление» и «История событий», фильтр инвентаря.
+  сворачивание панелей «Управление» и «История событий», фильтр инвентаря,
+  чит-код, выбор и закрытие диалога.
 
   Публичный API:
     Game.onCommand(command)
@@ -10,6 +11,8 @@
     Game.showHelp()
     Game.buildSnapshot()
     Game.validateSnapshot(snapshot)
+    Game.chooseDialogue(index)
+    Game.closeDialogue()
 
   Команды, которые обрабатывает onCommand:
     "tab:<id>"                   — переключить вкладку боковой панели
@@ -20,6 +23,9 @@
     "load"                       — загрузить игру
     "restart"                    — начать заново (с подтверждением)
     "help"                       — показать справку
+    "cheat:apply:<command>"      — чит-код
+    "dialogue:choose:<index>"    — выбрать вариант в диалоге
+    "dialogue:close"             — закрыть диалог
 */
 window.Game = window.Game || {};
 
@@ -72,9 +78,20 @@ window.Game = window.Game || {};
       Game.render();
       return;
     }
+
     if (command.startsWith("cheat:apply:")) {
       const raw = command.slice("cheat:apply:".length);
       applyCheat(raw);
+      return;
+    }
+
+    if (command.startsWith("dialogue:choose:")) {
+      const idx = Number(command.slice("dialogue:choose:".length));
+      chooseDialogue(idx);
+      return;
+    }
+    if (command === "dialogue:close") {
+      closeDialogue();
       return;
     }
 
@@ -84,6 +101,97 @@ window.Game = window.Game || {};
       case "restart": restart(); break;
       case "help": showHelp(); break;
     }
+  }
+
+  /* ---------- диалоги ---------- */
+
+  // Выбор варианта в текущем узле диалога по индексу.
+  function chooseDialogue(index) {
+    const state = Game.getState();
+    if (!state.dialogue) return;
+
+    const dlg = (GAME_DATA.dialogues || {})[state.dialogue.id];
+    if (!dlg) return;
+
+    const node = dlg.nodes[state.dialogue.nodeId];
+    if (!node || !Array.isArray(node.choices)) return;
+
+    const choice = node.choices[index];
+    if (!choice) return;
+
+    // Условие выбора: если не выполнено — игнорируем клик.
+    if (choice.condition && !Rules.checkCondition(choice.condition, state, GAME_DATA)) return;
+
+    // Применяем эффекты выбора.
+    let next = state;
+    if (Array.isArray(choice.effects) && choice.effects.length) {
+      const result = Rules.applyEffects(choice.effects, state, GAME_DATA);
+      next = result.state;
+    }
+
+    if (choice.close) {
+      Game.setState({ ...next, dialogue: null });
+      Game.render();
+      return;
+    }
+
+    if (choice.next && dlg.nodes[choice.next]) {
+      Game.setState({ ...next, dialogue: { id: state.dialogue.id, nodeId: choice.next } });
+      Game.render();
+    }
+  }
+
+  function closeDialogue() {
+    const state = Game.getState();
+    if (!state.dialogue) return;
+    Game.setState({ ...state, dialogue: null });
+    Game.render();
+  }
+
+  /* ---------- чит-код ---------- */
+
+  function applyCheat(raw) {
+    const state = Game.getState();
+    const text = String(raw || "").trim();
+    if (!text) return;
+
+    const addMatch = text.match(/^player\.additem\s+(\S+)\s+(\d+)$/i);
+    if (!addMatch) {
+      UI.showDialog(
+        "Чит-код",
+        `Неизвестная команда. Поддерживается только: player.additem <id> <amount>`,
+        [{ label: "Закрыть", primary: true }]
+      );
+      return;
+    }
+
+    const id = addMatch[1];
+    const amount = Math.max(1, Number(addMatch[2]) || 0);
+
+    // F — код валюты.
+    if (id === "F" || id === "f") {
+      const before = Number(state.variables.money) || 0;
+      Game.patchState({
+        variables: { ...state.variables, money: before + amount }
+      });
+      Game.pushLog([`Чит: добавлено ${amount} ₽`]);
+      UI.showDialog("Чит-код", `Добавлено ${amount} ₽.`, [{ label: "ОК", primary: true }]);
+      Game.render();
+      return;
+    }
+
+    // Иначе — предмет из GAME_DATA.items.
+    if (!GAME_DATA.items[id]) {
+      UI.showDialog("Чит-код", `Неизвестный предмет: ${id}`, [{ label: "Закрыть", primary: true }]);
+      return;
+    }
+
+    const inventory = [...state.inventory];
+    for (let i = 0; i < amount; i++) inventory.push(id);
+    Game.patchState({ inventory });
+    Game.pushLog([`Чит: получено ${amount} × ${GAME_DATA.items[id].name}`]);
+    UI.showDialog("Чит-код", `Добавлено ${amount} × ${GAME_DATA.items[id].name}.`, [{ label: "ОК", primary: true }]);
+    Game.render();
   }
 
   /* ---------- снимок состояния ---------- */
@@ -97,21 +205,6 @@ window.Game = window.Game || {};
     };
   }
 
-  /*
-    Проверяет снимок сохранения на совместимость с текущими данными игры.
-    Возвращает:
-      { ok: true, data: { state, logEntries, infoEntries } }
-    либо
-      { ok: false, reason: "format" | "version" | "location" }
-
-    Нормализация:
-      - state мержится с freshState() поверх (чтобы появились новые поля);
-      - inventory фильтруется по известным предметам из GAME_DATA.items;
-      - flags и variables мержатся с базовыми (чтобы новые ключи появились
-        со значениями по умолчанию);
-      - logEntries обрезается по LOG_LIMIT;
-      - infoEntries фильтруется по Game.isInfoEntry и обрезается по INFO_LIMIT.
-  */
   function validateSnapshot(snapshot) {
     if (!snapshot || typeof snapshot !== "object") return { ok: false, reason: "format" };
     if (snapshot.version !== SAVE_VERSION) return { ok: false, reason: "version" };
@@ -133,6 +226,9 @@ window.Game = window.Game || {};
     if (!VALID_FILTERS.includes(merged.inventoryFilter)) {
       merged.inventoryFilter = "all";
     }
+
+    // Закрываем диалог при загрузке — состояние диалога не сохраняем.
+    merged.dialogue = null;
 
     const logs = Array.isArray(snapshot.logEntries)
       ? snapshot.logEntries.slice(0, LOG_LIMIT)
@@ -222,53 +318,6 @@ window.Game = window.Game || {};
     );
   }
 
-  /* ---------- жители читы вырубайте ---------- */
-
-  function applyCheat(raw) {
-    const state = Game.getState();
-    const text = String(raw || "").trim();
-
-    if (!text) return;
-
-    const addMatch = text.match(/^player\.additem\s+(\S+)\s+(\d+)$/i);
-    if (!addMatch) {
-      UI.showDialog(
-        "Чит-код",
-        `Неизвестная команда. Поддерживается только: player.additem <id> <amount>`,
-        [{ label: "Закрыть", primary: true }]
-      );
-      return;
-    }
-
-    const id = addMatch[1];
-    const amount = Math.max(1, Number(addMatch[2]) || 0);
-
-    // F — код валюты.
-    if (id === "F" || id === "f") {
-      const before = Number(state.variables.money) || 0;
-      Game.patchState({
-        variables: { ...state.variables, money: before + amount }
-      });
-      Game.pushLog([`Чит: добавлено ${amount} ¥`]);
-      UI.showDialog("Чит-код", `Добавлено ${amount} ¥.`, [{ label: "ОК", primary: true }]);
-      Game.render();
-      return;
-    }
-
-    // Иначе — предмет из GAME_DATA.items.
-    if (!GAME_DATA.items[id]) {
-      UI.showDialog("Чит-код", `Неизвестный предмет: ${id}`, [{ label: "Закрыть", primary: true }]);
-      return;
-    }
-
-    const inventory = [...state.inventory];
-    for (let i = 0; i < amount; i++) inventory.push(id);
-    Game.patchState({ inventory });
-    Game.pushLog([`Чит: получено ${amount} × ${GAME_DATA.items[id].name}`]);
-    UI.showDialog("Чит-код", `Добавлено ${amount} × ${GAME_DATA.items[id].name}.`, [{ label: "ОК", primary: true }]);
-    Game.render();
-  }
-
   /* ---------- тексты ошибок ---------- */
 
   function messageForLoadError(error) {
@@ -297,6 +346,8 @@ window.Game = window.Game || {};
     restart,
     showHelp,
     buildSnapshot,
-    validateSnapshot
+    validateSnapshot,
+    chooseDialogue,
+    closeDialogue
   });
 })();

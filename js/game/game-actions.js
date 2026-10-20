@@ -4,6 +4,9 @@
     - "sleep:<minutes>"     — сон с выбранной длительностью;
     - иначе                 — id действия из текущей локации.
 
+  Если у действия есть поле `dialogue` — открывается диалог (state.dialogue).
+  Эффекты действия применяются сразу при старте (например, фиксация дня).
+
   Порядок эффектов:
     advanceTime идёт ПЕРВЫМ (время тратится, потребности растут),
     потом эффекты действия / варианта. Это нужно, чтобы бонусы к настроению
@@ -14,7 +17,13 @@
   restoreAfterTime / reduceAfterTime   — после всех эффектов.
   restore ставит значение, reduce вычитает (с ограничением по [0, ∞)).
 
-  Серия нажатий, gameOver, evictIfClosed — как раньше.
+  Серия нажатий: если жать одно и то же действие подряд (в той же локации),
+  счётчик растёт. Любое другое действие или смена локации сбрасывают серию.
+
+  После gameOver действия заблокированы.
+
+  Если после действия текущая локация оказалась закрыта по расписанию,
+  игрока автоматически перемещает в defaultExit этой локации.
 */
 window.Game = window.Game || {};
 
@@ -26,11 +35,15 @@ window.Game = window.Game || {};
   if (!GAME_DATA) { console.error("game-actions.js: window.GAME_DATA не найден."); return; }
   if (!Rules) { console.error("game-actions.js: window.Rules не найден."); return; }
 
+  /* ---------- поиск действия ---------- */
+
   function findAction(id) {
     const state = Game.getState();
     const loc = GAME_DATA.locations[state.location];
     return loc.actions.find(a => a.id === id) || null;
   }
+
+  /* ---------- выгон из закрытой локации ---------- */
 
   function evictIfClosed(state) {
     const loc = GAME_DATA.locations[state.location];
@@ -57,6 +70,8 @@ window.Game = window.Game || {};
     };
   }
 
+  /* ---------- вспомогательные ---------- */
+
   function applyRestore(vars, spec) {
     if (!spec || typeof spec !== "object") return;
     Object.entries(spec).forEach(([key, value]) => {
@@ -72,6 +87,7 @@ window.Game = window.Game || {};
     });
   }
 
+  // Склонение числительных: 1 час, 2 часа, 5 часов.
   function plural(n, one, few, many) {
     const mod10 = n % 10;
     const mod100 = n % 100;
@@ -80,14 +96,42 @@ window.Game = window.Game || {};
     return many;
   }
 
+  /* ---------- диалоги ---------- */
+
+  function startDialogue(dialogueId, state, action) {
+    const dlg = (GAME_DATA.dialogues || {})[dialogueId];
+    if (!dlg) {
+      console.warn(`Диалог "${dialogueId}" не найден.`);
+      return;
+    }
+
+    let working = state;
+    // Эффекты действия применяются сразу при старте диалога
+    // (например, фиксация lastHimariDay = day).
+    if (action && Array.isArray(action.effects) && action.effects.length) {
+      const { state: next } = Rules.applyEffects(action.effects, working, GAME_DATA);
+      working = next;
+    }
+
+    Game.setState({
+      ...working,
+      dialogue: { id: dialogueId, nodeId: dlg.start }
+    });
+    Game.render();
+  }
+
+  /* ---------- главный диспетчер ---------- */
+
   function onAction(id) {
     const initial = Game.getState();
     if (initial.gameOver) return;
 
+    // Использование расходника.
     if (id.startsWith("use:")) {
       handleUse(id.slice(4));
       return;
     }
+    // Сон с выбранной длительностью.
     if (id.startsWith("sleep:")) {
       handleSleep(Number(id.slice(6)));
       return;
@@ -98,11 +142,19 @@ window.Game = window.Game || {};
     if (!action) return;
     if (!Rules.checkCondition(action.condition, state, GAME_DATA)) return;
 
+    // Диалог: эффекты действия применяются сразу, state.dialogue ставится.
+    if (action.dialogue) {
+      startDialogue(action.dialogue, state, action);
+      return;
+    }
+
+    // Пометка "одноразового" действия.
     let working = state;
     if (action.once) {
       working = { ...working, flags: { ...working.flags, [action.id + "_done"]: true } };
     }
 
+    // Выбор варианта, если он есть.
     const picked = Rules.pickVariant(action.variants, working, GAME_DATA, action.id);
     const variant = picked ? picked.variant : null;
 
@@ -113,6 +165,8 @@ window.Game = window.Game || {};
       };
     }
 
+    // Серия нажатий: продолжается только если то же действие подряд
+    // в той же локации. Иначе — начинается заново.
     const sameStreak =
       working.streakAction === action.id &&
       working.lastAction &&
@@ -152,6 +206,7 @@ window.Game = window.Game || {};
     );
     Game.setState(nextState);
 
+    // restore/reduce после времени и эффектов.
     if (action.restoreAfterTime || action.reduceAfterTime || nextState.sleeping) {
       const after = { ...nextState, variables: { ...nextState.variables } };
       applyRestore(after.variables, action.restoreAfterTime);
@@ -160,6 +215,7 @@ window.Game = window.Game || {};
       Game.setState(after);
     }
 
+    // Если локация закрылась по времени — выгоняем игрока.
     const evicted = evictIfClosed(Game.getState());
     if (evicted.messages.length) {
       Game.setState(evicted.state);
@@ -171,6 +227,7 @@ window.Game = window.Game || {};
     ];
     const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
 
+    // "История событий": действие + переходы + результаты эффектов.
     const locName = GAME_DATA.locations[state.location].name;
     Game.pushLog([
       `Действие: ${action.label} (${locName})`,
@@ -178,6 +235,7 @@ window.Game = window.Game || {};
       ...infoMessages
     ]);
 
+    // "Информация": авторский текст + картинка.
     const text = (variant && variant.text) || action.text;
     const image = (variant && variant.image) || action.image;
     const imageAlt = (variant && variant.imageAlt) || action.imageAlt || text;
@@ -189,6 +247,7 @@ window.Game = window.Game || {};
       batch.push({ kind: "image", src: image, alt: imageAlt || "", caption: imageCaption || "" });
     }
 
+    // Если действие — чисто переход (move без text/image), очищаем "Информацию".
     const isMoveOnly = moveMessages.length > 0 && batch.length === 0;
     if (isMoveOnly) {
       Game.clearInfo();
@@ -198,6 +257,8 @@ window.Game = window.Game || {};
 
     Game.render();
   }
+
+  /* ---------- использование расходника ---------- */
 
   function handleUse(itemId) {
     const state = Game.getState();
@@ -209,7 +270,7 @@ window.Game = window.Game || {};
 
     const use = item.use;
 
-    // Тратим один экземпляр предмета.
+    // Тратим ровно один экземпляр предмета.
     const idx = state.inventory.indexOf(itemId);
     const inventory = state.inventory.slice();
     inventory.splice(idx, 1);
@@ -281,12 +342,16 @@ window.Game = window.Game || {};
     Game.render();
   }
 
+  /* ---------- сон ---------- */
+
   function handleSleep(minutes) {
     const state = Game.getState();
     if (state.gameOver) return;
     if (state.location !== "apartment") return;
 
     const safeMinutes = Math.max(60, Math.min(720, Number(minutes) || 480));
+
+    // Усталость снижается пропорционально: примерно 12.5 за час (100 за 8 часов).
     const fatigueReduction = (safeMinutes / 60) * 12.5;
 
     let working = { ...state, sleeping: true, variables: { ...state.variables } };
@@ -300,7 +365,7 @@ window.Game = window.Game || {};
     );
     Game.setState(nextState);
 
-    // После сна: восстанавливаем stamina и health.
+    // После сна: восстанавливаем выносливость и здоровье.
     const after = { ...nextState, variables: { ...nextState.variables }, sleeping: false };
     after.variables.stamina = Number(after.variables.staminaMax ?? 100);
     after.variables.health = 100;
@@ -323,7 +388,7 @@ window.Game = window.Game || {};
       ...infoMessages
     ]);
 
-    // Картинка и alt берутся из действия sleep, если заданы.
+    // Картинка берётся из действия sleep в квартире.
     const apartment = GAME_DATA.locations["apartment"];
     const sleepAction = apartment && apartment.actions
       ? apartment.actions.find(a => a.id === "sleep")
@@ -344,5 +409,13 @@ window.Game = window.Game || {};
     Game.render();
   }
 
-  Object.assign(window.Game, { onAction, handleUse, handleSleep, findAction });
+  /* ---------- экспорт ---------- */
+
+  Object.assign(window.Game, {
+    onAction,
+    handleUse,
+    handleSleep,
+    startDialogue,
+    findAction
+  });
 })();

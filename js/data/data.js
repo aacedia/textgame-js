@@ -10,6 +10,7 @@ window.GAME_DATA = {
   initialState: {
     location: "apartment",
     inventory: [],
+    dialogue: null,
     flags: {
       hasInspectedTable: false,
       tvAtHome: false,

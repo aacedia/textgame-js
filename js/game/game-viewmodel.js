@@ -25,7 +25,8 @@ window.Game = window.Game || {};
       side: buildSideVM(),
       controlsOpen: !!state.controlsOpen,
       logOpen: !!state.logOpen,
-      gameOver: !!state.gameOver
+      gameOver: !!state.gameOver,
+      dialogue: buildDialogueVM()
     };
   }
 
@@ -121,7 +122,9 @@ window.Game = window.Game || {};
     const normalActions = [];
 
     loc.actions.forEach(action => {
+      // Действия типа "link" не показываются в списке — только через ссылки в тексте.
       if (action.type === "link") return;
+
       if (action.once && state.flags[action.id + "_done"]) return;
       if (action.hiddenWhen && Rules.checkCondition(action.hiddenWhen, state, GAME_DATA)) return;
 
@@ -250,7 +253,7 @@ window.Game = window.Game || {};
           done: notebookDone,
           text: notebookDone
             ? "Блокнот куплен."
-            : "Найди магазин и купи блокнот за 100 ¥."
+            : "Найди магазин и купи блокнот за 100 ₽."
         }
       ]
     };
@@ -265,6 +268,8 @@ window.Game = window.Game || {};
     const needsMax = GAME_DATA.needsMax ?? 100;
     const moodMax = GAME_DATA.moodMax ?? 100;
 
+    // direction: "high" — плохо при высоких значениях (потребности);
+    //            "low"  — плохо при низких значениях (health, stamina, mood).
     function level(value, direction) {
       if (direction === "high") {
         if (value >= 100) return "critical";
@@ -283,6 +288,7 @@ window.Game = window.Game || {};
     const thirst = v.thirst ?? 0;
     const fatigue = v.fatigue ?? 0;
     const mood = v.mood ?? 0;
+    const staminaMax = v.staminaMax ?? GAME_DATA.staminaMax ?? 100;
 
     return {
       name: ch.name || "",
@@ -298,9 +304,7 @@ window.Game = window.Game || {};
         },
         {
           key: "stamina", label: "Выносливость",
-          value: stamina,
-          max: v.staminaMax ?? GAME_DATA.staminaMax ?? 100,
-          color: "stamina",
+          value: stamina, max: staminaMax, color: "stamina",
           level: level(stamina, "low"),
           tooltip: "Тратится на подработку. Растёт от тренировок в спортзале."
         },
@@ -308,7 +312,7 @@ window.Game = window.Game || {};
           key: "mood", label: "Настроение",
           value: mood, max: moodMax, color: "mood",
           level: level(mood, "low"),
-          tooltip: "Падает со временем, быстрее при высоких потребностях. При 0 потребности растут вдвое быстрее. Увеличивается развлечениями и вкусной едой и напитками."
+          tooltip: "Падает со временем, быстрее при высоких потребностях. При 0 потребности растут вдвое быстрее."
         },
         {
           key: "hunger", label: "Голод",
@@ -332,6 +336,42 @@ window.Game = window.Game || {};
     };
   }
 
+  /* ---------- диалог ---------- */
+
+  function buildDialogueVM() {
+    const state = Game.getState();
+    if (!state.dialogue) return null;
+
+    const dlg = (GAME_DATA.dialogues || {})[state.dialogue.id];
+    if (!dlg) return null;
+    const node = dlg.nodes[state.dialogue.nodeId];
+    if (!node) return null;
+
+    const choices = (node.choices || [])
+      .map((c, i) => ({ ...c, index: i }))
+      .filter(c => !c.condition || Rules.checkCondition(c.condition, state, GAME_DATA));
+
+    const npc = (GAME_DATA.character && GAME_DATA.character.npcs && GAME_DATA.character.npcs[state.dialogue.id]) || {};
+    const relationRaw = Number(state.variables[`relationship_${state.dialogue.id}`]) || 0;
+    const relationMax = 100;
+    const relationPct = Math.max(0, Math.min(100, (relationRaw / relationMax) * 100));
+
+    return {
+      text: node.text || "",
+      choices,
+      npc: {
+        name: npc.name || state.dialogue.id,
+        avatar: npc.avatar || "",
+        avatarAlt: npc.avatarAlt || npc.name || "NPC"
+      },
+      relationship: {
+        value: relationRaw,
+        max: relationMax,
+        pct: relationPct
+      }
+    };
+  }
+
   /* ---------- экспорт ---------- */
 
   Object.assign(window.Game, {
@@ -344,6 +384,7 @@ window.Game = window.Game || {};
     buildSideContentVM,
     buildInventoryVM,
     buildQuestsVM,
-    buildCharacterVM
+    buildCharacterVM,
+    buildDialogueVM
   });
 })();

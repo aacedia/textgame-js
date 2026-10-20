@@ -23,7 +23,8 @@
       logOpen: boolean,
       side: { activeTab, tabs: [{ id, label }], content: { type, ... }, character: {...} },
       controlsOpen: boolean,
-      gameOver: boolean
+      gameOver: boolean,
+      dialogue: { text, choices: [{ text, index }] } | null
     }
 */
 window.UI = (() => {
@@ -68,6 +69,12 @@ window.UI = (() => {
       gameOverRestart.addEventListener("click", () => handlers.onCommand("restart"));
     }
 
+    // Закрытие диалога с Химари по Esc: сообщаем наружу.
+    const dlg = $("dialogue-dialog");
+    if (dlg) {
+      dlg.addEventListener("close", () => handlers.onCommand("dialogue:close"));
+    }
+
     // Делегируем инициализацию соседним модулям, если они есть.
     if (typeof UI.initSide === "function") UI.initSide(handlers);
     if (typeof UI.initControls === "function") UI.initControls(handlers);
@@ -95,6 +102,7 @@ window.UI = (() => {
     if (typeof UI.renderSide === "function") UI.renderSide(vm.side);
     if (typeof UI.renderControls === "function") UI.renderControls(vm.controlsOpen);
     renderGameOver(vm.gameOver);
+    renderDialogue(vm.dialogue);
   }
 
   /* ---------- статус ---------- */
@@ -113,7 +121,7 @@ window.UI = (() => {
     root.appendChild(timeBadge);
 
     const moneyBadge = buildBadge({
-      main: `${status.money} ¥`,
+      main: `${status.money} ₽`,
       modifier: "badge--money"
     });
     root.appendChild(moneyBadge);
@@ -263,6 +271,7 @@ window.UI = (() => {
     actions.forEach(action => {
       const button = document.createElement("button");
 
+      // Кнопка «назад»: компактная, на всю ширину, без описания.
       if (action.type === "back") {
         button.className = "action action--back";
         button.disabled = !action.available;
@@ -364,6 +373,64 @@ window.UI = (() => {
     root.hidden = !active;
   }
 
+  /* ---------- диалог ---------- */
+
+  function renderDialogue(dialogue) {
+    const dlg = $("dialogue-dialog");
+    const body = $("dialogue-body");
+    const actions = $("dialogue-actions");
+    const nameEl = $("dialogue-name");
+    const avatarWrap = $("dialogue-avatar");
+    const avatarImg = $("dialogue-avatar-img");
+    const relationValue = $("dialogue-relation-value");
+    const relationFill = $("dialogue-relation-fill");
+    if (!dlg || !body || !actions) return;
+
+    if (!dialogue) {
+      if (dlg.open) dlg.close();
+      return;
+    }
+
+    // Шапка с аватаром и отношением.
+    if (dialogue.npc) {
+      if (nameEl) nameEl.textContent = dialogue.npc.name || "";
+      if (avatarWrap && avatarImg) {
+        if (dialogue.npc.avatar) {
+          avatarImg.src = dialogue.npc.avatar;
+          avatarImg.alt = dialogue.npc.avatarAlt || dialogue.npc.name || "";
+          avatarImg.style.display = "";
+          avatarWrap.classList.remove("dialogue-avatar--empty");
+        } else {
+          avatarImg.removeAttribute("src");
+          avatarImg.alt = "";
+          avatarImg.style.display = "none";
+          avatarWrap.classList.add("dialogue-avatar--empty");
+          avatarWrap.textContent = "?";
+        }
+      }
+      if (relationValue && dialogue.relationship) {
+        relationValue.textContent = `${dialogue.relationship.value}/${dialogue.relationship.max}`;
+      }
+      if (relationFill && dialogue.relationship) {
+        relationFill.style.width = dialogue.relationship.pct + "%";
+      }
+    }
+
+    body.textContent = dialogue.text || "";
+    actions.replaceChildren();
+    (dialogue.choices || []).forEach(choice => {
+      const b = document.createElement("button");
+      b.textContent = choice.text;
+      b.className = "dialogue-choice";
+      b.addEventListener("click", () => {
+        handlers.onCommand("dialogue:choose:" + choice.index);
+      });
+      actions.appendChild(b);
+    });
+
+    if (!dlg.open) dlg.showModal();
+  }
+
   /* ---------- диалоги ---------- */
 
   function showDialog(title, body, buttons) {
@@ -399,8 +466,6 @@ window.UI = (() => {
       const command = input.value.trim();
       dialog.close();
       if (command) {
-        // Даём браузеру завершить закрытие cheat-dialog,
-        // чтобы showModal на #dialog не бросал InvalidStateError.
         setTimeout(() => handlers.onCommand("cheat:apply:" + command), 0);
       }
     };

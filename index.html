@@ -114,7 +114,11 @@
     <div class="dialoghead">Чит-код</div>
     <div class="dialogbody">
       <label for="cheat-input" class="cheat-label">Команда:</label>
-      <input id="cheat-input" type="text" class="cheat-input" autocomplete="off">
+      <input id="cheat-input" type="text" class="cheat-input" placeholder="player.additem F 50000" autocomplete="off">
+      <p class="cheat-hint">
+        Примеры: <code>player.additem F 50000</code> — деньги;
+        <code>player.additem water 5</code> — предметы.
+      </p>
     </div>
     <div class="dialogactions">
       <button id="cheat-cancel">Отмена</button>
@@ -122,22 +126,43 @@
     </div>
   </dialog>
 
+  <dialog id="dialogue-dialog">
+    <div class="dialogue-header">
+      <div class="dialogue-avatar" id="dialogue-avatar">
+        <img id="dialogue-avatar-img" alt="">
+      </div>
+      <div class="dialogue-info">
+        <div class="dialogue-name" id="dialogue-name"></div>
+        <div class="dialogue-relation">
+          <div class="dialogue-relation__label">
+            Отношение: <span id="dialogue-relation-value"></span>
+          </div>
+          <div class="dialogue-relation__track">
+            <div class="dialogue-relation__fill" id="dialogue-relation-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialogbody" id="dialogue-body"></div>
+    <div class="dialogactions dialogue-choices" id="dialogue-actions"></div>
+  </dialog>
+
   <script src="js/data/data.js"></script>
   <script src="js/data/character.js"></script>
   <script src="js/data/items.js"></script>
+  <script src="js/data/dialogues/himari.js"></script>
   <script src="js/data/locations/apartment.js"></script>
   <script src="js/data/locations/gloomy-street.js"></script>
   <script src="js/data/locations/residential.js"></script>
   <script src="js/data/locations/center.js"></script>
-  <script src="js/data/locations/shop-center.js"></script>
   <script src="js/data/locations/university.js"></script>
   <script src="js/data/locations/library.js"></script>
   <script src="js/data/locations/gym.js"></script>
   <script src="js/data/locations/shop.js"></script>
+  <script src="js/data/locations/shop-center.js"></script>
   <script src="js/data/locations/electronics.js"></script>
   <script src="js/data/locations/cafe.js"></script>
   <script src="js/data/locations/park.js"></script>
-  <script src="js/data/locations/electronics.js"></script>
   <script src="js/data/data-validation.js"></script>
 
   <script src="js/rules/rules.js"></script>

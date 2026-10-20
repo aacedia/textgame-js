@@ -19,7 +19,7 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 parts: [
                     { text: "На скамейке у фонтана сидит " },
-                    { link: { action: "talk_to_himari", text: "Химари" } },
+                    { link: { action: "himari_talk", text: "Химари" } },
                     { text: " с книгой — кажется, она никуда не спешит." }
                 ]
             },
@@ -54,11 +54,10 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/park-walk.jpg"
             },
             {
-                id: "talk_to_himari",
+                id: "himari_talk",
                 type: "link",
-                label: "Подойти к Химари",
-                hint: "Поговорить",
-                minutes: 15,
+                label: "Поговорить с Химари",
+                hint: "Начать разговор",
                 condition: {
                     all: [
                         { timeBetween: { from: 12 * 60, to: 18 * 60 } },
@@ -66,11 +65,9 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 effects: [
-                    { type: "setVariableFromVariable", name: "lastHimariDay", from: "day" },
-                    { type: "changeVariable", name: "mood", amount: 10 }
+                    { type: "setVariableFromVariable", name: "lastHimariDay", from: "day" }
                 ],
-                text: "Ты подходишь к Химари, и вы неспешно разговариваете о книгах, учёбе и планах. Она улыбается и говорит, что завтра снова будет здесь.",
-                image: "assets/images/characters/himari.png"
+                dialogue: "himari"
             },
             {
                 id: "park_look_around",
