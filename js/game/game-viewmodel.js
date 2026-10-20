@@ -117,12 +117,11 @@ window.Game = window.Game || {};
   function buildActionsVM(loc) {
     const state = Game.getState();
     const last = state.lastAction;
-    const result = [];
+    const backActions = [];
+    const normalActions = [];
 
     loc.actions.forEach(action => {
-      // Действия типа "link" не показываются в списке — только через ссылки в тексте.
       if (action.type === "link") return;
-
       if (action.once && state.flags[action.id + "_done"]) return;
       if (action.hiddenWhen && Rules.checkCondition(action.hiddenWhen, state, GAME_DATA)) return;
 
@@ -130,7 +129,7 @@ window.Game = window.Game || {};
       const isRecent = !!(last && last.id === action.id && last.location === state.location);
       const count = isRecent ? (state.streakCount || 0) : 0;
 
-      result.push({
+      const vm = {
         id: action.id,
         label: action.label,
         hint: action.hint || "",
@@ -143,10 +142,16 @@ window.Game = window.Game || {};
         recent: isRecent,
         type: action.type || "action",
         choices: action.choices || null
-      });
+      };
+
+      if (action.type === "back") {
+        backActions.push(vm);
+      } else {
+        normalActions.push(vm);
+      }
     });
 
-    return result;
+    return [...backActions, ...normalActions];
   }
 
   /* ---------- боковая панель ---------- */

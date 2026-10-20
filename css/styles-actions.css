@@ -38,3 +38,23 @@
   background:rgba(0,0,0,0.10);
   color:var(--accent-3);
 }
+/* Кнопка «назад» — на всю ширину, компактная, без описания */
+.action--back{
+  grid-column:1 / -1;
+  padding:6px 12px;
+  text-align:center;
+  background:var(--panel-2);
+  border-color:var(--border);
+  font-size:13px;
+}
+.action--back .action-title{
+  font-weight:600;
+  color:var(--muted);
+}
+.action--back:hover:not(:disabled){
+  background:var(--accent-2);
+  border-color:var(--accent);
+}
+.action--back:hover:not(:disabled) .action-title{
+  color:var(--accent-3);
+}

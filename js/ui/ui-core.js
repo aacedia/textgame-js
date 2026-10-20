@@ -262,6 +262,17 @@ window.UI = (() => {
     root.replaceChildren();
     actions.forEach(action => {
       const button = document.createElement("button");
+
+      if (action.type === "back") {
+        button.className = "action action--back";
+        button.disabled = !action.available;
+        button.innerHTML = `<span class="action-title">${escapeHtml(action.label)}</span>`;
+        button.title = action.label;
+        button.addEventListener("click", () => handlers.onAction(action.id));
+        root.appendChild(button);
+        return;
+      }
+
       button.disabled = !action.available;
       button.classList.add("action");
       if (action.accent) button.classList.add("action--" + action.accent);

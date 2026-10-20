@@ -13,6 +13,7 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "gym_return_university",
+                type: "back",
                 label: "Вернуться в университет",
                 hint: "Назад в главное здание",
                 effects: [{ type: "move", to: "university" }]

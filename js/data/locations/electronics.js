@@ -12,9 +12,17 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "electronics_return_street",
+                type: "back",
                 label: "Выйти из магазина",
                 hint: "Вернуться в центр",
                 effects: [{ type: "move", to: "center" }]
+            },
+            {
+                id: "look_electronics",
+                label: "Осмотреть витрины",
+                hint: "Изучить ассортимент",
+                effects: [{ type: "setFlag", flag: "lookedAtElectronics", value: true }],
+                text: "На витринах — смартфоны, ноутбуки, наушники и большие телевизоры. Глаза разбегаются."
             },
             {
                 id: "work_electronics",
@@ -100,13 +108,6 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "setFlag", flag: "tvAtHome", value: true }
                 ],
                 text: "Ты покупаешь телевизор с доставкой."
-            },
-            {
-                id: "look_electronics",
-                label: "Осмотреть витрины",
-                hint: "Изучить ассортимент",
-                effects: [{ type: "setFlag", flag: "lookedAtElectronics", value: true }],
-                text: "На витринах — смартфоны, ноутбуки, наушники и большие телевизоры. Глаза разбегаются."
             }
         ]
     }

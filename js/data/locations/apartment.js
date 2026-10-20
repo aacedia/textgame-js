@@ -22,6 +22,7 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "leave_home",
+                type: "back",
                 label: "Выйти на улицу",
                 hint: "Отправиться в город",
                 condition: { item: "keys" },

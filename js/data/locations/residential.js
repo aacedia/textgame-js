@@ -8,7 +8,8 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "residential_to_apartment",
-                label: "Зайти домой",
+                type: "back",
+                label: "Вернуться домой",
                 hint: "Вернуться в квартиру",
                 effects: [{ type: "move", to: "apartment" }]
             },

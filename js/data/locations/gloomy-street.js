@@ -9,6 +9,7 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "gloomy_to_residential",
+                type: "back",
                 label: "Пойти в спальный район",
                 hint: "Дома, магазин, парк",
                 effects: [{ type: "move", to: "residential" }]
@@ -19,4 +20,4 @@ Object.assign(window.GAME_DATA.locations, {
 
 Object.assign(window.GAME_DATA.links, {
     "gloomy-street": ["residential"]
-});
+}); 

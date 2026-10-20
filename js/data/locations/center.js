@@ -9,6 +9,13 @@ Object.assign(window.GAME_DATA.locations, {
         ],
         actions: [
             {
+                id: "center_to_residential",
+                type: "back",
+                label: "Пойти в спальный район",
+                hint: "Дома, магазин, парк",
+                effects: [{ type: "move", to: "residential" }]
+            },
+            {
                 id: "center_to_university",
                 label: "Пойти в университет",
                 hint: "Занятия и знакомые лица",
@@ -35,12 +42,6 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Техника и гаджеты",
                 condition: { locationOpen: "electronics" },
                 effects: [{ type: "move", to: "electronics" }]
-            },
-            {
-                id: "center_to_residential",
-                label: "Пойти в спальный район",
-                hint: "Дома, магазин, парк",
-                effects: [{ type: "move", to: "residential" }]
             }
         ]
     }

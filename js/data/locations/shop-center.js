@@ -10,6 +10,7 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "return_street",
+                type: "back",
                 label: "Выйти на улицу",
                 hint: "Вернуться в центр",
                 effects: [{ type: "move", to: "center" }]
