@@ -5,6 +5,10 @@
     Rules.applyEffects(effects, state, gameData)
 
   Подключается после rules.js.
+
+  Сообщения:
+    kind: "info"      — только в «Историю событий»;
+    kind: "infoExtra" — в «Историю событий» и в «Информацию».
 */
 (() => {
     "use strict";
@@ -16,15 +20,6 @@
 
     /* ---------- потребности ---------- */
 
-    /*
-      Начисляет рост потребностей и настроения за minutes игровых минут.
-      Наносит урон здоровью за каждую минуту, проведённую на максимуме потребностей.
-  
-      Во сне (state.sleeping):
-        - усталость не растёт и не наносит урон;
-        - голод, жажда и настроение меняются в 10 раз медленнее;
-        - урон здоровью уменьшается вдвое.
-    */
     function applyNeeds(state, minutes, gameData) {
         const next = deepClone(state);
         const messages = [];
@@ -69,7 +64,6 @@
 
         ["hunger", "thirst", "fatigue"].forEach(key => {
             if (isSleeping && key === "fatigue") {
-                // Во сне усталость заморожена.
                 next.variables[key] = Math.min(needsMax, Math.max(0, Number(next.variables[key]) || 0));
                 return;
             }
@@ -77,7 +71,6 @@
             const rate = (Number(rates[key]) || 0) * combinedMultiplier;
             const current = Number(next.variables[key]) || 0;
 
-            // Сколько минут из delta потребность была на максимуме.
             let minutesAtMax = 0;
             let grown;
             if (current >= needsMax) {
@@ -195,13 +188,13 @@
 
                 next.variables[effect.name] = after;
 
-                // Сообщения только для денег.
+                // Сообщения о деньгах — в «Историю» и в «Информацию».
                 if (effect.name === "money") {
                     const diff = after - before;
                     if (diff > 0) {
-                        messages.push({ kind: "info", text: `Получено: ${diff} ¥` });
+                        messages.push({ kind: "infoExtra", text: `Получено: ${diff} ¥` });
                     } else if (diff < 0) {
-                        messages.push({ kind: "info", text: `Потрачено: ${-diff} ¥` });
+                        messages.push({ kind: "infoExtra", text: `Потрачено: ${-diff} ¥` });
                     }
                 }
 
@@ -252,7 +245,6 @@
                 const max = Math.max(min, Number(effect.max) || min);
                 const step = Math.max(1, Number(effect.step) || 1);
 
-                // Случайное число в [min, max] с шагом step.
                 const steps = Math.floor((max - min) / step);
                 const amount = min + Math.floor(Math.random() * (steps + 1)) * step;
 
@@ -261,9 +253,9 @@
 
                 const label = String(effect.label || "Чаевые");
                 if (amount > 0) {
-                    messages.push({ kind: "info", text: `${label}: ${amount} ¥.` });
+                    messages.push({ kind: "infoExtra", text: `${label}: ${amount} ¥.` });
                 } else {
-                    messages.push({ kind: "info", text: `${label}: нет.` });
+                    messages.push({ kind: "infoExtra", text: `${label}: нет.` });
                 }
                 break;
             }

@@ -49,7 +49,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_shift",
                 label: "Подработать",
-                hint: "3 часа · +100 ¥ и чаевые · −30 выносливости",
+                hint: "3 часа · +200 ¥ и чаевые · −30 выносливости",
                 minutes: 180,
                 condition: {
                     all: [
@@ -58,10 +58,10 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: 100 },
+                    { type: "changeVariable", name: "money", amount: 200 },
                     { type: "changeVariable", name: "stamina", amount: -30 },
                     { type: "setVariableFromVariable", name: "lastShiftDay", from: "day" },
-                    { type: "addRandomMoney", min: 0, max: 400, step: 1, label: "Чаевые" }
+                    { type: "addRandomMoney", min: 0, max: 300, step: 1, label: "Чаевые" }
                 ],
                 text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату и чаевые.",
                 image: "assets/images/locations/cafe-work.jpg"

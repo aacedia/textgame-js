@@ -226,14 +226,19 @@ window.UI = (() => {
       return;
     }
 
+    // Если в "Информации" только картинка (без текста) — панель не нужна:
+    // картинка уходит наверх, в описание локации.
+    const textEntries = (info.entries || []).filter(e => e.kind === "text");
+    if (!textEntries.length) {
+      panel.hidden = true;
+      list.replaceChildren();
+      return;
+    }
+
     panel.hidden = false;
     list.replaceChildren();
-    info.entries.forEach(entry => {
-      if (entry.kind === "image") {
-        list.appendChild(buildInfoImage(entry));
-      } else if (entry.kind === "text") {
-        list.appendChild(buildInfoText(entry));
-      }
+    textEntries.forEach(entry => {
+      list.appendChild(buildInfoText(entry));
     });
   }
 

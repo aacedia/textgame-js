@@ -90,8 +90,23 @@ window.Game = window.Game || {};
       });
     }
 
-    const infoVisible = Game.getInfo().length > 0;
-    const showImage = !infoVisible && !!loc.image;
+    // Картинка: если в "Информации" есть изображение — показываем его вместо
+    // картинки локации (сверху). Иначе — картинку локации.
+    const infoEntries = Game.getInfo();
+    const infoImage = infoEntries.find(e => e.kind === "image");
+    let image = "";
+    let imageAlt = "";
+    let imageCaption = "";
+
+    if (infoImage) {
+      image = infoImage.src;
+      imageAlt = infoImage.alt || "";
+      imageCaption = infoImage.caption || "";
+    } else if (loc.image) {
+      image = loc.image;
+      imageAlt = loc.imageAlt || "";
+      imageCaption = loc.imageCaption || "";
+    }
 
     return {
       name: loc.name,
@@ -100,9 +115,9 @@ window.Game = window.Game || {};
       tagClass,
       notice,
       description,
-      image: showImage ? loc.image : "",
-      imageAlt: showImage ? (loc.imageAlt || "") : "",
-      imageCaption: showImage ? (loc.imageCaption || "") : ""
+      image,
+      imageAlt,
+      imageCaption
     };
   }
 
@@ -110,7 +125,10 @@ window.Game = window.Game || {};
 
   function buildInfoVM() {
     const entries = Game.getInfo();
-    return { visible: entries.length > 0, entries: entries.slice() };
+    // В "Информации" рендерится только текст. Картинки уходят наверх,
+    // в блок описания локации.
+    const textEntries = entries.filter(e => e.kind === "text");
+    return { visible: textEntries.length > 0, entries };
   }
 
   /* ---------- действия ---------- */
@@ -244,11 +262,11 @@ window.Game = window.Game || {};
 
     const quests = [];
 
-    // Стипендия — только если можно забрать.
+    // Стипендия — только если можно забрать (≥ 1000).
     if (pending >= 1000) {
       quests.push({
         done: false,
-        text: `Получи стипендию в офисе администрации (${pending} ¥).`
+        text: `Получи стипендию в офисе администрации (накоплено ${pending} ¥).`
       });
     }
 
@@ -256,7 +274,7 @@ window.Game = window.Game || {};
     if (!notebookDone) {
       quests.push({
         done: false,
-        text: "Блокнот обязателен для занятий. Купи его в магазине."
+        text: "Блокнот обязателен для занятий. Купи его в магазине за 100 ¥."
       });
     }
 

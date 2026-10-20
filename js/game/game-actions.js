@@ -17,6 +17,11 @@
   restoreAfterTime / reduceAfterTime   — после всех эффектов.
   restore ставит значение, reduce вычитает (с ограничением по [0, ∞)).
 
+  Сообщения:
+    - kind: "info"       — только в «Историю событий».
+    - kind: "infoExtra"  — в «Историю событий» и в «Информацию»
+                           (например, «Получено: 100 ¥», «Чаевые: 41 ¥»).
+
   Серия нажатий: если жать одно и то же действие подряд (в той же локации),
   счётчик растёт. Любое другое действие или смена локации сбрасывают серию.
 
@@ -94,6 +99,24 @@ window.Game = window.Game || {};
     if (mod10 === 1 && mod100 !== 11) return one;
     if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
     return many;
+  }
+
+  // Разделяет сообщения эффектов на три потока:
+  //   move      — переходы (только в «Историю событий»);
+  //   info      — только в «Историю событий»;
+  //   infoExtra — в «Историю событий» и в «Информацию».
+  function splitMessages(messages) {
+    const move = [];
+    const info = [];
+    const infoExtra = [];
+
+    messages.forEach(m => {
+      if (m.kind === "move") move.push(m.text);
+      else if (m.kind === "infoExtra") { info.push(m.text); infoExtra.push(m.text); }
+      else info.push(m.text);
+    });
+
+    return { move, info, infoExtra };
   }
 
   /* ---------- диалоги ---------- */
@@ -221,21 +244,19 @@ window.Game = window.Game || {};
       Game.setState(evicted.state);
     }
 
-    const moveMessages = [
-      ...messages.filter(m => m.kind === "move").map(m => m.text),
-      ...evicted.messages
-    ];
-    const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
+    // Разбираем сообщения на три потока.
+    const { move, info, infoExtra } = splitMessages(messages);
+    const moveMessages = [...move, ...evicted.messages];
 
-    // "История событий": действие + переходы + результаты эффектов.
+    // "История событий": действие + переходы + все сообщения эффектов.
     const locName = GAME_DATA.locations[state.location].name;
     Game.pushLog([
       `Действие: ${action.label} (${locName})`,
       ...moveMessages,
-      ...infoMessages
+      ...info
     ]);
 
-    // "Информация": авторский текст + картинка.
+    // "Информация": авторский текст + картинка + infoExtra-сообщения.
     const text = (variant && variant.text) || action.text;
     const image = (variant && variant.image) || action.image;
     const imageAlt = (variant && variant.imageAlt) || action.imageAlt || text;
@@ -246,6 +267,7 @@ window.Game = window.Game || {};
     if (image) {
       batch.push({ kind: "image", src: image, alt: imageAlt || "", caption: imageCaption || "" });
     }
+    infoExtra.forEach(t => batch.push({ kind: "text", text: t }));
 
     // Если действие — чисто переход (move без text/image), очищаем "Информацию".
     const isMoveOnly = moveMessages.length > 0 && batch.length === 0;
@@ -310,16 +332,14 @@ window.Game = window.Game || {};
       Game.setState(evicted.state);
     }
 
-    const moveMessages = [
-      ...messages.filter(m => m.kind === "move").map(m => m.text),
-      ...evicted.messages
-    ];
-    const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
+    // Разбираем сообщения на три потока.
+    const { move, info, infoExtra } = splitMessages(messages);
+    const moveMessages = [...move, ...evicted.messages];
 
     Game.pushLog([
       `Использовано: ${item.name}`,
       ...moveMessages,
-      ...infoMessages
+      ...info
     ]);
 
     const batch = [];
@@ -332,6 +352,7 @@ window.Game = window.Game || {};
         caption: use.imageCaption || ""
       });
     }
+    infoExtra.forEach(t => batch.push({ kind: "text", text: t }));
 
     if (batch.length) {
       Game.setInfo(batch);
@@ -376,8 +397,8 @@ window.Game = window.Game || {};
       Game.setState(evicted.state);
     }
 
-    const moveMessages = evicted.messages;
-    const infoMessages = messages.filter(m => m.kind === "info").map(m => m.text);
+    const { move, info } = splitMessages(messages);
+    const moveMessages = [...move, ...evicted.messages];
 
     const hours = safeMinutes / 60;
     const hoursText = `${hours} ${plural(hours, "час", "часа", "часов")}`;
@@ -385,7 +406,7 @@ window.Game = window.Game || {};
     Game.pushLog([
       `Действие: Сон (${hoursText})`,
       ...moveMessages,
-      ...infoMessages
+      ...info
     ]);
 
     // Картинка берётся из действия sleep в квартире.
