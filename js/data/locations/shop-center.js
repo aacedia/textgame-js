@@ -16,6 +16,31 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "center" }]
             },
             {
+                id: "buy_notebook",
+                label: "Купить блокнот",
+                hint: "100 ¥ · Нужен для занятий",
+                hiddenWhen: { item: "notebook" },
+                condition: { variableAtLeast: { name: "money", value: 100 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -100 },
+                    { type: "giveItem", item: "notebook" }
+                ],
+                text: "Ты покупаешь блокнот и убираешь его в сумку.",
+                image: "assets/images/items/notebook.jpg"
+            },
+            {
+                id: "buy_food",
+                label: "Купить продукты",
+                hint: "100 ¥ · +5 порций еды",
+                minutes: 1,
+                condition: { variableAtLeast: { name: "money", value: 100 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -100 },
+                    { type: "changeVariable", name: "foodPortions", amount: 5 }
+                ],
+                text: "Ты покупаешь продукты: крупы, овощи, что-то к чаю. Хватит на несколько дней."
+            },
+            {
                 id: "buy_water",
                 label: "Купить бутылку воды",
                 hint: "15 ¥",

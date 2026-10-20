@@ -24,6 +24,17 @@ Object.assign(window.GAME_DATA.items, {
             text: "Ты открываешь бутылку и делаешь несколько глотков."
         }
     },
+    bread: {
+        name: "Булочка",
+        icon: "🥯",
+        description: "−10 голода",
+        consumable: true,
+        use: {
+            minutes: 3,
+            reduceAfterTime: { hunger: 10 },
+            text: "Ты достаёшь булочку и съедаешь её."
+        }
+    },
     energy_drink: {
         name: "Энергетический напиток",
         icon: "⚡",

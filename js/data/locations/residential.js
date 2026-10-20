@@ -29,16 +29,17 @@ Object.assign(window.GAME_DATA.locations, {
             },
             {
                 id: "residential_to_center",
-                label: "Пойти в центр",
+                type: "back",
+                label: "Пойти в центр города",
                 hint: "Кафе, магазины, университет",
                 effects: [{ type: "move", to: "center" }]
-            },
-            {
-                id: "residential_to_gloomy",
-                label: "Пойти на мрачную улицу",
-                hint: "К перекрёстку",
-                effects: [{ type: "move", to: "gloomy-street" }]
             }
+            // {
+            //     id: "residential_to_gloomy",
+            //     label: "Пойти на мрачную улицу",
+            //     hint: "К перекрёстку",
+            //     effects: [{ type: "move", to: "gloomy-street" }]
+            // }
         ]
     }
 });

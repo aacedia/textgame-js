@@ -31,7 +31,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_food",
                 label: "Купить продукты",
-                hint: "100 ¥ · +5 порций еды",
+                hint: "100 ¥ · +5 порций продуктов для готовки дома",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [
@@ -54,15 +54,15 @@ Object.assign(window.GAME_DATA.locations, {
             },
             {
                 id: "buy_chocolate",
-                label: "Купить шоколадный батончик",
-                hint: "25 ¥",
+                label: "Купить булочку",
+                hint: "10 ¥",
                 minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 25 } },
+                condition: { variableAtLeast: { name: "money", value: 10 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -25 },
-                    { type: "giveItem", item: "chocolate" }
+                    { type: "changeVariable", name: "money", amount: -10 },
+                    { type: "giveItem", item: "bread" }
                 ],
-                text: "Ты берёшь шоколадный батончик и убираешь его в сумку."
+                text: "Ты берёшь булочку и убираешь её в сумку."
             }
         ]
     }
