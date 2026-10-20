@@ -42,11 +42,17 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Техника и гаджеты",
                 condition: { locationOpen: "electronics" },
                 effects: [{ type: "move", to: "electronics" }]
+            },
+            {
+                id: "center_to_glitch",
+                label: "Пойти на Глитч-стрит",
+                hint: "Неоновая улица с клубом и раменной",
+                effects: [{ type: "move", to: "glitch-street" }]
             }
         ]
     }
 });
 
 Object.assign(window.GAME_DATA.links, {
-    center: ["university", "cafe", "electronics", "shop-center"]
+    center: ["university", "cafe", "electronics", "shop-center", "glitch-street"]
 });
