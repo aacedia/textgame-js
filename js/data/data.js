@@ -19,9 +19,10 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 50,
+      money: 99,
       lastClassDay: 0,
       lastHimariDay: 0,
+      lastYuiDay: 0,
       lastOrderDay: 0,
       lastShiftDay: 0,
       lastElectronicsShiftDay: 0,
@@ -36,7 +37,9 @@ window.GAME_DATA = {
       thirst: 5,
       fatigue: 10,
       mood: 90,
-      foodPortions: 0
+      foodPortions: 5,
+      relationship_himari: 0,
+      relationship_yui: 10
     },
     uiTab: "quests",
     inventoryFilter: "all",

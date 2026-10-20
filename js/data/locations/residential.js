@@ -5,6 +5,30 @@ Object.assign(window.GAME_DATA.locations, {
         description: [
             "Тихий район. Здесь находятся твой дом, продуктовый магазин и небольшой парк."
         ],
+        extraDescription: [
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 16 * 60, to: 22 * 60 } },
+                        { variableDiffers: { name: "lastYuiDay", other: "day" } }
+                    ]
+                },
+                parts: [
+                    { text: "На лавочке возле дома сидит " },
+                    { link: { action: "yui_talk", text: "Юи" } },
+                    { text: " в наушниках — кажется, она никуда не спешит." }
+                ]
+            },
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 16 * 60, to: 22 * 60 } },
+                        { not: { variableDiffers: { name: "lastYuiDay", other: "day" } } }
+                    ]
+                },
+                text: "На лавочке возле дома сидит Юи в наушниках. Ты уже говорил с ней сегодня."
+            }
+        ],
         actions: [
             {
                 id: "residential_to_apartment",
@@ -33,6 +57,22 @@ Object.assign(window.GAME_DATA.locations, {
                 label: "Пойти в центр города",
                 hint: "Кафе, магазины, университет",
                 effects: [{ type: "move", to: "center" }]
+            },
+            {
+                id: "yui_talk",
+                type: "link",
+                label: "Поговорить с Юи",
+                hint: "Начать разговор",
+                condition: {
+                    all: [
+                        { timeBetween: { from: 16 * 60, to: 22 * 60 } },
+                        { variableDiffers: { name: "lastYuiDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastYuiDay", from: "day" }
+                ],
+                dialogue: "yui"
             }
             // {
             //     id: "residential_to_gloomy",
