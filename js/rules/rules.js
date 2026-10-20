@@ -207,7 +207,10 @@ window.Rules = (() => {
       case "removeItem": return "item";
       case "advanceTime": return "time";
       case "changeVariable":
-        return effect.name === "money" ? "money" : "state";
+        if (effect.name === "money") {
+          return effect.amount < 0 ? "spend" : "money";
+        }
+        return "state";
       case "setVariable":
       case "setVariableFromVariable":
       case "setFlag":
@@ -218,8 +221,21 @@ window.Rules = (() => {
 
   function classifyAction(action) {
     const effects = (action && action.effects) || [];
-    if (!effects.length) return "state";
     const kinds = new Set(effects.map(classifyEffect));
+
+    if (action && action.minutes && action.minutes > 1) {
+      kinds.add("time");
+    }
+
+    if (!kinds.size) return "state";
+
+    // Приоритеты.
+    if (kinds.has("spend")) return "spend";
+    if (kinds.has("money")) return "money";
+    if (kinds.has("move")) return "move";
+    if (kinds.has("time") && !kinds.has("item")) return "time";
+    if (kinds.has("item")) return "item";
+
     if (kinds.size === 1) return kinds.values().next().value;
     return "mixed";
   }

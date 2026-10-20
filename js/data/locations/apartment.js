@@ -61,16 +61,6 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/apartment-tv.jpg"
             },
             {
-                id: "rest",
-                label: "Немного отдохнуть",
-                hint: "Проходит 15 минут · -5 усталости",
-                minutes: 15,
-                effects: [],
-                reduceAfterTime: { fatigue: 5, hunger: 2, thirst: 1 },
-                text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
-                image: "assets/images/locations/apartment-rest.jpg"
-            },
-            {
                 id: "sleep",
                 type: "choice",
                 label: "Лечь спать",
@@ -85,6 +75,16 @@ Object.assign(window.GAME_DATA.locations, {
                     { label: "10 часов", minutes: 600 },
                     { label: "12 часов", minutes: 720 }
                 ]
+            },
+            {
+                id: "rest",
+                label: "Немного отдохнуть",
+                hint: "Проходит 15 минут · -5 усталости",
+                minutes: 15,
+                effects: [],
+                reduceAfterTime: { fatigue: 5, hunger: 2, thirst: 1 },
+                text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
+                image: "assets/images/locations/apartment-rest.jpg"
             },
             {
                 id: "take_shower",
