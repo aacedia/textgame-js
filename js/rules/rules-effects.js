@@ -250,15 +250,20 @@
             case "addRandomMoney": {
                 const min = Math.max(0, Number(effect.min) || 0);
                 const max = Math.max(min, Number(effect.max) || min);
-                const amount = min + Math.floor(Math.random() * (max - min + 1));
+                const step = Math.max(1, Number(effect.step) || 1);
+
+                // Случайное число в [min, max] с шагом step.
+                const steps = Math.floor((max - min) / step);
+                const amount = min + Math.floor(Math.random() * (steps + 1)) * step;
 
                 const before = Number(next.variables.money) || 0;
                 next.variables.money = before + amount;
 
+                const label = String(effect.label || "Чаевые");
                 if (amount > 0) {
-                    messages.push({ kind: "info", text: `Чаевые: ${amount} ¥.` });
+                    messages.push({ kind: "info", text: `${label}: ${amount} ¥.` });
                 } else {
-                    messages.push({ kind: "info", text: "Чаевых не было." });
+                    messages.push({ kind: "info", text: `${label}: нет.` });
                 }
                 break;
             }
