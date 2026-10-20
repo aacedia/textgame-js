@@ -6,7 +6,11 @@ window.GAME_DATA.dialogues.yui = {
         greeting: {
             text: "Юи сидит на лавочке в наушниках, пританцовывая в такт музыке. Заметив тебя, она вынимает один наушник и улыбается.",
             choices: [
-                { text: "Поздороваться", next: "topics" },
+                {
+                    text: "Поздороваться",
+                    next: "topics",
+                    effects: [{ type: "setVariableFromVariable", name: "lastYuiDay", from: "day" }]
+                },
                 { text: "Уйти", close: true }
             ]
         },
@@ -54,18 +58,18 @@ window.GAME_DATA.dialogues.yui = {
         },
         study_good: {
             text: "Юи благодарно кивает. — Спасибо. Мне это нужно было услышать.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         study_neutral: {
             text: "— Вот и я о том же, — вздыхает она.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         study_bad: {
             text: "Юи хмурится. — Ну спасибо. Я вообще-то стараюсь.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
-        /* ---------- Видеоигры ---------- */
+        /* ---------- Игры ---------- */
 
         games: {
             text: "— Люблю казуальные игры, — говорит Юи. — Что-нибудь простое, чтобы расслабиться после учёбы. А ты играешь?",
@@ -90,11 +94,11 @@ window.GAME_DATA.dialogues.yui = {
         },
         games_good: {
             text: "Юи улыбается. — Вот и я так думаю. Главное — удовольствие.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         games_bad: {
             text: "Юи пожимает плечами. — Ну, у каждого свой вкус, — говорит она суше.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Музыка ---------- */
@@ -130,18 +134,18 @@ window.GAME_DATA.dialogues.yui = {
         },
         music_good: {
             text: "Юи кивает. — Вот это правильный подход. Не люблю, когда жанры делят на плохие и хорошие.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         music_neutral: {
             text: "— Понимаю, — говорит Юи. — Я тоже иногда слушаю что-то другое.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         music_bad: {
             text: "Юи поджимает губы. — Не люблю, когда так говорят. Музыка — дело вкуса.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
-        /* ---------- Жизнь в городе ---------- */
+        /* ---------- Город ---------- */
 
         city: {
             text: "— Мы с подругой снимаем квартиру неподалёку, — рассказывает Юи. — Обе приехали из деревень. Я хочу выучиться в университете и остаться работать в городе. Правда, иногда кажется, что это слишком смелые планы.",
@@ -167,11 +171,11 @@ window.GAME_DATA.dialogues.yui = {
         },
         city_good: {
             text: "Юи загорается. — Спасибо! Ты первый, кто так говорит. Мне это важно.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         city_bad: {
             text: "Юи опускает взгляд. — Может, ты и прав… — тихо говорит она и замолкает.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         }
     }
 };

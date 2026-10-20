@@ -6,7 +6,11 @@ window.GAME_DATA.dialogues.himari = {
         greeting: {
             text: "Химари поднимает глаза от книги и улыбается.",
             choices: [
-                { text: "Поздороваться", next: "topics" },
+                {
+                    text: "Поздороваться",
+                    next: "topics",
+                    effects: [{ type: "setVariableFromVariable", name: "lastHimariDay", from: "day" }]
+                },
                 { text: "Уйти", close: true }
             ]
         },
@@ -19,6 +23,9 @@ window.GAME_DATA.dialogues.himari = {
                 { text: "Попрощаться", close: true }
             ]
         },
+
+        /* ---------- Книги ---------- */
+
         books: {
             text: "— Я в последнее время читаю много сетевой литературы, — говорит Химари. — Мне нравится, как интернет меняет книжный мир.",
             choices: [
@@ -43,12 +50,15 @@ window.GAME_DATA.dialogues.himari = {
         },
         books_good: {
             text: "Химари кивает, глаза загораются. — Вот именно! Ты понимаешь.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         books_bad: {
             text: "Химари поджимает губы. — Ну, каждому своё, — говорит она суше, чем раньше.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
+
+        /* ---------- Спорт ---------- */
+
         sport: {
             text: "— Я не особо спортивная, — признаётся Химари. — Но иногда хожу в зал, чтобы размяться. А ты?",
             choices: [
@@ -72,12 +82,15 @@ window.GAME_DATA.dialogues.himari = {
         },
         sport_good: {
             text: "Химари улыбается. — Согласна. Иногда стоит отвлечься от книг.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         sport_neutral: {
             text: "Химари тихо смеётся. — Понимаю. Я тоже больше люблю читать.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
+
+        /* ---------- Учёба ---------- */
+
         study: {
             text: "— Учёба идёт своим чередом, — говорит Химари. — Сессия скоро, а я ещё не всё сдала.",
             choices: [
@@ -101,11 +114,11 @@ window.GAME_DATA.dialogues.himari = {
         },
         study_good: {
             text: "Химари благодарно кивает. — Спасибо. Постараюсь.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         study_bad: {
             text: "Химари пожимает плечами. — Ну, кому как.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         }
     }
 };

@@ -6,7 +6,11 @@ window.GAME_DATA.dialogues.hinako = {
         greeting: {
             text: "Хинако сидит в холле с книгой и конспектами. Увидев тебя, она отрывается от чтения и вежливо кивает.",
             choices: [
-                { text: "Поздороваться", next: "topics" },
+                {
+                    text: "Поздороваться",
+                    next: "topics",
+                    effects: [{ type: "setVariableFromVariable", name: "lastHinakoDay", from: "day" }]
+                },
                 { text: "Уйти", close: true }
             ]
         },
@@ -54,15 +58,15 @@ window.GAME_DATA.dialogues.hinako = {
         },
         study_good: {
             text: "Хинако улыбается. — Приятно встретить человека, который думает так же.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         study_neutral: {
             text: "Хинако кивает. — Именно. Учёба — это проверка себя.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         study_bad: {
             text: "Хинако хмурится. — Вот из-за такого подхода люди и не раскрывают свой потенциал.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Книги ---------- */
@@ -98,15 +102,15 @@ window.GAME_DATA.dialogues.hinako = {
         },
         books_good: {
             text: "Хинако оживляется. — Вот именно! Ты понимаешь. Об этом мало кто задумывается.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         books_neutral: {
             text: "Хинако согласно кивает. — Да, и этому стоит учиться.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         books_bad: {
             text: "Хинако поджимает губы. — Это стереотип. Книга гораздо глубже, чем кажется.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Мечта ---------- */
@@ -143,15 +147,15 @@ window.GAME_DATA.dialogues.hinako = {
         },
         dream_good: {
             text: "Хинако загорается. — Спасибо. Ты первый, кто сказал это всерьёз. Мне это важно.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         dream_neutral: {
             text: "Хинако улыбается. — Спасибо. Постараюсь не сдаваться.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         dream_bad: {
             text: "Хинако опускает взгляд. — Вот поэтому я и стесняюсь об этом говорить…",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Лень ---------- */
@@ -187,15 +191,15 @@ window.GAME_DATA.dialogues.hinako = {
         },
         lazy_good: {
             text: "Хинако кивает. — Именно. Лучше попробовать и ошибиться, чем не попробовать вовсе.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         lazy_neutral: {
             text: "Хинако задумывается. — Пожалуй, в этом что-то есть. Но меру знать надо.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         },
         lazy_bad: {
             text: "Хинако хмурится. — Вот из-за такого отношения люди и застревают на месте.",
-            choices: [{ text: "Продолжить", next: "topics" }]
+            choices: [{ text: "Попрощаться", close: true }]
         }
     }
 };
