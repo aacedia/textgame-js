@@ -240,23 +240,35 @@ window.Game = window.Game || {};
     const state = Game.getState();
     const classDoneToday = state.variables.lastClassDay === state.variables.day;
     const notebookDone = Rules.hasItem(state, "notebook");
-    return {
-      type: "quests",
-      quests: [
-        {
-          done: classDoneToday,
-          text: classDoneToday
-            ? "Занятие на сегодня посещено."
-            : "Посети занятие в университете (один раз в день)."
-        },
-        {
-          done: notebookDone,
-          text: notebookDone
-            ? "Блокнот куплен."
-            : "Найди магазин и купи блокнот за 100 ¥."
-        }
-      ]
-    };
+    const pending = Number(state.variables.pendingStipend) || 0;
+
+    const quests = [];
+
+    // Стипендия — только если можно забрать.
+    if (pending >= 1000) {
+      quests.push({
+        done: false,
+        text: `Получи стипендию в офисе администрации (${pending} ¥).`
+      });
+    }
+
+    // Блокнот — пока его нет. Как только куплен — квест исчезает.
+    if (!notebookDone) {
+      quests.push({
+        done: false,
+        text: "Блокнот обязателен для занятий. Купи его в магазине."
+      });
+    }
+
+    // Занятие — раз в день.
+    quests.push({
+      done: classDoneToday,
+      text: classDoneToday
+        ? "Занятие на сегодня посещено."
+        : "Посети занятие в университете (один раз в день)."
+    });
+
+    return { type: "quests", quests };
   }
 
   /* ---------- персонаж ---------- */
@@ -357,7 +369,7 @@ window.Game = window.Game || {};
     const relationPct = Math.max(0, Math.min(100, (relationRaw / relationMax) * 100));
 
     return {
-      text: node.text || "",
+      text: interpolate(node.text || "", state),
       choices,
       npc: {
         name: npc.name || state.dialogue.id,

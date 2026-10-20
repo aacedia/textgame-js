@@ -1,7 +1,7 @@
 /*
   Команды UI: сохранение/загрузка/рестарт/справка, переключение вкладок,
-  сворачивание панелей «Управление» и «История событий», фильтр инвентаря,
-  чит-код, выбор и закрытие диалога.
+  сворачивание панелей, фильтр инвентаря, чит-код, выбор в диалоге,
+  закрытие диалога, получение стипендии.
 
   Публичный API:
     Game.onCommand(command)
@@ -13,19 +13,21 @@
     Game.validateSnapshot(snapshot)
     Game.chooseDialogue(index)
     Game.closeDialogue()
+    Game.claimStipend()
 
   Команды, которые обрабатывает onCommand:
     "tab:<id>"                   — переключить вкладку боковой панели
     "inventory:filter:<id>"      — установить фильтр инвентаря
-    "controls:toggle"            — свернуть/развернуть панель «Управление»
-    "log:toggle"                 — свернуть/развернуть панель «История событий»
-    "save"                       — сохранить игру
-    "load"                       — загрузить игру
-    "restart"                    — начать заново (с подтверждением)
-    "help"                       — показать справку
+    "controls:toggle"            — свернуть/развернуть «Управление»
+    "log:toggle"                 — свернуть/развернуть «Историю событий»
+    "save"                       — сохранить
+    "load"                       — загрузить
+    "restart"                    — начать заново
+    "help"                       — справка
     "cheat:apply:<command>"      — чит-код
     "dialogue:choose:<index>"    — выбрать вариант в диалоге
     "dialogue:close"             — закрыть диалог
+    "stipend:claim"              — забрать накопленную стипендию
 */
 window.Game = window.Game || {};
 
@@ -95,6 +97,11 @@ window.Game = window.Game || {};
       return;
     }
 
+    if (command === "stipend:claim") {
+      claimStipend();
+      return;
+    }
+
     switch (command) {
       case "save": saveGame(); break;
       case "load": loadGame(); break;
@@ -129,6 +136,14 @@ window.Game = window.Game || {};
       next = result.state;
     }
 
+    // Команда-действие вместо перехода — закрываем диалог и вызываем onCommand.
+    if (choice.command) {
+      Game.setState({ ...next, dialogue: null });
+      Game.render();
+      onCommand(choice.command);
+      return;
+    }
+
     if (choice.close) {
       Game.setState({ ...next, dialogue: null });
       Game.render();
@@ -146,6 +161,34 @@ window.Game = window.Game || {};
     if (!state.dialogue) return;
     Game.setState({ ...state, dialogue: null });
     Game.render();
+  }
+
+  /* ---------- стипендия ---------- */
+
+  function claimStipend() {
+    const state = Game.getState();
+    const pending = Number(state.variables.pendingStipend) || 0;
+
+    if (pending < 1000) {
+      UI.showDialog(
+        "Стипендия",
+        `Пока рано. Минимум для получения — 1000 ¥. Накоплено: ${pending} ¥.`,
+        [{ label: "Понятно", primary: true }]
+      );
+      return;
+    }
+
+    Game.patchState({
+      variables: {
+        ...state.variables,
+        money: (Number(state.variables.money) || 0) + pending,
+        pendingStipend: 0
+      }
+    });
+    Game.pushLog([`Стипендия: +${pending} ¥`]);
+    Game.setInfo([{ kind: "text", text: `Вы получили накопленную стипендию: ${pending} ¥.` }]);
+    Game.render();
+    UI.showDialog("Стипендия", `Вы получили ${pending} ¥.`, [{ label: "Спасибо", primary: true }]);
   }
 
   /* ---------- чит-код ---------- */
@@ -348,6 +391,7 @@ window.Game = window.Game || {};
     buildSnapshot,
     validateSnapshot,
     chooseDialogue,
-    closeDialogue
+    closeDialogue,
+    claimStipend
   });
 })();

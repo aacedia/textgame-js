@@ -36,6 +36,7 @@ window.GAME_DATA = {
       fatigue: 10,
       mood: 90,
       foodPortions: 5,
+      pendingStipend: 1000,
       lastHimariDay: 0,
       relationship_himari: 0,
       lastYuiDay: 0,

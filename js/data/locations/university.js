@@ -30,10 +30,17 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 text: "В холле за столом сидит Хинако с книгой. Ты уже говорил с ней сегодня."
+            },
+            {
+                condition: { timeBetween: { from: 8 * 60, to: 18 * 60 } },
+                parts: [
+                    { text: "В конце коридора — дверь с табличкой «Офис администрации». Можно зайти: " },
+                    { link: { action: "go_office", text: "офис администрации" } },
+                    { text: "." }
+                ]
             }
         ],
         actions: [
-
             {
                 id: "return_street",
                 type: "back",
@@ -58,6 +65,14 @@ Object.assign(window.GAME_DATA.locations, {
                 dialogue: "hinako"
             },
             {
+                id: "go_office",
+                type: "link",
+                label: "Офис администрации",
+                hint: "Стипендия и документы",
+                condition: { timeBetween: { from: 8 * 60, to: 18 * 60 } },
+                dialogue: "secretary"
+            },
+            {
                 id: "look_hall",
                 label: "Осмотреть холл",
                 hint: "Изучить доску объявлений",
@@ -78,7 +93,8 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 effects: [
                     { type: "setVariableFromVariable", name: "lastClassDay", from: "day" },
-                    { type: "changeVariable", name: "classesAttended", amount: 1 }
+                    { type: "changeVariable", name: "classesAttended", amount: 1 },
+                    { type: "changeVariable", name: "pendingStipend", amount: 200 }
                 ],
                 text: "Ты заходишь в аудиторию и проводишь полтора часа на занятии.",
                 image: "assets/images/locations/university-classroom.jpg"

@@ -26,6 +26,12 @@ Object.assign(window.GAME_DATA.character, {
             avatar: "assets/images/characters/niko.png",
             avatarAlt: "Портрет Нико",
             description: "Спортивная девушка, тренируется в зале. Мечтает стать профессиональной волейболисткой."
+        },
+        secretary: {
+            name: "Секретарь",
+            avatar: "assets/images/characters/secretary.png",
+            avatarAlt: "Портрет секретаря",
+            description: "Девушка-секретарь в офисе администрации. Ведёт документацию и выдаёт стипендию."
         }
     }
 });
