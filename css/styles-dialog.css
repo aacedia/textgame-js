@@ -68,26 +68,28 @@ dialog::backdrop{background:var(--backdrop)}
 
 /* ---------- Диалог с NPC ---------- */
 
+/* ---------- Диалог с NPC ---------- */
+
 .dialogue-header{
   display:flex;
   align-items:center;
-  gap:12px;
-  padding:14px 16px;
+  gap:14px;
+  padding:16px 18px;
   border-bottom:1px solid var(--border);
   background:rgba(255, 240, 225, 0.4);
 }
 
 .dialogue-avatar{
-  width:56px;
-  height:56px;
+  width:88px;
+  height:88px;
   border-radius:50%;
   overflow:hidden;
-  border:2px solid var(--accent-2);
+  border:3px solid var(--accent-2);
   background:var(--accent-2);
   display:grid;
   place-items:center;
   flex:0 0 auto;
-  font-size:22px;
+  font-size:34px;
   color:var(--accent-3);
   font-weight:700;
 }
@@ -104,25 +106,25 @@ dialog::backdrop{background:var(--backdrop)}
 }
 
 .dialogue-name{
-  font-size:16px;
+  font-size:18px;
   font-weight:700;
   color:var(--text);
-  margin-bottom:6px;
+  margin-bottom:8px;
 }
 
 .dialogue-relation{
-  font-size:11px;
+  font-size:12px;
   color:var(--muted);
 }
 .dialogue-relation__label{
-  margin-bottom:4px;
+  margin-bottom:5px;
 }
 .dialogue-relation__label span{
   color:var(--text);
   font-weight:600;
 }
 .dialogue-relation__track{
-  height:6px;
+  height:8px;
   background:var(--panel-2);
   border:1px solid var(--border);
   border-radius:99px;
