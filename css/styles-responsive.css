@@ -1,7 +1,19 @@
 /*
   Адаптив. Подключается последним, чтобы переопределять базовые правила.
 */
-
+@media(max-width: 1100px){
+  /* Три колонки не помещаются — персонажа переносим наверх на всю ширину */
+  .layout{
+    grid-template-columns: 270px minmax(0, 1fr);
+  }
+  .side-right{
+    grid-column: 1 / -1;
+  }
+  .side-right .side-top{
+    overflow: visible;
+    padding-right: 0;
+  }
+}
 @media(max-width: 780px){
   body{
     height:auto;
@@ -17,7 +29,8 @@
     height:auto;
   }
   .main,
-  .side{
+  .side,
+  .side-right{
     display:grid;
     grid-template-rows:none;
     min-height:0;
@@ -27,15 +40,17 @@
     overflow:visible;
     padding-right:0;
   }
-  .side{
+  .side,
+  .side-right{
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
   .side .side-top{grid-column:1/-1}
   .side .side-bottom{grid-column:1/-1}
+  .side-right{grid-column:1/-1}
 }
-
 @media(max-width: 460px){
-  .side{grid-template-columns:1fr}
+  .side,
+  .side-right{grid-template-columns:1fr}
   .actions{grid-template-columns:1fr}
   .locbar{align-items:flex-start;flex-direction:column}
 }

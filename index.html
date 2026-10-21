@@ -21,6 +21,35 @@
 <body>
   <div class="game">
     <div class="layout">
+      <!-- Левая колонка: вкладки (задания/инвентарь) и управление -->
+      <aside class="side">
+        <!-- Верхняя часть: вкладки, растягивается и скроллится -->
+        <div class="side-top">
+          <section class="panel">
+            <div class="tabs" id="tabs"></div>
+            <div class="tabcontent" id="side-content"></div>
+          </section>
+        </div>
+        <!-- Нижняя часть: управление, прижато к низу -->
+        <div class="side-bottom">
+          <section class="panel">
+            <button type="button" class="heading-base heading--toggle" id="controls-toggle" aria-expanded="false"
+              aria-controls="controls-content">
+              <span class="heading-label">Управление</span>
+              <span class="heading-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div id="controls-content" hidden>
+              <div class="sidecontent menubuttons">
+                <button data-command="save">Сохранить</button>
+                <button data-command="load">Загрузить</button>
+                <button data-command="help">Справка</button>
+                <button data-command="cheat">Чит-код</button>
+                <button data-command="restart">Начать заново</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </aside>
       <main class="main">
         <!-- Верхняя часть главной колонки: растягивается и скроллится -->
         <div class="main-top">
@@ -59,42 +88,18 @@
           </section>
         </div>
       </main>
-      <aside class="side">
-        <!-- Верхняя часть боковой колонки: растягивается и скроллится -->
+      <!-- Правая колонка: персонаж -->
+      <aside class="side-right">
         <div class="side-top">
           <section class="panel">
             <div class="heading-base">Персонаж</div>
             <div class="status" id="status"></div>
             <div class="character-panel" id="character-content"></div>
           </section>
-          <section class="panel">
-            <div class="tabs" id="tabs"></div>
-            <div class="tabcontent" id="side-content"></div>
-          </section>
-        </div>
-        <!-- Нижняя часть боковой колонки: прижата к низу -->
-        <div class="side-bottom">
-          <section class="panel">
-            <button type="button" class="heading-base heading--toggle" id="controls-toggle" aria-expanded="false"
-              aria-controls="controls-content">
-              <span class="heading-label">Управление</span>
-              <span class="heading-chevron" aria-hidden="true">▾</span>
-            </button>
-            <div id="controls-content" hidden>
-              <div class="sidecontent menubuttons">
-                <button data-command="save">Сохранить</button>
-                <button data-command="load">Загрузить</button>
-                <button data-command="help">Справка</button>
-                <button data-command="cheat">Чит-код</button>
-                <button data-command="restart">Начать заново</button>
-              </div>
-            </div>
-          </section>
         </div>
       </aside>
     </div>
   </div>
-
   <!-- Оверлей «Игра окончена» -->
   <div class="game-over" id="game-over" hidden>
     <div class="game-over__card">
@@ -103,13 +108,11 @@
       <button id="game-over-restart">Начать заново</button>
     </div>
   </div>
-
   <dialog id="dialog">
     <div class="dialoghead" id="dialog-title"></div>
     <div class="dialogbody" id="dialog-body"></div>
     <div class="dialogactions" id="dialog-actions"></div>
   </dialog>
-
   <dialog id="cheat-dialog">
     <div class="dialoghead">Чит-код</div>
     <div class="dialogbody">
@@ -125,7 +128,6 @@
       <button id="cheat-apply" class="primary">Применить</button>
     </div>
   </dialog>
-
   <dialog id="dialogue-dialog">
     <div class="dialogue-header">
       <div class="dialogue-avatar" id="dialogue-avatar">
@@ -146,7 +148,6 @@
     <div class="dialogbody" id="dialogue-body"></div>
     <div class="dialogactions dialogue-choices" id="dialogue-actions"></div>
   </dialog>
-
   <script src="js/data/data.js"></script>
   <script src="js/data/character.js"></script>
   <script src="js/data/items.js"></script>
@@ -171,11 +172,9 @@
   <script src="js/data/locations/computer-club.js"></script>
   <script src="js/data/locations/ramen.js"></script>
   <script src="js/data/data-validation.js"></script>
-
   <script src="js/rules/rules.js"></script>
   <script src="js/rules/rules-conditions.js"></script>
   <script src="js/rules/rules-effects.js"></script>
-
   <script src="js/save/save.js"></script>
   <script src="js/ui/ui-core.js"></script>
   <script src="js/ui/ui-side.js"></script>
