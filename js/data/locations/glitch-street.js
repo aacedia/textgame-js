@@ -28,11 +28,18 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Горячая лапша",
                 condition: { locationOpen: "ramen" },
                 effects: [{ type: "move", to: "ramen" }]
+            },
+            {
+                id: "glitch_to_rock_bar",
+                label: "Зайти в рок-бар",
+                hint: "Живая музыка по выходным",
+                condition: { locationOpen: "rock-bar" },
+                effects: [{ type: "move", to: "rock-bar" }]
             }
         ]
     }
 });
 
 Object.assign(window.GAME_DATA.links, {
-    "glitch-street": ["center", "computer-club", "ramen"]
+    "glitch-street": ["center", "computer-club", "ramen", "rock-bar"]
 });
