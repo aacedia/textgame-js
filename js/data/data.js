@@ -46,7 +46,9 @@ window.GAME_DATA = {
       lastHinakoDay: 0,
       relationship_hinako: 0,
       lastNikoDay: 0,
-      relationship_niko: 0
+      relationship_niko: 0,
+      lastHitoriDay: 0,
+      relationship_hitori: 0
     },
     uiTab: "quests",
     inventoryFilter: "all",

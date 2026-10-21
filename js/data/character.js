@@ -32,6 +32,12 @@ Object.assign(window.GAME_DATA.character, {
             avatar: "assets/images/characters/secretary.png",
             avatarAlt: "Портрет секретаря",
             description: "Девушка-секретарь в офисе администрации. Ведёт документацию и выдаёт стипендию."
+        },
+        hitori: {
+            name: "Хитори",
+            avatar: "assets/images/characters/hitori.png",
+            avatarAlt: "Портрет Хитори",
+            description: "Сдержанный парень в тёмной толстовке. Увлекается технологиями."
         }
     }
 });
