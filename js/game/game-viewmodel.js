@@ -259,7 +259,9 @@ window.Game = window.Game || {};
     const classDoneToday = state.variables.lastClassDay === state.variables.day;
     const notebookDone = Rules.hasItem(state, "notebook");
     const pending = Number(state.variables.pendingStipend) || 0;
-
+    // Суббота (5) и воскресенье (6) — занятий нет.
+    const date = Rules.formatDate(state.variables.day, GAME_DATA);
+    const isWeekend = date.weekdayIndex === 5 || date.weekdayIndex === 6;
     const quests = [];
 
     // Стипендия — только если можно забрать (≥ 1000).
@@ -277,15 +279,20 @@ window.Game = window.Game || {};
         text: "Блокнот обязателен для занятий. Купи его в магазине за 100 ¥."
       });
     }
-
-    // Занятие — раз в день.
-    quests.push({
-      done: classDoneToday,
-      text: classDoneToday
-        ? "Занятие на сегодня посещено."
-        : "Посети занятие в университете (один раз в день)."
-    });
-
+    // Занятие — раз в день, кроме выходных.
+    if (isWeekend) {
+      quests.push({
+        done: true,
+        text: "Сегодня занятий нет."
+      });
+    } else {
+      quests.push({
+        done: classDoneToday,
+        text: classDoneToday
+          ? "Занятие на сегодня посещено."
+          : "Посети занятие в университете (один раз в день)."
+      });
+    }
     return { type: "quests", quests };
   }
 
