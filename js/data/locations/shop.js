@@ -2,10 +2,10 @@ Object.assign(window.GAME_DATA.locations, {
     shop: {
         name: "Магазин", tag: "Покупки",
         hours: { from: 8 * 60, to: 22 * 60 },
-        defaultExit: "street",
+        defaultExit: "residential",
         image: "assets/images/locations/shop.jpg",
         description: [
-            "Небольшой магазин у перекрёстка. На полках стоят напитки, снеки и самые разные мелочи. За кассой скучает продавец."
+            "Небольшой магазин у дома. На полках стоят напитки, снеки и самые разные мелочи. За кассой скучает продавец."
         ],
         actions: [
             {

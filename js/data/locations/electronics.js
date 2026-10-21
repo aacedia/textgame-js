@@ -2,7 +2,7 @@ Object.assign(window.GAME_DATA.locations, {
     electronics: {
         name: "Магазин электроники", tag: "Техника",
         hours: { from: 10 * 60, to: 20 * 60 },
-        defaultExit: "street",
+        defaultExit: "center",
         image: "assets/images/locations/electronics.jpg",
         imageAlt: "Витрины магазина электроники",
         description: [

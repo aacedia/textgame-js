@@ -46,6 +46,14 @@ window.DataValidation = (() => {
                 }
             }
 
+            if (loc.defaultExit !== undefined) {
+                if (typeof loc.defaultExit !== "string" || !loc.defaultExit) {
+                    pushError(errors, `locations.${id}.defaultExit`, `defaultExit должен быть непустой строкой`);
+                } else if (!locations[loc.defaultExit]) {
+                    pushError(errors, `locations.${id}.defaultExit`, `defaultExit ссылается на несуществующую локацию "${loc.defaultExit}"`);
+                }
+            }
+
             if (loc.actions !== undefined && !Array.isArray(loc.actions)) {
                 pushError(errors, `locations.${id}.actions`, `actions должен быть массивом`);
                 return;

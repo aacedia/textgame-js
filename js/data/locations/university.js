@@ -3,7 +3,7 @@ Object.assign(window.GAME_DATA.locations, {
         name: "Университет", tag: "Учёба",
         hours: { from: 8 * 60, to: 20 * 60 },
         closedWeekdays: [5, 6],
-        defaultExit: "street",
+        defaultExit: "center",
         image: "assets/images/locations/university.jpg",
         description: [
             "Главное здание университета. У входа собрались студенты."

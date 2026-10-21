@@ -2,7 +2,7 @@ Object.assign(window.GAME_DATA.locations, {
     cafe: {
         name: "Кафе", tag: "Уютное место",
         hours: { from: 8 * 60, to: 23 * 60 },
-        defaultExit: "street",
+        defaultExit: "center",
         image: "assets/images/locations/cafe.jpg",
         description: [
             "Небольшое кафе неподалёку от перекрёстка. У окна свободный столик, за стойкой скучает бариста.",

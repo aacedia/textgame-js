@@ -1,9 +1,9 @@
 Object.assign(window.GAME_DATA.locations, {
     gym: {
         name: "Спортзал", tag: "Тренировки",
-        hours: { from: 8 * 60, to: 22 * 60 },
+        hours: { from: 8 * 60, to: 20 * 60 },
         closedWeekdays: [5, 6],
-        defaultExit: "street",
+        defaultExit: "center",
         image: "assets/images/locations/gym.jpg",
         imageAlt: "Университетский спортзал с тренажёрами",
         description: [
