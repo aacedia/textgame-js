@@ -54,6 +54,31 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/park-walk.jpg"
             },
             {
+                id: "roller_skating",
+                label: "Покататься на роликах",
+                hint: "200 ¥ · 2 часа · +5 к максимуму здоровья",
+                minutes: 120,
+                condition: {
+                    all: [
+                        { variableAtLeast: { name: "money", value: 200 } },
+                        { variableDiffers: { name: "lastSkatingDay", other: "day" } },
+                        { not: { variableAtLeast: { name: "healthMax", value: 100 } } }
+                    ]
+                },
+                hiddenWhen: { variableAtLeast: { name: "healthMax", value: 100 } },
+                effects: [
+                    { type: "changeVariable", name: "money", amount: -200 },
+                    { type: "changeVariable", name: "healthMax", amount: 5 },
+                    { type: "setVariableFromVariable", name: "lastSkatingDay", from: "day" },
+                    { type: "changeVariable", name: "fatigue", amount: 10 },
+                    { type: "changeVariable", name: "hunger", amount: 10 },
+                    { type: "changeVariable", name: "thirst", amount: 10 },
+                    { type: "changeVariable", name: "mood", amount: 5 }
+                ],
+                text: "Ты берёшь напрокат ролики и два часа катаешься по аллеям парка. Ветер в лицо, скорость, азарт — тело становится крепче.",
+                image: "assets/images/locations/park-walk.jpg"
+            },
+            {
                 id: "himari_talk",
                 type: "link",
                 label: "Поговорить с Химари",

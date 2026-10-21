@@ -326,6 +326,9 @@ window.Game = window.Game || {};
     const fatigue = v.fatigue ?? 0;
     const mood = v.mood ?? 0;
     const staminaMax = v.staminaMax ?? GAME_DATA.staminaMax ?? 100;
+    // Максимум здоровья может расти (тренировки в парке), поэтому берём его
+    // из состояния, а GAME_DATA.healthMax — только фолбэк.
+    const healthMax = v.healthMax ?? GAME_DATA.healthMax ?? 100;
 
     return {
       name: ch.name || "",
@@ -335,9 +338,9 @@ window.Game = window.Game || {};
       bars: [
         {
           key: "health", label: "Здоровье",
-          value: health, max: GAME_DATA.healthMax ?? 100, color: "health",
+          value: health, max: healthMax, color: "health",
           level: level(health, "low"),
-          tooltip: "При 0 — конец игры. Восстанавливается сном."
+          tooltip: "При 0 — конец игры. Восстанавливается сном. Максимум можно повысить, катаясь на роликах в парке."
         },
         {
           key: "stamina", label: "Выносливость",

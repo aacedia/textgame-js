@@ -387,9 +387,11 @@ window.Game = window.Game || {};
     Game.setState(nextState);
 
     // После сна: восстанавливаем выносливость и здоровье.
+    // Здоровье восстанавливается до ТЕКУЩЕГО максимума (healthMax),
+    // который может быть больше 100 после тренировок в парке.
     const after = { ...nextState, variables: { ...nextState.variables }, sleeping: false };
     after.variables.stamina = Number(after.variables.staminaMax ?? 100);
-    after.variables.health = 100;
+    after.variables.health = Number(after.variables.healthMax ?? GAME_DATA.healthMax ?? 100);
     Game.setState(after);
 
     const evicted = evictIfClosed(Game.getState());

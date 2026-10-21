@@ -19,7 +19,7 @@ window.GAME_DATA = {
     variables: {
       day: 1,
       minutes: 510,
-      money: 99,
+      money: 50,
       lastClassDay: 0,
       lastOrderDay: 0,
       lastShiftDay: 0,
@@ -28,7 +28,8 @@ window.GAME_DATA = {
       lastShowerDay: 0,
       lastTrainDay: 0,
       classesAttended: 0,
-      health: 100,
+      health: 50,
+      healthMax: 50,
       stamina: 50,
       staminaMax: 50,
       hunger: 10,
@@ -37,6 +38,7 @@ window.GAME_DATA = {
       mood: 90,
       foodPortions: 5,
       pendingStipend: 1000,
+      lastSkatingDay: 0,
       lastHimariDay: 0,
       relationship_himari: 0,
       lastYuiDay: 0,
@@ -52,12 +54,10 @@ window.GAME_DATA = {
     logOpen: false,
     lastVariant: {}
   },
-
   items: {},
   character: {},
   locations: {},
   links: {},
-
   needsRates: {
     hunger: 100 / 720,
     thirst: 100 / 1440,

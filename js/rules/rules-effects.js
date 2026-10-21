@@ -25,7 +25,9 @@
         const messages = [];
 
         const needsMax = Number(gameData.needsMax ?? 100);
-        const healthMax = Number(gameData.healthMax ?? 100);
+        // Максимум здоровья может расти (например, от тренировок в парке),
+        // поэтому берём его из состояния, а gameData.healthMax — только фолбэк.
+        const healthMax = Number(next.variables.healthMax ?? gameData.healthMax ?? 100);
         const rates = gameData.needsRates || {};
         const damagePerHour = Number(gameData.damagePerHour ?? 10);
         const delta = Number(minutes) || 0;
@@ -184,6 +186,19 @@
                     after = Math.max(0, Math.min(cap, after));
                     const cur = Number(next.variables.stamina) || 0;
                     if (cur > after) next.variables.stamina = after;
+                }
+                // health зажимается по текущему максимуму здоровья (он может расти).
+                if (effect.name === "health") {
+                    const max = Number(next.variables.healthMax ?? gameData.healthMax ?? 100);
+                    after = Math.max(0, Math.min(max, after));
+                }
+                // healthMax зажимается по глобальному потолку из gameData
+                // и подрезает текущее здоровье, если оно стало выше нового максимума.
+                if (effect.name === "healthMax") {
+                    const cap = Number(gameData.healthMax ?? 100);
+                    after = Math.max(0, Math.min(cap, after));
+                    const cur = Number(next.variables.health) || 0;
+                    if (cur > after) next.variables.health = after;
                 }
 
                 next.variables[effect.name] = after;

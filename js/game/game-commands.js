@@ -262,6 +262,14 @@ window.Game = window.Game || {};
       : [];
     merged.flags = Object.assign({}, base.flags, merged.flags || {});
     merged.variables = Object.assign({}, base.variables, merged.variables || {});
+    // Старые сохранения могут не содержать healthMax — подставляем стартовый максимум,
+    // чтобы прокачка здоровья работала от 50, а не от 0.
+    if (merged.variables.healthMax == null) {
+      merged.variables.healthMax = base.variables.healthMax ?? 50;
+    }
+    if (merged.variables.health == null) {
+      merged.variables.health = base.variables.health ?? 50;
+    }
 
     if (!VALID_TABS.includes(merged.uiTab)) {
       merged.uiTab = "quests";
