@@ -61,7 +61,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "train_at_gym",
                 label: "Тренироваться",
-                hint: "1 час · +5 к максимуму выносливости · −20 выносливости",
+                hint: "1 час · +4 к максимуму выносливости · −20 выносливости",
                 iconImage: "assets/images/actions/training.png",
                 minutes: 60,
                 condition: {
@@ -72,12 +72,12 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 effects: [
-                    { type: "changeVariable", name: "staminaMax", amount: 5 },
+                    { type: "changeVariable", name: "staminaMax", amount: 4 },
                     { type: "changeVariable", name: "stamina", amount: -20 },
                     { type: "changeVariable", name: "hunger", amount: 15 },
-                    { type: "changeVariable", name: "thirst", amount: 10 },
-                    { type: "changeVariable", name: "fatigue", amount: 10 },
-                    { type: "changeVariable", name: "mood", amount: 5 },
+                    { type: "changeVariable", name: "thirst", amount: 15 },
+                    { type: "changeVariable", name: "fatigue", amount: 15 },
+                    { type: "changeVariable", name: "mood", amount: 3 },
                     { type: "setVariableFromVariable", name: "lastTrainDay", from: "day" }
                 ],
                 text: "Ты тренируешься: отжимания, приседания, работа с гантелями, растяжка. К концу часа чувствуешь приятную усталость и прилив сил.",
@@ -86,12 +86,13 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "play_volleyball",
                 label: "Играть в волейбол",
-                hint: "Проходит 1 час · +10 настроения",
+                hint: "Проходит 1 час · +5 настроения",
                 minutes: 60,
                 effects: [
-                    { type: "changeVariable", name: "mood", amount: 10 },
-                    { type: "changeVariable", name: "hunger", amount: 3 },
-                    { type: "changeVariable", name: "thirst", amount: 5 }
+                    { type: "changeVariable", name: "mood", amount: 5 },
+                    { type: "changeVariable", name: "hunger", amount: 5 },
+                    { type: "changeVariable", name: "thirst", amount: 8 },
+                    { type: "changeVariable", name: "fatigue", amount: 10 }
                 ],
                 text: "Ты присоединяешься к игре в волейбол. Мяч летает над сеткой, азарт захватывает, и час проходит незаметно. После игры чувствуешь приятную усталость и подъём настроения.",
                 image: "assets/images/locations/gym-volleyball.jpg"

@@ -386,6 +386,8 @@ window.Game = window.Game || {};
 
   /* ---------- сон ---------- */
 
+  /* ---------- сон ---------- */
+
   function handleSleep(minutes) {
     const state = Game.getState();
     if (state.gameOver) return;
@@ -393,8 +395,8 @@ window.Game = window.Game || {};
 
     const safeMinutes = Math.max(60, Math.min(720, Number(minutes) || 480));
 
-    // Усталость снижается пропорционально: примерно 12.5 за час (100 за 8 часов).
-    const fatigueReduction = (safeMinutes / 60) * 12.5;
+    // Усталость снижается пропорционально: примерно 10 за час (80 за 8 часов).
+    const fatigueReduction = (safeMinutes / 60) * 10;
 
     let working = { ...state, sleeping: true, variables: { ...state.variables } };
     working.variables.fatigue = Math.max(0, (Number(working.variables.fatigue) || 0) - fatigueReduction);
@@ -407,11 +409,17 @@ window.Game = window.Game || {};
     );
     Game.setState(nextState);
 
-    // После сна: восстанавливаем выносливость и здоровье.
-    // Здоровье восстанавливается до ТЕКУЩЕГО максимума (healthMax),
-    // который может быть больше 100 после тренировок в парке.
+    // После сна: выносливость восстанавливается не до максимума, а частично,
+    // в зависимости от длительности. Здоровье — до текущего максимума.
     const after = { ...nextState, variables: { ...nextState.variables }, sleeping: false };
-    after.variables.stamina = Number(after.variables.staminaMax ?? 100);
+    const staminaMax = Number(after.variables.staminaMax ?? 100);
+    const staminaBefore = Number(after.variables.stamina) || 0;
+    // За 8 часов сна восстанавливается около 60% выносливости.
+    const staminaRestore = Math.min(
+      staminaMax - staminaBefore,
+      Math.floor(staminaMax * 0.6 * (safeMinutes / 480))
+    );
+    after.variables.stamina = Math.min(staminaMax, staminaBefore + Math.max(0, staminaRestore));
     after.variables.health = Number(after.variables.healthMax ?? GAME_DATA.healthMax ?? 100);
     Game.setState(after);
 

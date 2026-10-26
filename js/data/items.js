@@ -19,53 +19,55 @@ Object.assign(window.GAME_DATA.items, {
         name: "Бутылка воды",
         icon: "💧",
         iconImage: "assets/images/items/water.png",
-        description: "−100 жажды.",
+        description: "−60 жажды.",
         consumable: true,
         use: {
             minutes: 2,
             restoreAfterTime: { thirst: 0 },
-            text: "Ты открываешь бутылку и делаешь несколько глотков."
+            reduceAfterTime: { thirst: 60 },
+            text: "Ты открываешь бутылку и делаешь несколько глотков. Жажда отступает."
         }
     },
     bread: {
         name: "Булочка",
         icon: "🥯",
         iconImage: "assets/images/items/bread.png",
-        description: "−10 голода",
+        description: "−10 голода.",
         consumable: true,
         use: {
             minutes: 3,
             reduceAfterTime: { hunger: 10 },
-            text: "Ты достаёшь булочку и съедаешь её."
+            text: "Ты достаёшь булочку и съедаешь её. Голод немного отступает."
         }
     },
     energy_drink: {
         name: "Энергетический напиток",
         icon: "⚡",
         iconImage: "assets/images/items/energy_drink.png",
-        description: "−25 усталости, +30 выносливости, +10 настроения.",
+        description: "−20 усталости, +20 выносливости, +5 настроения. Немного поднимает жажду.",
         consumable: true,
         use: {
             minutes: 3,
             restoreAfterTime: { thirst: 0 },
-            reduceAfterTime: { fatigue: 25 },
+            reduceAfterTime: { fatigue: 20 },
             effects: [
-                { type: "changeVariable", name: "stamina", amount: 30 },
-                { type: "changeVariable", name: "mood", amount: 10 }
+                { type: "changeVariable", name: "stamina", amount: 20 },
+                { type: "changeVariable", name: "mood", amount: 5 },
+                { type: "changeVariable", name: "thirst", amount: 15 }
             ],
-            text: "Ты выпиваешь банку энергетика. По телу разливается бодрость."
+            text: "Ты выпиваешь банку энергетика. По телу разливается бодрость, но жажда усиливается."
         }
     },
     chocolate: {
         name: "Шоколадный батончик",
         icon: "🍫",
-        description: "−10 голода, +5 настроения.",
+        description: "−10 голода, +3 настроения.",
         consumable: true,
         use: {
             minutes: 3,
             reduceAfterTime: { hunger: 10 },
             effects: [
-                { type: "changeVariable", name: "mood", amount: 5 }
+                { type: "changeVariable", name: "mood", amount: 3 }
             ],
             text: "Ты разворачиваешь шоколадный батончик и съедаешь его."
         }
@@ -74,12 +76,12 @@ Object.assign(window.GAME_DATA.items, {
         name: "Сэндвич",
         icon: "🥪",
         iconImage: "assets/images/items/sandwich.png",
-        description: "−25 голода, +15 настроения.",
+        description: "−25 голода, +5 настроения.",
         consumable: true,
         use: {
             minutes: 10,
             reduceAfterTime: { hunger: 25 },
-            effects: [{ type: "changeVariable", name: "mood", amount: 15 }],
+            effects: [{ type: "changeVariable", name: "mood", amount: 5 }],
             text: "Ты съедаешь сэндвич и чувствуешь себя сытым."
         }
     },
@@ -87,14 +89,14 @@ Object.assign(window.GAME_DATA.items, {
         name: "Кусочек пиццы",
         icon: "🍕",
         iconImage: "assets/images/items/pizza_slice.png",
-        description: "−50 голода, +10 выносливости, +20 настроения.",
+        description: "−35 голода, +5 выносливости, +8 настроения.",
         consumable: true,
         use: {
             minutes: 10,
-            reduceAfterTime: { hunger: 50 },
+            reduceAfterTime: { hunger: 35 },
             effects: [
-                { type: "changeVariable", name: "stamina", amount: 10 },
-                { type: "changeVariable", name: "mood", amount: 20 }
+                { type: "changeVariable", name: "stamina", amount: 5 },
+                { type: "changeVariable", name: "mood", amount: 8 }
             ],
             text: "Ты съедаешь кусочек пиццы, смакуя каждый кусок."
         }

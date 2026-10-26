@@ -43,7 +43,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "watch_tv",
                 label: "Смотреть телевизор",
-                hint: "Проходит 1 час · +50 настроения",
+                hint: "Проходит 1 час · +20 настроения",
                 iconImage: "assets/images/actions/tv.png",
                 minutes: 60,
                 condition: {
@@ -54,10 +54,11 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 hiddenWhen: { not: { flag: "tvAtHome" } },
                 effects: [
-                    { type: "changeVariable", name: "mood", amount: 50 },
+                    { type: "changeVariable", name: "mood", amount: 20 },
+                    { type: "changeVariable", name: "fatigue", amount: 5 },
                     { type: "setVariableFromVariable", name: "lastTvDay", from: "day" }
                 ],
-                reduceAfterTime: { fatigue: 20 },
+                reduceAfterTime: { fatigue: 10 },
                 text: "Ты устраиваешься перед телевизором и неспешно смотришь передачу. Время летит незаметно.",
                 image: "assets/images/locations/apartment-tv.jpg"
             },
@@ -82,29 +83,29 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "rest",
                 label: "Немного отдохнуть",
-                hint: "Проходит 15 минут · -5 усталости",
+                hint: "Проходит 15 минут · −3 усталости",
                 iconImage: "assets/images/actions/rest.png",
                 minutes: 15,
                 effects: [],
-                reduceAfterTime: { fatigue: 5, hunger: 2, thirst: 1 },
+                reduceAfterTime: { fatigue: 3, hunger: 2, thirst: 1 },
                 text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
                 image: "assets/images/locations/apartment-rest.jpg"
             },
             {
                 id: "take_shower",
                 label: "Принять душ",
-                hint: "Проходит 15 минут · −10 усталости · +10 выносливости · +10 настроения",
+                hint: "Проходит 15 минут · −8 усталости · +8 выносливости · +8 настроения",
                 iconImage: "assets/images/actions/shower.png",
                 minutes: 15,
                 condition: {
                     variableDiffers: { name: "lastShowerDay", other: "day" }
                 },
                 effects: [
-                    { type: "changeVariable", name: "stamina", amount: 10 },
-                    { type: "changeVariable", name: "mood", amount: 10 },
+                    { type: "changeVariable", name: "stamina", amount: 8 },
+                    { type: "changeVariable", name: "mood", amount: 8 },
                     { type: "setVariableFromVariable", name: "lastShowerDay", from: "day" }
                 ],
-                reduceAfterTime: { fatigue: 10 },
+                reduceAfterTime: { fatigue: 8 },
                 text: "Ты встаёшь под душ, и тёплые струи воды смывают усталость. Голова проясняется, настроение улучшается.",
                 image: "assets/images/locations/apartment-shower.jpg"
             },
@@ -118,8 +119,8 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [
                     { type: "changeVariable", name: "foodPortions", amount: -1 }
                 ],
-                reduceAfterTime: { hunger: 80 },
-                text: "Ты готовишь простой ужин и ешь.",
+                reduceAfterTime: { hunger: 60 },
+                text: "Ты готовишь простой ужин и ешь. Голод отступает.",
                 image: "assets/images/locations/apartment-rest.jpg"
             },
             {

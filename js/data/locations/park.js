@@ -44,11 +44,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "walk_park",
                 label: "Прогуляться по парку",
-                hint: "Проходит 30 минут · +5 настроения",
+                hint: "Проходит 30 минут · +3 настроения",
                 iconImage: "assets/images/actions/walk.png",
                 minutes: 30,
                 effects: [
-                    { type: "changeVariable", name: "mood", amount: 5 }
+                    { type: "changeVariable", name: "mood", amount: 3 }
                 ],
                 reduceAfterTime: { fatigue: 2, hunger: 4, thirst: 2 },
                 text: "Ты неспешно идёшь по аллее, вдыхая свежий воздух и слушая птиц. На душе становится спокойнее.",

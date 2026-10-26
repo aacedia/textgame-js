@@ -31,12 +31,12 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_food",
                 label: "Купить продукты домой",
-                hint: "100 ¥ · +5 порций продуктов для готовки дома",
+                hint: "150 ¥ · +5 порций продуктов для готовки дома",
                 iconImage: "assets/images/actions/grocery.png",
                 minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 100 } },
+                condition: { variableAtLeast: { name: "money", value: 150 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -100 },
+                    { type: "changeVariable", name: "money", amount: -150 },
                     { type: "changeVariable", name: "foodPortions", amount: 5 }
                 ],
                 text: "Ты покупаешь продукты: крупы, овощи, что-то к чаю. Хватит на несколько дней."
@@ -44,11 +44,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_water",
                 label: "Купить бутылку воды",
-                hint: "15 ¥",
+                hint: "25 ¥",
                 minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 15 } },
+                condition: { variableAtLeast: { name: "money", value: 25 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -15 },
+                    { type: "changeVariable", name: "money", amount: -25 },
                     { type: "giveItem", item: "water" }
                 ],
                 text: "Ты берёшь с полки бутылку воды и кладёшь её в сумку."
@@ -56,11 +56,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_energy_drink",
                 label: "Купить энергетик",
-                hint: "40 ¥",
+                hint: "60 ¥",
                 minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 40 } },
+                condition: { variableAtLeast: { name: "money", value: 60 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -40 },
+                    { type: "changeVariable", name: "money", amount: -60 },
                     { type: "giveItem", item: "energy_drink" }
                 ],
                 text: "Ты берёшь банку энергетика и убираешь её в сумку."
@@ -68,11 +68,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_sandwich",
                 label: "Купить сэндвич",
-                hint: "60 ¥",
+                hint: "80 ¥",
                 minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 60 } },
+                condition: { variableAtLeast: { name: "money", value: 80 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -60 },
+                    { type: "changeVariable", name: "money", amount: -80 },
                     { type: "giveItem", item: "sandwich" }
                 ],
                 text: "Ты берёшь сэндвич и убираешь его в сумку."
@@ -80,11 +80,11 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "buy_pizza_slice",
                 label: "Купить кусочек пиццы",
-                hint: "80 ¥",
+                hint: "100 ¥",
                 minutes: 1,
-                condition: { variableAtLeast: { name: "money", value: 80 } },
+                condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -80 },
+                    { type: "changeVariable", name: "money", amount: -100 },
                     { type: "giveItem", item: "pizza_slice" }
                 ],
                 text: "Ты берёшь кусочек пиццы и убираешь его в сумку."

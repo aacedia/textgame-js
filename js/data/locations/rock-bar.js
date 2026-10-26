@@ -21,13 +21,13 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "rock_concert",
                 label: "Пойти на концерт",
-                hint: "150 ¥ · 2 часа · +30 настроения",
+                hint: "150 ¥ · 2 часа · +15 настроения",
                 iconImage: "assets/images/actions/rock.png",
                 minutes: 120,
                 condition: { variableAtLeast: { name: "money", value: 150 } },
                 effects: [
                     { type: "changeVariable", name: "money", amount: -150 },
-                    { type: "changeVariable", name: "mood", amount: 30 },
+                    { type: "changeVariable", name: "mood", amount: 15 },
                     { type: "changeVariable", name: "stamina", amount: -10 },
                     { type: "changeVariable", name: "hunger", amount: 5 },
                     { type: "changeVariable", name: "thirst", amount: 10 }

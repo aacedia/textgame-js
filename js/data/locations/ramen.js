@@ -21,7 +21,7 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "changeVariable", name: "money", amount: -80 },
                     { type: "changeVariable", name: "mood", amount: 5 }
                 ],
-                reduceAfterTime: { hunger: 80, thirst: 30 },
+                reduceAfterTime: { hunger: 70, thirst: 40 },
                 text: "Ты заказываешь рамен. Повар ставит перед тобой дымящуюся миску. Ты ешь не спеша, наслаждаясь вкусом.",
                 image: "assets/images/locations/ramen-eat.jpg"
             },

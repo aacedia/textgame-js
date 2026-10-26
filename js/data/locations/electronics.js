@@ -28,7 +28,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "work_electronics",
                 label: "Подработать продавцом",
-                hint: "3 часа · +300 ¥ и премия · −50 выносливости",
+                hint: "3 часа · +250 ¥ и премия · −50 выносливости",
                 iconImage: "assets/images/actions/money.png",
                 minutes: 180,
                 condition: {
@@ -38,10 +38,13 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: 300 },
+                    { type: "changeVariable", name: "money", amount: 250 },
                     { type: "changeVariable", name: "stamina", amount: -50 },
+                    { type: "changeVariable", name: "fatigue", amount: 25 },
+                    { type: "changeVariable", name: "hunger", amount: 20 },
+                    { type: "changeVariable", name: "thirst", amount: 20 },
                     { type: "setVariableFromVariable", name: "lastElectronicsShiftDay", from: "day" },
-                    { type: "addRandomMoney", min: 0, max: 400, step: 100, label: "Премия" }
+                    { type: "addRandomMoney", min: 0, max: 200, step: 50, label: "Премия" }
                 ],
                 text: "Ты отрабатываешь смену продавцом-консультантом: помогаешь покупателям с выбором техники. За каждую удачную продажу дорогой техники — премия. В конце смены получаешь оплату.",
                 image: "assets/images/locations/electronics-work.jpg"

@@ -43,16 +43,16 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "drink_at_cafe",
                 label: "Выпить кофе",
-                hint: "20 ¥ · -10 усталости · +20 выносливости · +10 настроения",
+                hint: "25 ¥ · −8 усталости · +12 выносливости · +5 настроения",
                 iconImage: "assets/images/actions/coffee.png",
                 minutes: 15,
-                condition: { variableAtLeast: { name: "money", value: 20 } },
+                condition: { variableAtLeast: { name: "money", value: 25 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -20 },
-                    { type: "changeVariable", name: "stamina", amount: 20 },
-                    { type: "changeVariable", name: "mood", amount: 10 }
+                    { type: "changeVariable", name: "money", amount: -25 },
+                    { type: "changeVariable", name: "stamina", amount: 12 },
+                    { type: "changeVariable", name: "mood", amount: 5 }
                 ],
-                reduceAfterTime: { fatigue: 10 },
+                reduceAfterTime: { fatigue: 8 },
                 restoreAfterTime: { thirst: 0 },
                 text: "Ты берёшь чашку кофе и устраиваешься у окна.",
                 image: "assets/images/locations/cafe-coffee.jpg"
@@ -60,22 +60,22 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "eat_at_cafe",
                 label: "Поесть в кафе",
-                hint: "50 ¥ · снимает голод · +25 настроения",
+                hint: "70 ¥ · снимает голод · +10 настроения",
                 iconImage: "assets/images/actions/eat.png",
                 minutes: 40,
-                condition: { variableAtLeast: { name: "money", value: 50 } },
+                condition: { variableAtLeast: { name: "money", value: 70 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -50 },
-                    { type: "changeVariable", name: "mood", amount: 25 }
+                    { type: "changeVariable", name: "money", amount: -70 },
+                    { type: "changeVariable", name: "mood", amount: 10 }
                 ],
-                reduceAfterTime: { hunger: 80 },
+                reduceAfterTime: { hunger: 60, thirst: 30 },
                 text: "Ты заказываешь горячий обед и не спеша ешь.",
                 image: "assets/images/locations/cafe-food.jpg"
             },
             {
                 id: "work_shift",
                 label: "Подработать",
-                hint: "3 часа · +200 ¥ и чаевые · −30 выносливости",
+                hint: "3 часа · +150 ¥ и чаевые · −30 выносливости",
                 iconImage: "assets/images/actions/money.png",
                 minutes: 180,
                 condition: {
@@ -85,10 +85,13 @@ Object.assign(window.GAME_DATA.locations, {
                     ]
                 },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: 200 },
+                    { type: "changeVariable", name: "money", amount: 150 },
                     { type: "changeVariable", name: "stamina", amount: -30 },
+                    { type: "changeVariable", name: "fatigue", amount: 20 },
+                    { type: "changeVariable", name: "hunger", amount: 15 },
+                    { type: "changeVariable", name: "thirst", amount: 15 },
                     { type: "setVariableFromVariable", name: "lastShiftDay", from: "day" },
-                    { type: "addRandomMoney", min: 0, max: 300, step: 1, label: "Чаевые" }
+                    { type: "addRandomMoney", min: 0, max: 120, step: 10, label: "Чаевые" }
                 ],
                 text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату и чаевые.",
                 image: "assets/images/locations/cafe-work.jpg"
