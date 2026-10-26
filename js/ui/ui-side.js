@@ -81,8 +81,8 @@
         ? `<span class="item-count">×${item.count}</span>`
         : "";
 
-      const useHtml = item.consumable
-        ? `<button class="item-use" data-item="${escapeHtml(item.id)}">Использовать</button>`
+      const useHtml = item.usable
+        ? `<button class="item-use" data-item="${escapeHtml(item.id)}">${item.consumable ? "Использовать" : "Включить"}</button>`
         : "";
 
       li.innerHTML =

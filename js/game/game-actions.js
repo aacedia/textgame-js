@@ -282,22 +282,40 @@ window.Game = window.Game || {};
 
   /* ---------- использование расходника ---------- */
 
+  /* ---------- использование расходника ---------- */
+
   function handleUse(itemId) {
     const state = Game.getState();
     if (state.gameOver) return;
     if (!state.inventory.includes(itemId)) return;
 
     const item = GAME_DATA.items[itemId];
-    if (!item || !item.consumable || !item.use) return;
+    if (!item || !item.use) return;
 
     const use = item.use;
 
-    // Тратим ровно один экземпляр предмета.
-    const idx = state.inventory.indexOf(itemId);
-    const inventory = state.inventory.slice();
-    inventory.splice(idx, 1);
+    // Кулдаун: абсолютное время в минутах с начала игры.
+    let working = state;
+    if (use.cooldownMinutes) {
+      const absNow = (Number(state.variables.day) || 1) * 1440 + (Number(state.variables.minutes) || 0);
+      const last = Number(state.variables.lastUseMp3) || -9999;
+      if (absNow - last < use.cooldownMinutes) {
+        const left = use.cooldownMinutes - (absNow - last);
+        Game.setInfo([{ kind: "text", text: `Пока недоступно. Осталось ждать ${left} мин.` }]);
+        Game.render();
+        return;
+      }
+      working = { ...state, variables: { ...state.variables, lastUseMp3: absNow } };
+    }
 
-    let working = { ...state, inventory };
+    // Тратим ровно один экземпляр предмета (только для расходников).
+    let inventory = working.inventory;
+    if (item.consumable) {
+      const idx = inventory.indexOf(itemId);
+      inventory = inventory.slice();
+      inventory.splice(idx, 1);
+    }
+    working = { ...working, inventory };
 
     if (use.restoreBeforeTime || use.reduceBeforeTime) {
       working = { ...working, variables: { ...working.variables } };
@@ -342,13 +360,19 @@ window.Game = window.Game || {};
       ...info
     ]);
 
+    // Текст: случайный из randomTexts, если задан.
+    let useText = use.text;
+    if (Array.isArray(use.randomTexts) && use.randomTexts.length) {
+      useText = use.randomTexts[Math.floor(Math.random() * use.randomTexts.length)];
+    }
+
     const batch = [];
-    if (use.text) batch.push({ kind: "text", text: use.text });
+    if (useText) batch.push({ kind: "text", text: useText });
     if (use.image) {
       batch.push({
         kind: "image",
         src: use.image,
-        alt: use.imageAlt || use.text || "",
+        alt: use.imageAlt || useText || "",
         caption: use.imageCaption || ""
       });
     }

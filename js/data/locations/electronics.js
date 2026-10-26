@@ -45,66 +45,27 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/electronics-work.jpg"
             },
             {
-                id: "buy_laptop",
-                label: "Купить ноутбук",
-                hint: "50000 ¥",
+                id: "buy_mp3",
+                label: "Купить MP3-плеер",
+                hint: "3000 ¥",
                 minutes: 5,
-                hiddenWhen: { item: "laptop" },
-                condition: { variableAtLeast: { name: "money", value: 50000 } },
+                hiddenWhen: { item: "mp3_player" },
+                condition: { variableAtLeast: { name: "money", value: 3000 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -50000 },
-                    { type: "giveItem", item: "laptop" }
+                    { type: "changeVariable", name: "money", amount: -3000 },
+                    { type: "giveItem", item: "mp3_player" }
                 ],
-                text: "Ты покупаешь ноутбук. Теперь можно работать и учиться где угодно."
-            },
-            {
-                id: "buy_console",
-                label: "Купить портативную консоль",
-                hint: "25000 ¥",
-                minutes: 5,
-                hiddenWhen: { item: "handheld_console" },
-                condition: { variableAtLeast: { name: "money", value: 25000 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -25000 },
-                    { type: "giveItem", item: "handheld_console" }
-                ],
-                text: "Ты покупаешь портативную консоль. В дороге будет чем заняться."
-            },
-            {
-                id: "buy_smartphone",
-                label: "Купить смартфон",
-                hint: "30000 ¥",
-                minutes: 5,
-                hiddenWhen: { item: "smartphone" },
-                condition: { variableAtLeast: { name: "money", value: 30000 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -30000 },
-                    { type: "giveItem", item: "smartphone" }
-                ],
-                text: "Ты покупаешь смартфон. Теперь всегда на связи."
-            },
-            {
-                id: "buy_headphones",
-                label: "Купить беспроводные наушники",
-                hint: "8000 ¥",
-                minutes: 5,
-                hiddenWhen: { item: "wireless_headphones" },
-                condition: { variableAtLeast: { name: "money", value: 8000 } },
-                effects: [
-                    { type: "changeVariable", name: "money", amount: -8000 },
-                    { type: "giveItem", item: "wireless_headphones" }
-                ],
-                text: "Ты покупаешь беспроводные наушники. Звук чистый, провода не мешают."
+                text: "Ты покупаешь MP3-плеер. Теперь любимая музыка всегда с тобой."
             },
             {
                 id: "buy_tv",
                 label: "Купить телевизор",
-                hint: "40000 ¥ · доставка домой",
+                hint: "5000 ¥ · доставка домой",
                 minutes: 5,
                 hiddenWhen: { flag: "tvAtHome" },
-                condition: { variableAtLeast: { name: "money", value: 40000 } },
+                condition: { variableAtLeast: { name: "money", value: 5000 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -40000 },
+                    { type: "changeVariable", name: "money", amount: -5000 },
                     { type: "setFlag", flag: "tvAtHome", value: true }
                 ],
                 text: "Ты покупаешь телевизор с доставкой."

@@ -226,6 +226,7 @@ window.Game = window.Game || {};
           description: resolveDescription(item.description, state),
           count,
           consumable: !!item.consumable,
+          usable: !!(item.consumable || item.use),
           electronics: !!item.electronics
         };
       })
