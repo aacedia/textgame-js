@@ -32,9 +32,9 @@ Object.assign(window.GAME_DATA.locations, {
         actions: [
             {
                 id: "residential_to_apartment",
-                type: "back",
                 label: "Вернуться домой",
                 hint: "Вернуться в квартиру",
+                iconImage: "assets/images/ui/home.png",
                 effects: [{ type: "move", to: "apartment" }]
             },
             {
