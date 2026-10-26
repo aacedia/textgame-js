@@ -67,7 +67,7 @@ window.GAME_DATA = {
   needsRates: {
     hunger: 100 / 480,   // ≈12.5/час
     thirst: 100 / 720,   // ≈8.3/час
-    fatigue: 100 / 960   // ≈6.25/час
+    fatigue: 100 / 1920   // ≈3.125/час
   },
   needsMax: 100,
   healthMax: 100,

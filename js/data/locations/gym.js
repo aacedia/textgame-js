@@ -86,13 +86,14 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "play_volleyball",
                 label: "Играть в волейбол",
-                hint: "Проходит 1 час · +5 настроения",
+                hint: "1 час · +18 настроения · −5 выносливости · +12 усталости",
                 minutes: 60,
                 effects: [
-                    { type: "changeVariable", name: "mood", amount: 5 },
+                    { type: "changeVariable", name: "mood", amount: 18 },
+                    { type: "changeVariable", name: "stamina", amount: -5 },
+                    { type: "changeVariable", name: "fatigue", amount: 12 },
                     { type: "changeVariable", name: "hunger", amount: 5 },
-                    { type: "changeVariable", name: "thirst", amount: 8 },
-                    { type: "changeVariable", name: "fatigue", amount: 10 }
+                    { type: "changeVariable", name: "thirst", amount: 8 }
                 ],
                 text: "Ты присоединяешься к игре в волейбол. Мяч летает над сеткой, азарт захватывает, и час проходит незаметно. После игры чувствуешь приятную усталость и подъём настроения.",
                 image: "assets/images/locations/gym-volleyball.jpg"

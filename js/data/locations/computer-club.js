@@ -53,13 +53,15 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "computer_club_play",
                 label: "Поиграть час",
-                hint: "100 ¥ · +15 настроения",
+                hint: "100 ¥ · +30 настроения · −3 выносливости · +8 усталости",
                 iconImage: "assets/images/actions/computer.png",
                 minutes: 60,
                 condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [
                     { type: "changeVariable", name: "money", amount: -100 },
-                    { type: "changeVariable", name: "mood", amount: 15 }
+                    { type: "changeVariable", name: "mood", amount: 30 },
+                    { type: "changeVariable", name: "stamina", amount: -3 },
+                    { type: "changeVariable", name: "fatigue", amount: 8 }
                 ],
                 text: "Ты берёшь наушники, садишься за свободный компьютер и погружаешься в игру. Час пролетает незаметно."
             },

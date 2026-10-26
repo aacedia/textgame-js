@@ -18,8 +18,7 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 30,
                 condition: { variableAtLeast: { name: "money", value: 80 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -80 },
-                    { type: "changeVariable", name: "mood", amount: 5 }
+                    { type: "changeVariable", name: "money", amount: -80 }
                 ],
                 reduceAfterTime: { hunger: 70, thirst: 40 },
                 text: "Ты заказываешь рамен. Повар ставит перед тобой дымящуюся миску. Ты ешь не спеша, наслаждаясь вкусом.",

@@ -43,7 +43,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "watch_tv",
                 label: "Смотреть телевизор",
-                hint: "Проходит 1 час · +20 настроения",
+                hint: "Проходит 1 час · +35 настроения · +8 усталости",
                 iconImage: "assets/images/actions/tv.png",
                 minutes: 60,
                 condition: {
@@ -54,11 +54,10 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 hiddenWhen: { not: { flag: "tvAtHome" } },
                 effects: [
-                    { type: "changeVariable", name: "mood", amount: 20 },
-                    { type: "changeVariable", name: "fatigue", amount: 5 },
+                    { type: "changeVariable", name: "mood", amount: 35 },
+                    { type: "changeVariable", name: "fatigue", amount: 8 },
                     { type: "setVariableFromVariable", name: "lastTvDay", from: "day" }
                 ],
-                reduceAfterTime: { fatigue: 10 },
                 text: "Ты устраиваешься перед телевизором и неспешно смотришь передачу. Время летит незаметно.",
                 image: "assets/images/locations/apartment-tv.jpg"
             },
@@ -94,7 +93,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "take_shower",
                 label: "Принять душ",
-                hint: "Проходит 15 минут · −8 усталости · +8 выносливости · +8 настроения",
+                hint: "Проходит 15 минут · −8 усталости · +8 выносливости · +12 настроения",
                 iconImage: "assets/images/actions/shower.png",
                 minutes: 15,
                 condition: {
@@ -102,7 +101,7 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 effects: [
                     { type: "changeVariable", name: "stamina", amount: 8 },
-                    { type: "changeVariable", name: "mood", amount: 8 },
+                    { type: "changeVariable", name: "mood", amount: 12 },
                     { type: "setVariableFromVariable", name: "lastShowerDay", from: "day" }
                 ],
                 reduceAfterTime: { fatigue: 8 },

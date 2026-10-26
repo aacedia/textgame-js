@@ -44,13 +44,14 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "walk_park",
                 label: "Прогуляться по парку",
-                hint: "Проходит 30 минут · +3 настроения",
+                hint: "30 минут · +15 настроения · −3 выносливости · +5 усталости",
                 iconImage: "assets/images/actions/walk.png",
                 minutes: 30,
                 effects: [
-                    { type: "changeVariable", name: "mood", amount: 3 }
+                    { type: "changeVariable", name: "mood", amount: 15 },
+                    { type: "changeVariable", name: "stamina", amount: -3 },
+                    { type: "changeVariable", name: "fatigue", amount: 5 }
                 ],
-                reduceAfterTime: { fatigue: 2, hunger: 4, thirst: 2 },
                 text: "Ты неспешно идёшь по аллее, вдыхая свежий воздух и слушая птиц. На душе становится спокойнее.",
                 image: "assets/images/locations/park-walk.jpg"
             },
@@ -75,7 +76,7 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "changeVariable", name: "fatigue", amount: 10 },
                     { type: "changeVariable", name: "hunger", amount: 10 },
                     { type: "changeVariable", name: "thirst", amount: 10 },
-                    { type: "changeVariable", name: "mood", amount: 5 }
+                    { type: "changeVariable", name: "mood", amount: 10 }
                 ],
                 text: "Ты берёшь напрокат ролики и два часа катаешься по аллеям парка. Ветер в лицо, скорость, азарт — тело становится крепче.",
                 image: "assets/images/locations/park-walk.jpg"

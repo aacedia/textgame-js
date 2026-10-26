@@ -44,7 +44,7 @@ Object.assign(window.GAME_DATA.items, {
         name: "Энергетический напиток",
         icon: "⚡",
         iconImage: "assets/images/items/energy_drink.png",
-        description: "−20 усталости, +20 выносливости, +5 настроения. Немного поднимает жажду.",
+        description: "−20 усталости, +20 выносливости. Немного поднимает жажду.",
         consumable: true,
         use: {
             minutes: 3,
@@ -52,7 +52,6 @@ Object.assign(window.GAME_DATA.items, {
             reduceAfterTime: { fatigue: 20 },
             effects: [
                 { type: "changeVariable", name: "stamina", amount: 20 },
-                { type: "changeVariable", name: "mood", amount: 5 },
                 { type: "changeVariable", name: "thirst", amount: 15 }
             ],
             text: "Ты выпиваешь банку энергетика. По телу разливается бодрость, но жажда усиливается."
@@ -61,14 +60,11 @@ Object.assign(window.GAME_DATA.items, {
     chocolate: {
         name: "Шоколадный батончик",
         icon: "🍫",
-        description: "−10 голода, +3 настроения.",
+        description: "−10 голода.",
         consumable: true,
         use: {
             minutes: 3,
             reduceAfterTime: { hunger: 10 },
-            effects: [
-                { type: "changeVariable", name: "mood", amount: 3 }
-            ],
             text: "Ты разворачиваешь шоколадный батончик и съедаешь его."
         }
     },
@@ -76,12 +72,11 @@ Object.assign(window.GAME_DATA.items, {
         name: "Сэндвич",
         icon: "🥪",
         iconImage: "assets/images/items/sandwich.png",
-        description: "−25 голода, +5 настроения.",
+        description: "−25 голода.",
         consumable: true,
         use: {
             minutes: 10,
             reduceAfterTime: { hunger: 25 },
-            effects: [{ type: "changeVariable", name: "mood", amount: 5 }],
             text: "Ты съедаешь сэндвич и чувствуешь себя сытым."
         }
     },
@@ -89,14 +84,13 @@ Object.assign(window.GAME_DATA.items, {
         name: "Кусочек пиццы",
         icon: "🍕",
         iconImage: "assets/images/items/pizza_slice.png",
-        description: "−35 голода, +5 выносливости, +8 настроения.",
+        description: "−35 голода, +5 выносливости.",
         consumable: true,
         use: {
             minutes: 10,
             reduceAfterTime: { hunger: 35 },
             effects: [
-                { type: "changeVariable", name: "stamina", amount: 5 },
-                { type: "changeVariable", name: "mood", amount: 8 }
+                { type: "changeVariable", name: "stamina", amount: 5 }
             ],
             text: "Ты съедаешь кусочек пиццы, смакуя каждый кусок."
         }
@@ -120,7 +114,9 @@ Object.assign(window.GAME_DATA.items, {
             dailyCounter: "musicUsesToday",
             dailyDay: "lastMusicDay",
             effects: [
-                { type: "changeVariable", name: "mood", amount: 2 }
+                { type: "changeVariable", name: "mood", amount: 6 },
+                { type: "changeVariable", name: "stamina", amount: -1 },
+                { type: "changeVariable", name: "fatigue", amount: 2 }
             ],
             randomTexts: (window.GAME_DATA.tracks || []).map(track => ({
                 text: "Ты включаешь плеер. Играет ",

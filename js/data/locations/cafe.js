@@ -43,14 +43,13 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "drink_at_cafe",
                 label: "Выпить кофе",
-                hint: "25 ¥ · −8 усталости · +12 выносливости · +5 настроения",
+                hint: "25 ¥ · −8 усталости · +12 выносливости",
                 iconImage: "assets/images/actions/coffee.png",
                 minutes: 15,
                 condition: { variableAtLeast: { name: "money", value: 25 } },
                 effects: [
                     { type: "changeVariable", name: "money", amount: -25 },
-                    { type: "changeVariable", name: "stamina", amount: 12 },
-                    { type: "changeVariable", name: "mood", amount: 5 }
+                    { type: "changeVariable", name: "stamina", amount: 12 }
                 ],
                 reduceAfterTime: { fatigue: 8 },
                 restoreAfterTime: { thirst: 0 },
@@ -60,13 +59,12 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "eat_at_cafe",
                 label: "Поесть в кафе",
-                hint: "70 ¥ · снимает голод · +10 настроения",
+                hint: "70 ¥ · снимает голод",
                 iconImage: "assets/images/actions/eat.png",
                 minutes: 40,
                 condition: { variableAtLeast: { name: "money", value: 70 } },
                 effects: [
-                    { type: "changeVariable", name: "money", amount: -70 },
-                    { type: "changeVariable", name: "mood", amount: 10 }
+                    { type: "changeVariable", name: "money", amount: -70 }
                 ],
                 reduceAfterTime: { hunger: 60, thirst: 30 },
                 text: "Ты заказываешь горячий обед и не спеша ешь.",
