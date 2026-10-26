@@ -13,8 +13,7 @@ window.GAME_DATA = {
     dialogue: null,
     flags: {
       hasInspectedTable: false,
-      tvAtHome: false,
-      hasActiveOrder: false
+      tvAtHome: false
     },
     variables: {
       day: 1,
@@ -50,7 +49,8 @@ window.GAME_DATA = {
       lastHitoriDay: 0,
       relationship_hitori: 0,
       lastRitsuDay: 0,
-      relationship_ritsu: 0
+      relationship_ritsu: 0,
+      orderType: null
     },
     uiTab: "quests",
     inventoryFilter: "all",
@@ -63,9 +63,9 @@ window.GAME_DATA = {
   locations: {},
   links: {},
   needsRates: {
-    hunger: 100 / 480,   // ≈12.5/час: голод ощущается за полдня
-    thirst: 100 / 720,   // ≈8.3/час: пить нужно чаще, чем есть
-    fatigue: 100 / 960   // ≈6.25/час: усталость копится медленнее, но заметно
+    hunger: 100 / 480,   // ≈12.5/час
+    thirst: 100 / 720,   // ≈8.3/час
+    fatigue: 100 / 960   // ≈6.25/час
   },
   needsMax: 100,
   healthMax: 100,
@@ -73,9 +73,9 @@ window.GAME_DATA = {
   damagePerHour: 10,
   moodMax: 100,
   moodRates: {
-    passive: 6,          // -6/час пассивно
-    perHighNeed: 5,      // -5/час за каждую потребность выше 80
+    passive: 6,
+    perHighNeed: 5,
     highNeedThreshold: 80,
-    lowMoodMultiplier: 1.5 // при mood === 0 потребности растут ×1.5 (не ×2)
+    lowMoodMultiplier: 1.5
   }
 };

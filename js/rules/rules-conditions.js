@@ -74,13 +74,48 @@
 
         if (condition.not) {
             const inner = condition.not;
+            // not: { flag } — условие не выполнено, когда флаг УЖЕ стоит.
+            if (inner.flag) {
+                const expected = inner.equals === undefined ? true : inner.equals;
+                if (state.flags[inner.flag] === expected) {
+                    if (expected === true) return "Уже сделано";
+                    return "Условие уже выполнено";
+                }
+                return null;
+            }
+            // not: { item } — предмет уже есть.
             if (inner.item) {
                 const item = (gameData.items || {})[inner.item];
                 return `Уже есть: ${item ? item.name : inner.item}`;
             }
-            if (inner.flag) return "Уже сделано";
-            if (inner.variableAtLeast) return "Уже достигнуто";
-            if (inner.variableEquals) return "Уже так";
+            // not: { variableAtLeast } — значение уже достигнуто.
+            if (inner.variableAtLeast) {
+                const { name, value } = inner.variableAtLeast;
+                return describeVariableAtLeast(name, value, true);
+            }
+            // not: { variableEquals } — значение уже равно.
+            if (inner.variableEquals) {
+                const { name, value } = inner.variableEquals;
+                const label = describeVariableName(name);
+                return label ? `Уже: ${label} = ${value}` : "Уже так";
+            }
+            // not: { variableDiffers } — значения совпадают.
+            if (inner.variableDiffers) {
+                return "Уже сделано сегодня";
+            }
+            // not: { timeBetween } — сейчас не в этом промежутке.
+            if (inner.timeBetween) {
+                const { from, to } = inner.timeBetween;
+                return `Недоступно с ${formatTime(from)} до ${formatTime(to)}`;
+            }
+            // not: { locationOpen } — локация закрыта.
+            if (inner.locationOpen) {
+                return "Сейчас закрыто";
+            }
+            // not: { not } — двойное отрицание.
+            if (inner.not) {
+                return describeConditionFailure(inner.not, state, gameData);
+            }
             return "Условие уже выполнено";
         }
 
@@ -106,19 +141,75 @@
         }
         if (condition.variableAtLeast) {
             const { name, value } = condition.variableAtLeast;
-            const suffix =
-                name === "money" ? " ¥" :
-                    name === "stamina" ? " выносливости" :
-                        name === "health" ? " здоровья" :
-                            name === "hunger" ? " голода" :
-                                name === "thirst" ? " жажды" :
-                                    name === "fatigue" ? " усталости" :
-                                        name === "foodPortions" ? " порций еды" : "";
-            return `Нужно ${value}${suffix}`;
+            return describeVariableAtLeast(name, value, false);
+        }
+        if (condition.variableEquals) {
+            const { name, value } = condition.variableEquals;
+            const label = describeVariableName(name);
+            if (value === null || value === undefined) {
+                return label
+                    ? `Нужно: ${label} не задано`
+                    : "Недоступно";
+            }
+            return label
+                ? `Нужно: ${label} = ${value}`
+                : "Недоступно";
         }
         if (condition.variableDiffers) return "Уже сделано сегодня";
-        if (condition.flag && condition.equals === false) return "Уже сделано";
+        if (condition.flag) {
+            const expected = condition.equals === undefined ? true : condition.equals;
+            if (expected === false) return "Уже сделано";
+            return "Условие не выполнено";
+        }
         return null;
+    }
+
+    // Человекочитаемое описание требования к переменной (>= value).
+    // forNot=true — сообщение в стиле «уже достигнуто».
+    function describeVariableAtLeast(name, value, forNot) {
+        const suffix =
+            name === "money" ? " ¥" :
+                name === "stamina" ? " выносливости" :
+                    name === "health" ? " здоровья" :
+                        name === "hunger" ? " голода" :
+                            name === "thirst" ? " жажды" :
+                                name === "fatigue" ? " усталости" :
+                                    name === "foodPortions" ? " порций еды" :
+                                        name === "staminaMax" ? " выносливости (макс.)" :
+                                            name === "healthMax" ? " здоровья (макс.)" : "";
+        const label = describeVariableName(name);
+        if (forNot) {
+            return label
+                ? `Уже достигнуто: ${label} ${value}${suffix}`
+                : `Уже достигнуто: ${value}`;
+        }
+        return label
+            ? `Нужно: ${label} ${value}${suffix}`
+            : `Нужно ${value}${suffix}`;
+    }
+
+    // Человекочитаемое имя переменной для сообщений о недоступности.
+    function describeVariableName(name) {
+        switch (name) {
+            case "money": return "деньги";
+            case "stamina": return "выносливость";
+            case "staminaMax": return "макс. выносливость";
+            case "health": return "здоровье";
+            case "healthMax": return "макс. здоровье";
+            case "hunger": return "голод";
+            case "thirst": return "жажда";
+            case "fatigue": return "усталость";
+            case "mood": return "настроение";
+            case "foodPortions": return "порции еды";
+            case "day": return "день";
+            case "minutes": return "время";
+            case "classesAttended": return "посещённые занятия";
+            case "pendingStipend": return "накопленная стипендия";
+            default:
+                // Служебные переменные (orderType, lastXxxDay и т.п.)
+                // не должны всплывать в подсказках.
+                return "";
+        }
     }
 
     Object.assign(window.Rules, {
