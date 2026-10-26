@@ -48,11 +48,17 @@ Object.assign(window.GAME_DATA.locations, {
                 label: "Пойти на Глитч-стрит",
                 hint: "Неоновая улица с клубом и раменной",
                 effects: [{ type: "move", to: "glitch-street" }]
+            },
+            {
+                id: "center_to_capital",
+                label: "Пойти на Капитал-стрит",
+                hint: "Башни корпораций",
+                effects: [{ type: "move", to: "capital-street" }]
             }
         ]
     }
 });
 
 Object.assign(window.GAME_DATA.links, {
-    center: ["university", "cafe", "electronics", "shop-center", "glitch-street"]
+    center: ["university", "cafe", "electronics", "shop-center", "glitch-street", "capital-street"]
 });
