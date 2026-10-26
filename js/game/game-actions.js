@@ -294,19 +294,7 @@ window.Game = window.Game || {};
 
     const use = item.use;
 
-    // Кулдаун: абсолютное время в минутах с начала игры.
     let working = state;
-    if (use.cooldownMinutes) {
-      const absNow = (Number(state.variables.day) || 1) * 1440 + (Number(state.variables.minutes) || 0);
-      const last = Number(state.variables.lastUseMp3) || -9999;
-      if (absNow - last < use.cooldownMinutes) {
-        const left = use.cooldownMinutes - (absNow - last);
-        Game.setInfo([{ kind: "text", text: `Пока недоступно. Осталось ждать ${left} мин.` }]);
-        Game.render();
-        return;
-      }
-      working = { ...state, variables: { ...state.variables, lastUseMp3: absNow } };
-    }
 
     // Тратим ровно один экземпляр предмета (только для расходников).
     let inventory = working.inventory;
@@ -361,18 +349,27 @@ window.Game = window.Game || {};
     ]);
 
     // Текст: случайный из randomTexts, если задан.
+    // randomTexts может содержать как строки, так и объекты с полем link.
     let useText = use.text;
     if (Array.isArray(use.randomTexts) && use.randomTexts.length) {
       useText = use.randomTexts[Math.floor(Math.random() * use.randomTexts.length)];
     }
 
     const batch = [];
-    if (useText) batch.push({ kind: "text", text: useText });
+    if (typeof useText === "string") {
+      batch.push({ kind: "text", text: useText });
+    } else if (useText) {
+      const parts = [];
+      if (useText.text) parts.push({ text: useText.text });
+      if (useText.link) parts.push({ link: useText.link });
+      if (useText.after) parts.push({ text: useText.after });
+      batch.push({ kind: "rich", parts });
+    }
     if (use.image) {
       batch.push({
         kind: "image",
         src: use.image,
-        alt: use.imageAlt || useText || "",
+        alt: use.imageAlt || "",
         caption: use.imageCaption || ""
       });
     }

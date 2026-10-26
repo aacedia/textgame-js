@@ -228,7 +228,9 @@ window.UI = (() => {
 
     // Если в "Информации" только картинка (без текста) — панель не нужна:
     // картинка уходит наверх, в описание локации.
-    const textEntries = (info.entries || []).filter(e => e.kind === "text");
+    const textEntries = (info.entries || []).filter(
+      e => e.kind === "text" || e.kind === "rich"
+    );
     if (!textEntries.length) {
       panel.hidden = true;
       list.replaceChildren();
@@ -243,6 +245,24 @@ window.UI = (() => {
   }
 
   function buildInfoText(entry) {
+    if (entry.kind === "rich") {
+      const p = document.createElement("p");
+      p.className = "infoentry infoentry--text";
+      (entry.parts || []).forEach(part => {
+        if (part.link) {
+          const a = document.createElement("a");
+          a.href = part.link.href;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.className = "inline-action";
+          a.textContent = part.link.text;
+          p.appendChild(a);
+        } else {
+          p.appendChild(document.createTextNode(part.text || ""));
+        }
+      });
+      return p;
+    }
     const p = document.createElement("p");
     p.className = "infoentry infoentry--text";
     p.textContent = entry.text || "";

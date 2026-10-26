@@ -125,9 +125,9 @@ window.Game = window.Game || {};
 
   function buildInfoVM() {
     const entries = Game.getInfo();
-    // В "Информации" рендерится только текст. Картинки уходят наверх,
-    // в блок описания локации.
-    const textEntries = entries.filter(e => e.kind === "text");
+    // В "Информации" рендерится только текст (в т.ч. rich-записи со ссылками).
+    // Картинки уходят наверх, в блок описания локации.
+    const textEntries = entries.filter(e => e.kind === "text" || e.kind === "rich");
     return { visible: textEntries.length > 0, entries };
   }
 

@@ -95,19 +95,15 @@ Object.assign(window.GAME_DATA.items, {
     mp3_player: {
         name: "MP3-плеер",
         icon: "🎵",
-        description: "Любимая музыка в кармане. +5 настроения, раз в час.",
+        description: "Любимая музыка в кармане.",
         electronics: true,
         use: {
-            minutes: 2,
-            cooldownMinutes: 60,
-            effects: [{ type: "changeVariable", name: "mood", amount: 5 }],
-            randomTexts: [
-                "Ты включаешь плеер. В наушниках звучит «Neon Rain» — синтвейв с тёплым басом.",
-                "Ты включаешь плеер. Играет «Paper Planes» — лёгкий инди с гитарным перебором.",
-                "Ты включаешь плеер. Звучит «Midnight Drive» — медленный электро-фанк.",
-                "Ты включаешь плеер. В наушниках «Glass Garden» — меланхоличный пост-рок.",
-                "Ты включаешь плеер. Играет «Sunset Loop» — летний чиллаут."
-            ]
+            minutes: 3,
+            randomTexts: (window.GAME_DATA.tracks || []).map(track => ({
+                text: "Ты включаешь плеер. Играет ",
+                link: { text: track.title, href: track.href },
+                after: "."
+            }))
         }
     }
 });

@@ -43,6 +43,7 @@ window.Game = window.Game || {};
     if (!entry || typeof entry !== "object") return false;
     if (entry.kind === "text") return typeof entry.text === "string";
     if (entry.kind === "image") return typeof entry.src === "string";
+    if (entry.kind === "rich") return Array.isArray(entry.parts);
     return false;
   }
 
