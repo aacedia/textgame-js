@@ -63,6 +63,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "buy_tv",
                 label: "Купить телевизор",
                 hint: "5000 ¥ · доставка домой",
+                iconImage: "assets/images/actions/tv.png",
                 minutes: 5,
                 hiddenWhen: { flag: "tvAtHome" },
                 condition: { variableAtLeast: { name: "money", value: 5000 } },
