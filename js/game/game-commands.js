@@ -168,11 +168,12 @@ window.Game = window.Game || {};
   function claimStipend() {
     const state = Game.getState();
     const pending = Number(state.variables.pendingStipend) || 0;
+    const STIPEND_THRESHOLD = 500;
 
-    if (pending < 1000) {
+    if (pending < STIPEND_THRESHOLD) {
       UI.showDialog(
         "Стипендия",
-        `Пока рано. Минимум для получения — 1000 ¥. Накоплено: ${pending} ¥.`,
+        `Пока рано. Минимум для получения — ${STIPEND_THRESHOLD} ¥. Накоплено: ${pending} ¥.`,
         [{ label: "Понятно", primary: true }]
       );
       return;

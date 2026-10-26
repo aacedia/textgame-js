@@ -282,7 +282,7 @@ window.Game = window.Game || {};
     const isWeekend = date.weekdayIndex === 5 || date.weekdayIndex === 6;
     const quests = [];
 
-    if (pending >= 1000) {
+    if (pending >= 500) {
       quests.push({
         done: false,
         active: true,
