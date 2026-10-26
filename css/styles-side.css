@@ -100,6 +100,12 @@
   background:var(--accent-2);
   font-size:17px;
 }
+.itemicon-img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
 .item-body{
   grid-area:body;
   min-width:0;

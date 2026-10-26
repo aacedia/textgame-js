@@ -2,11 +2,13 @@ Object.assign(window.GAME_DATA.items, {
     keys: {
         name: "Ключи от квартиры",
         icon: "🔑",
+        iconImage: "assets/images/items/keys.png",
         description: "Ключи от квартиры."
     },
     notebook: {
         name: "Блокнот",
         icon: "📓",
+        iconImage: "assets/images/items/notebook.png",
         description: (state) => {
             const count = Number(state.variables.classesAttended) || 0;
             if (count === 0) return "Пока чистый.";
@@ -16,6 +18,7 @@ Object.assign(window.GAME_DATA.items, {
     water: {
         name: "Бутылка воды",
         icon: "💧",
+        iconImage: "assets/images/items/water.png",
         description: "−100 жажды.",
         consumable: true,
         use: {
@@ -27,6 +30,7 @@ Object.assign(window.GAME_DATA.items, {
     bread: {
         name: "Булочка",
         icon: "🥯",
+        iconImage: "assets/images/items/bread.png",
         description: "−10 голода",
         consumable: true,
         use: {
@@ -38,6 +42,7 @@ Object.assign(window.GAME_DATA.items, {
     energy_drink: {
         name: "Энергетический напиток",
         icon: "⚡",
+        iconImage: "assets/images/items/energy_drink.png",
         description: "−25 усталости, +30 выносливости, +10 настроения.",
         consumable: true,
         use: {
@@ -68,6 +73,7 @@ Object.assign(window.GAME_DATA.items, {
     sandwich: {
         name: "Сэндвич",
         icon: "🥪",
+        iconImage: "assets/images/items/sandwich.png",
         description: "−25 голода, +15 настроения.",
         consumable: true,
         use: {
@@ -80,6 +86,7 @@ Object.assign(window.GAME_DATA.items, {
     pizza_slice: {
         name: "Кусочек пиццы",
         icon: "🍕",
+        iconImage: "assets/images/items/pizza_slice.png",
         description: "−50 голода, +10 выносливости, +20 настроения.",
         consumable: true,
         use: {
@@ -95,6 +102,7 @@ Object.assign(window.GAME_DATA.items, {
     mp3_player: {
         name: "MP3-плеер",
         icon: "🎵",
+        iconImage: "assets/images/items/mp3_player.png",
         description: "Любимая музыка в кармане.",
         electronics: true,
         use: {

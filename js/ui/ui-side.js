@@ -81,17 +81,28 @@
         ? `<span class="item-count">×${item.count}</span>`
         : "";
 
+      const iconHtml = item.iconImage
+        ? `<img class="itemicon-img" src="${escapeHtml(item.iconImage)}" alt="">`
+        : escapeHtml(item.icon || "◆");
+
       const useHtml = item.usable
         ? `<button class="item-use" data-item="${escapeHtml(item.id)}">${item.consumable ? "Использовать" : "Включить"}</button>`
         : "";
 
       li.innerHTML =
-        `<span class="itemicon" aria-hidden="true">${escapeHtml(item.icon || "◆")}</span>` +
+        `<span class="itemicon" aria-hidden="true">${iconHtml}</span>` +
         `<span class="item-body">` +
         `<span class="itemname">${escapeHtml(item.name)}${countHtml}</span><br>` +
         `<span class="itemnote">${escapeHtml(item.description || "")}</span>` +
         `</span>` +
         useHtml;
+
+      const img = li.querySelector(".itemicon-img");
+      if (img) {
+        img.onerror = () => {
+          img.parentElement.textContent = item.icon || "◆";
+        };
+      }
 
       const btn = li.querySelector(".item-use");
       if (btn) {

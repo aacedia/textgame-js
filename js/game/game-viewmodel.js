@@ -223,6 +223,7 @@ window.Game = window.Game || {};
           id,
           name: item.name,
           icon: item.icon,
+          iconImage: item.iconImage || "",
           description: resolveDescription(item.description, state),
           count,
           consumable: !!item.consumable,
