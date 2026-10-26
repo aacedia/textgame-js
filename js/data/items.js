@@ -57,9 +57,27 @@ Object.assign(window.GAME_DATA.items, {
             text: "Ты выпиваешь банку энергетика. По телу разливается бодрость, но жажда усиливается."
         }
     },
+    // уникальный расходник из автомата на глитч-стрит
+    soda: {
+        name: "Газировка",
+        icon: "🥤",
+        iconImage: "assets/images/items/soda.png",
+        description: "−10 жажды, +8 настроения.",
+        consumable: true,
+        use: {
+            minutes: 3,
+            reduceAfterTime: { thirst: 10 },
+            effects: [
+                { type: "changeVariable", name: "mood", amount: 8 }
+            ],
+            text: "Ты открываешь банку газировки. Пузырьки щекочут горло, настроение немного поднимается."
+        }
+    },
+    // пока не используется
     chocolate: {
         name: "Шоколадный батончик",
         icon: "🍫",
+        iconImage: "assets/images/items/chocolate.png",
         description: "−10 голода.",
         consumable: true,
         use: {

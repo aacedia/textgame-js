@@ -444,13 +444,14 @@ window.UI = (() => {
           avatarImg.src = dialogue.npc.avatar;
           avatarImg.alt = dialogue.npc.avatarAlt || dialogue.npc.name || "";
           avatarImg.style.display = "";
+          avatarWrap.replaceChildren(avatarImg);
           avatarWrap.classList.remove("dialogue-avatar--empty");
         } else {
           avatarImg.removeAttribute("src");
           avatarImg.alt = "";
           avatarImg.style.display = "none";
           avatarWrap.classList.add("dialogue-avatar--empty");
-          avatarWrap.textContent = "?";
+          avatarWrap.replaceChildren(document.createTextNode("?"));
         }
       }
       if (relationValue && dialogue.relationship) {
@@ -465,8 +466,24 @@ window.UI = (() => {
     actions.replaceChildren();
     (dialogue.choices || []).forEach(choice => {
       const b = document.createElement("button");
-      b.textContent = choice.text;
       b.className = "dialogue-choice";
+      if (choice.iconImage) {
+        const img = document.createElement("img");
+        img.className = "dialogue-choice__icon";
+        img.src = choice.iconImage;
+        img.alt = "";
+        img.onerror = () => img.remove();
+        b.appendChild(img);
+      } else if (choice.icon) {
+        const span = document.createElement("span");
+        span.className = "dialogue-choice__icon-emoji";
+        span.textContent = choice.icon;
+        b.appendChild(span);
+      }
+      const label = document.createElement("span");
+      label.className = "dialogue-choice__label";
+      label.textContent = choice.text;
+      b.appendChild(label);
       b.addEventListener("click", () => {
         handlers.onCommand("dialogue:choose:" + choice.index);
       });

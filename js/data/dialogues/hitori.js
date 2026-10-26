@@ -30,6 +30,17 @@ window.GAME_DATA.dialogues.hitori = {
                     condition: { not: { flag: "hitori_binary_done" } }
                 },
                 {
+                    text: "Про автомат с напитками",
+                    next: "vending",
+                    iconImage: "assets/images/ui/info.png",
+                    condition: {
+                        all: [
+                            { variableAtLeast: { name: "relationship_hitori", value: 20 } },
+                            { not: { flag: "vendingHack" } }
+                        ]
+                    }
+                },
+                {
                     text: "Просто поболтать",
                     next: "smalltalk",
                     condition: {
@@ -327,6 +338,27 @@ window.GAME_DATA.dialogues.hitori = {
         },
         binary_smart: {
             text: "Хитори тихо смеётся. — Неплохо. Может, ты и прав. Но помни: даже в сером мире есть моменты, когда нужно выбрать сторону.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Автомат с напитками ---------- */
+
+        vending: {
+            text: "Хитори поднимает взгляд от ноутбука. — Автомат снаружи? Да, я его знаю. Старый, часто ломается: то мотор заест, то лоток не откроется. А то и вовсе — съест деньги и ничего не выдаст. Инженеры приезжают редко, так что он подолгу стоит непочиненный. — Он на секунду задумывается. — Слушай, у меня есть скрипт. Он выдаёт тебя за сервисную службу и запускает проверку мотора. Если сработает — напиток упадёт в лоток. Бесплатно. Пользуйся, пока не починили по-настоящему.",
+            choices: [
+                {
+                    text: "Спасибо, выручил.",
+                    effects: [
+                        { type: "setFlag", flag: "vendingHack", value: true },
+                        { type: "changeVariable", name: "relationship_hitori", amount: 3 }
+                    ],
+                    next: "vending_given"
+                },
+                { text: "Не надо, обойдусь", next: "topics" }
+            ]
+        },
+        vending_given: {
+            text: "— Только не наглей, — усмехается Хитори. — Раз в день, и то если повезёт. Мотор капризный: иногда просто гудит и ничего не выдаёт. — Он скидывает тебе скрипт на телефон.",
             choices: [{ text: "Попрощаться", close: true }]
         },
 

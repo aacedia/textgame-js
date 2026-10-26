@@ -52,6 +52,7 @@ window.GAME_DATA = {
       relationship_ritsu: 0,
       lastMusicDay: 0,
       musicUsesToday: 0,
+      lastVendingDay: 0,
       orderType: null
     },
     uiTab: "quests",

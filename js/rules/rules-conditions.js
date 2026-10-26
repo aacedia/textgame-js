@@ -47,6 +47,10 @@
             if (from <= to) return t >= from && t < to;
             return t >= from || t < to;
         }
+        if (condition.randomChance !== undefined) {
+            const chance = Math.max(0, Math.min(100, Number(condition.randomChance) || 0));
+            return Math.random() * 100 < chance;
+        }
         warn(`неизвестное условие`, condition);
         return false;
     }

@@ -68,8 +68,6 @@ dialog::backdrop{background:var(--backdrop)}
 
 /* ---------- Диалог с NPC ---------- */
 
-/* ---------- Диалог с NPC ---------- */
-
 .dialogue-header{
   display:flex;
   align-items:center;
@@ -149,6 +147,31 @@ dialog::backdrop{background:var(--backdrop)}
   text-align:left;
   padding:10px 12px;
   font-size:14px;
+}
+
+/* Иконка в варианте ответа — вписана в строку */
+.dialogue-choice{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.dialogue-choice__icon{
+  width:32px;
+  height:32px;
+  max-width:32px;
+  max-height:32px;
+  flex:0 0 32px;
+  object-fit:contain;
+  display:block;
+}
+.dialogue-choice__icon-emoji{
+  font-size:32px;
+  line-height:1;
+  flex:0 0 auto;
+}
+.dialogue-choice__label{
+  flex:1 1 auto;
+  min-width:0;
 }
 
 /* ---------- Диалог выбора (сон и т.п.) ---------- */

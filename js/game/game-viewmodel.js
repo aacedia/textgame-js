@@ -441,11 +441,17 @@ window.Game = window.Game || {};
     if (!node) return null;
 
     const choices = (node.choices || [])
-      .map((c, i) => ({ ...c, index: i }))
+      .map((c, i) => ({
+        ...c,
+        index: i,
+        iconImage: c.iconImage || "",
+        icon: c.icon || ""
+      }))
       .filter(c => !c.condition || Rules.checkCondition(c.condition, state, GAME_DATA));
 
-    const npc = (GAME_DATA.character && GAME_DATA.character.npcs && GAME_DATA.character.npcs[state.dialogue.id]) || {};
-    const relationRaw = Number(state.variables[`relationship_${state.dialogue.id}`]) || 0;
+    const npcId = dlg.npc || state.dialogue.id;
+    const npc = (GAME_DATA.character && GAME_DATA.character.npcs && GAME_DATA.character.npcs[npcId]) || {};
+    const relationRaw = Number(state.variables[`relationship_${npcId}`]) || 0;
     const relationMax = 100;
     const relationPct = Math.max(0, Math.min(100, (relationRaw / relationMax) * 100));
 
@@ -453,7 +459,7 @@ window.Game = window.Game || {};
       text: interpolate(node.text || "", state),
       choices,
       npc: {
-        name: npc.name || state.dialogue.id,
+        name: npc.name || npcId,
         avatar: npc.avatar || "",
         avatarAlt: npc.avatarAlt || npc.name || "NPC"
       },
