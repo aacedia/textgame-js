@@ -105,12 +105,22 @@ Object.assign(window.GAME_DATA.items, {
         name: "MP3-плеер",
         icon: "🎵",
         iconImage: "assets/images/items/mp3_player.png",
-        description: "Любимая музыка в кармане.",
+        description: (state) => {
+            const left = 3 - (Number(state.variables.musicUsesToday) || 0);
+            if (state.variables.lastMusicDay !== state.variables.day) {
+                return "Любимая музыка в кармане. Можно послушать 3 раза в день.";
+            }
+            if (left <= 0) return "На сегодня плеер уже отслушан.";
+            return `Любимая музыка в кармане. Осталось на сегодня: ${left}.`;
+        },
         electronics: true,
         use: {
             minutes: 3,
+            dailyLimit: 3,
+            dailyCounter: "musicUsesToday",
+            dailyDay: "lastMusicDay",
             effects: [
-                { type: "changeVariable", name: "mood", amount: 1 }
+                { type: "changeVariable", name: "mood", amount: 2 }
             ],
             randomTexts: (window.GAME_DATA.tracks || []).map(track => ({
                 text: "Ты включаешь плеер. Играет ",

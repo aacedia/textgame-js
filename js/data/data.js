@@ -50,6 +50,8 @@ window.GAME_DATA = {
       relationship_hitori: 0,
       lastRitsuDay: 0,
       relationship_ritsu: 0,
+      lastMusicDay: 0,
+      musicUsesToday: 0,
       orderType: null
     },
     uiTab: "quests",

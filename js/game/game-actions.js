@@ -294,7 +294,27 @@ window.Game = window.Game || {};
 
     const use = item.use;
 
+    // Дневной лимит использования (например, MP3-плеер — 3 раза в день).
     let working = state;
+    if (use.dailyLimit && use.dailyCounter && use.dailyDay) {
+      const day = Number(working.variables.day) || 0;
+      const sameDay = Number(working.variables[use.dailyDay]) === day;
+      const usedToday = sameDay ? (Number(working.variables[use.dailyCounter]) || 0) : 0;
+      if (usedToday >= use.dailyLimit) {
+        Game.pushLog([`${item.name}: дневной лимит исчерпан.`]);
+        Game.setInfo([{ kind: "text", text: `На сегодня ${item.name} уже использован ${use.dailyLimit} раз(а).` }]);
+        Game.render();
+        return;
+      }
+      working = {
+        ...working,
+        variables: {
+          ...working.variables,
+          [use.dailyDay]: day,
+          [use.dailyCounter]: usedToday + 1
+        }
+      };
+    }
 
     // Тратим ровно один экземпляр предмета (только для расходников).
     let inventory = working.inventory;

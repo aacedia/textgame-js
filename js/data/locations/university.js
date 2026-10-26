@@ -114,7 +114,7 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [
                     { type: "setVariableFromVariable", name: "lastClassDay", from: "day" },
                     { type: "changeVariable", name: "classesAttended", amount: 1 },
-                    { type: "changeVariable", name: "pendingStipend", amount: 200 }
+                    { type: "changeVariable", name: "pendingStipend", amount: 100 }
                 ],
                 text: "Ты заходишь в аудиторию и проводишь полтора часа на занятии.",
                 image: "assets/images/locations/university-classroom.jpg"
