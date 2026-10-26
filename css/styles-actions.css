@@ -59,3 +59,20 @@
 .action--back:hover:not(:disabled) .action-title{
   color:var(--accent-3);
 }
+/* Иконка предмета на кнопке действия */
+.action-head{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+.action-icon-img{
+  width:20px;
+  height:20px;
+  object-fit:contain;
+  flex:0 0 auto;
+}
+.action-icon-emoji{
+  font-size:16px;
+  line-height:1;
+  flex:0 0 auto;
+}

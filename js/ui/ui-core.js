@@ -296,6 +296,11 @@ window.UI = (() => {
     actions.forEach(action => {
       const button = document.createElement("button");
 
+      // Иконка предмета (если действие выдаёт предмет).
+      const iconHtml = action.itemIconImage
+        ? `<img class="action-icon-img" src="${escapeHtml(action.itemIconImage)}" alt="">`
+        : (action.itemIcon ? `<span class="action-icon-emoji">${escapeHtml(action.itemIcon)}</span>` : "");
+
       // Кнопка «назад»: компактная, на всю ширину, без описания.
       if (action.type === "back") {
         button.className = "action action--back";
@@ -321,9 +326,24 @@ window.UI = (() => {
         : (action.unavailableReason || "Сейчас недоступно");
 
       button.innerHTML =
+        `<span class="action-head">` +
+        iconHtml +
         `<span class="action-title">${escapeHtml(action.label)}${countHtml}</span>` +
+        `</span>` +
         `<span class="hint">${escapeHtml(hintText)}</span>`;
       button.title = action.available ? action.label : hintText;
+
+      const img = button.querySelector(".action-icon-img");
+      if (img) {
+        img.onerror = () => {
+          const wrap = img.parentElement;
+          if (action.itemIcon) {
+            wrap.innerHTML = `<span class="action-icon-emoji">${escapeHtml(action.itemIcon)}</span>`;
+          } else {
+            img.remove();
+          }
+        };
+      }
 
       button.addEventListener("click", () => {
         if (action.type === "choice" && Array.isArray(action.choices)) {
