@@ -8,6 +8,30 @@ Object.assign(window.GAME_DATA.locations, {
             "Небольшое кафе неподалёку от перекрёстка. У окна свободный столик, за стойкой скучает бариста.",
             "Здесь можно перекусить, а если повезёт — подработать пару часов за стойкой."
         ],
+        extraDescription: [
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 14 * 60 } },
+                        { variableDiffers: { name: "lastRinDay", other: "day" } }
+                    ]
+                },
+                parts: [
+                    { text: "За столиком у окна сидит " },
+                    { link: { action: "rin_talk", text: "Рин" } },
+                    { text: " с ноутбуком — печатает быстро и нервно." }
+                ]
+            },
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 14 * 60 } },
+                        { not: { variableDiffers: { name: "lastRinDay", other: "day" } } }
+                    ]
+                },
+                text: "За столиком у окна сидит Рин с ноутбуком. Ты уже говорил с ней сегодня."
+            }
+        ],
         actions: [
             {
                 id: "cafe_return_street",
@@ -65,6 +89,22 @@ Object.assign(window.GAME_DATA.locations, {
                 ],
                 text: "Ты отрабатываешь смену за стойкой: принимаешь заказы, вытираешь столы, улыбаешься гостям. В конце получаешь оплату и чаевые.",
                 image: "assets/images/locations/cafe-work.jpg"
+            },
+            {
+                id: "rin_talk",
+                type: "link",
+                label: "Поговорить с Рин",
+                hint: "Начать разговор",
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 14 * 60 } },
+                        { variableDiffers: { name: "lastRinDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastRinDay", from: "day" }
+                ],
+                dialogue: "rin"
             },
             {
                 id: "look_around_cafe",

@@ -3,11 +3,11 @@ Object.assign(window.GAME_DATA.character, {
     avatar: "assets/images/characters/hero.png",
     description: "",
     npcs: {
-        himari: {
-            name: "Химари",
-            avatar: "assets/images/characters/himari.png",
-            avatarAlt: "Портрет Химари",
-            description: "Студентка, часто гуляет по парку. Любит тишину и книги."
+        rin: {
+            name: "Рин",
+            avatar: "assets/images/characters/rin.png",
+            avatarAlt: "Портрет Рин",
+            description: "Писательница сетевой литературы. Хрипловатый голос, усталый вид. Курит и хочет бросить. Ненавидит издательства."
         },
         yui: {
             name: "Юи",

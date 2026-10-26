@@ -13,24 +13,24 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 condition: {
                     all: [
-                        { timeBetween: { from: 12 * 60, to: 18 * 60 } },
-                        { variableDiffers: { name: "lastHimariDay", other: "day" } }
+                        { timeBetween: { from: 14 * 60, to: 18 * 60 } },
+                        { variableDiffers: { name: "lastRinDay", other: "day" } }
                     ]
                 },
                 parts: [
                     { text: "На скамейке у фонтана сидит " },
-                    { link: { action: "himari_talk", text: "Химари" } },
-                    { text: " с книгой — кажется, она никуда не спешит." }
+                    { link: { action: "rin_talk", text: "Рин" } },
+                    { text: " с ноутбуком — кажется, она снова что-то пишет." }
                 ]
             },
             {
                 condition: {
                     all: [
-                        { timeBetween: { from: 12 * 60, to: 18 * 60 } },
-                        { not: { variableDiffers: { name: "lastHimariDay", other: "day" } } }
+                        { timeBetween: { from: 14 * 60, to: 18 * 60 } },
+                        { not: { variableDiffers: { name: "lastRinDay", other: "day" } } }
                     ]
                 },
-                text: "На скамейке у фонтана сидит Химари с книгой. Ты уже говорил с ней сегодня."
+                text: "На скамейке у фонтана сидит Рин с ноутбуком. Ты уже говорил с ней сегодня."
             }
         ],
         actions: [
@@ -79,20 +79,20 @@ Object.assign(window.GAME_DATA.locations, {
                 image: "assets/images/locations/park-walk.jpg"
             },
             {
-                id: "himari_talk",
+                id: "rin_talk",
                 type: "link",
-                label: "Поговорить с Химари",
+                label: "Поговорить с Рин",
                 hint: "Начать разговор",
                 condition: {
                     all: [
-                        { timeBetween: { from: 12 * 60, to: 18 * 60 } },
-                        { variableDiffers: { name: "lastHimariDay", other: "day" } }
+                        { timeBetween: { from: 14 * 60, to: 18 * 60 } },
+                        { variableDiffers: { name: "lastRinDay", other: "day" } }
                     ]
                 },
                 effects: [
-                    { type: "setVariableFromVariable", name: "lastHimariDay", from: "day" }
+                    { type: "setVariableFromVariable", name: "lastRinDay", from: "day" }
                 ],
-                dialogue: "himari"
+                dialogue: "rin"
             },
             {
                 id: "park_look_around",
