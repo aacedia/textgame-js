@@ -62,6 +62,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "train_at_gym",
                 label: "Тренироваться",
                 hint: "1 час · +5 к максимуму выносливости · −20 выносливости",
+                iconImage: "assets/images/actions/training.png",
                 minutes: 60,
                 condition: {
                     all: [
@@ -99,6 +100,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "gym_look_around",
                 label: "Осмотреться",
                 hint: "Понаблюдать за тренирующимися",
+                iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "lookedAroundGym", value: true }],
                 text: "Пара студентов качают руки, кто-то бежит на дорожке, в углу девушка тянется на мате. Атмосфера рабочая."
             }

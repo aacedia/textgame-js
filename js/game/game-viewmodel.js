@@ -150,16 +150,18 @@ window.Game = window.Game || {};
       const isRecent = !!(last && last.id === action.id && last.location === state.location);
       const count = isRecent ? (state.streakCount || 0) : 0;
 
-      // Иконка предмета, который выдаёт giveItem (первый найденный).
-      let itemIcon = "";
-      let itemIconImage = "";
-      (action.effects || []).forEach(e => {
-        if (itemIconImage || !e || e.type !== "giveItem") return;
-        const item = GAME_DATA.items[e.item];
-        if (!item) return;
-        itemIcon = item.icon || "";
-        itemIconImage = item.iconImage || "";
-      });
+      // Иконка: сначала собственная иконка действия, иначе — предмет из giveItem.
+      let itemIcon = action.icon || "";
+      let itemIconImage = action.iconImage || "";
+      if (!itemIconImage) {
+        (action.effects || []).forEach(e => {
+          if (itemIconImage || !e || e.type !== "giveItem") return;
+          const item = GAME_DATA.items[e.item];
+          if (!item) return;
+          itemIcon = item.icon || "";
+          itemIconImage = item.iconImage || "";
+        });
+      }
 
       const vm = {
         id: action.id,

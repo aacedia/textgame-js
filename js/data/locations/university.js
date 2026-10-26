@@ -76,6 +76,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "look_hall",
                 label: "Осмотреть холл",
                 hint: "Изучить доску объявлений",
+                iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "sawNoticeboard", value: true }],
                 text: "На доске объявлений висят расписание и афиша студенческого клуба.",
                 image: "assets/images/locations/university-hall.jpg"
@@ -103,6 +104,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "look_orders",
                 label: "Искать заказы",
                 hint: "Найти студенческую работу на заказ",
+                iconImage: "assets/images/actions/money.png",
                 minutes: 30,
                 condition: {
                     all: [

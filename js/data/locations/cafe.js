@@ -44,6 +44,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "drink_at_cafe",
                 label: "Выпить кофе",
                 hint: "20 ¥ · -10 усталости · +20 выносливости · +10 настроения",
+                iconImage: "assets/images/actions/coffee.png",
                 minutes: 15,
                 condition: { variableAtLeast: { name: "money", value: 20 } },
                 effects: [
@@ -60,6 +61,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "eat_at_cafe",
                 label: "Поесть в кафе",
                 hint: "50 ¥ · снимает голод · +25 настроения",
+                iconImage: "assets/images/actions/eat.png",
                 minutes: 40,
                 condition: { variableAtLeast: { name: "money", value: 50 } },
                 effects: [
@@ -74,6 +76,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "work_shift",
                 label: "Подработать",
                 hint: "3 часа · +200 ¥ и чаевые · −30 выносливости",
+                iconImage: "assets/images/actions/money.png",
                 minutes: 180,
                 condition: {
                     all: [
@@ -110,6 +113,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "look_around_cafe",
                 label: "Осмотреться",
                 hint: "Понаблюдать за гостями",
+                iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "lookedAroundCafe", value: true }],
                 text: "За соседним столиком пара обсуждает планы на вечер, у окна студент листает конспекты.",
                 image: "assets/images/locations/cafe-inside.jpg"

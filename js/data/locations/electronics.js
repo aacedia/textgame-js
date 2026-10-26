@@ -28,6 +28,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "work_electronics",
                 label: "Подработать продавцом",
                 hint: "3 часа · +300 ¥ и премия · −50 выносливости",
+                iconImage: "assets/images/actions/money.png",
                 minutes: 180,
                 condition: {
                     all: [

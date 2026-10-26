@@ -44,6 +44,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "watch_tv",
                 label: "Смотреть телевизор",
                 hint: "Проходит 1 час · +50 настроения",
+                iconImage: "assets/images/actions/tv.png",
                 minutes: 60,
                 condition: {
                     all: [
@@ -65,6 +66,8 @@ Object.assign(window.GAME_DATA.locations, {
                 type: "choice",
                 label: "Лечь спать",
                 hint: "Выбрать, сколько спать",
+                icon: "🛏️",
+                iconImage: "assets/images/actions/sleep.png",
                 image: "assets/images/locations/apartment-sleep.jpg",
                 choices: [
                     { label: "1 час", minutes: 60 },
@@ -80,6 +83,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "rest",
                 label: "Немного отдохнуть",
                 hint: "Проходит 15 минут · -5 усталости",
+                iconImage: "assets/images/actions/rest.png",
                 minutes: 15,
                 effects: [],
                 reduceAfterTime: { fatigue: 5, hunger: 2, thirst: 1 },
@@ -90,6 +94,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "take_shower",
                 label: "Принять душ",
                 hint: "Проходит 15 минут · −10 усталости · +10 выносливости · +10 настроения",
+                iconImage: "assets/images/actions/shower.png",
                 minutes: 15,
                 condition: {
                     variableDiffers: { name: "lastShowerDay", other: "day" }
@@ -107,6 +112,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "eat_at_home",
                 label: "Поесть",
                 hint: "Снимает голод · нужны продукты",
+                iconImage: "assets/images/actions/eat.png",
                 minutes: 30,
                 condition: { variableAtLeast: { name: "foodPortions", value: 1 } },
                 effects: [
@@ -120,6 +126,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "drink_at_home",
                 label: "Попить",
                 hint: "Снимает жажду",
+                iconImage: "assets/images/actions/drink.png",
                 minutes: 5,
                 effects: [],
                 restoreAfterTime: { thirst: 0 },

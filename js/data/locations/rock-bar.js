@@ -58,6 +58,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "rock_bar_look_around",
                 label: "Осмотреться",
                 hint: "Понаблюдать за публикой",
+                iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "lookedAroundRockBar", value: true }],
                 text: "У стойки пара обсуждает вчерашний концерт, у сцены техник проверяет кабели. На стене — афиши прошедших групп.",
                 image: "assets/images/locations/rock-bar-inside.jpg"

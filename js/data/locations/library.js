@@ -36,6 +36,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "work_on_order",
                 label: "Выполнить заказ",
                 hint: "1 час · +300 ¥ · −10 выносливости",
+                iconImage: "assets/images/actions/money.png",
                 minutes: 60,
                 condition: {
                     all: [

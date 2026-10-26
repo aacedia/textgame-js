@@ -32,6 +32,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "buy_food",
                 label: "Купить продукты домой",
                 hint: "100 ¥ · +5 порций продуктов для готовки дома",
+                iconImage: "assets/images/actions/grocery.png",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [

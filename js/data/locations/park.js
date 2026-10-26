@@ -57,6 +57,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "roller_skating",
                 label: "Покататься на роликах",
                 hint: "200 ¥ · 2 часа · +5 к максимуму здоровья",
+                iconImage: "assets/images/actions/training.png",
                 minutes: 120,
                 condition: {
                     all: [
@@ -98,6 +99,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "park_look_around",
                 label: "Осмотреться",
                 hint: "Понаблюдать за людьми",
+                iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "lookedAroundPark", value: true }],
                 text: "Ты оглядываешь людей, гуляющих по парку.",
                 image: "assets/images/locations/park-look.jpg"

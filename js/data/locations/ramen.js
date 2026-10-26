@@ -14,6 +14,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "ramen_eat",
                 label: "Съесть рамен",
                 hint: "80 ¥ · снимает голод и жажду",
+                iconImage: "assets/images/actions/eat.png",
                 minutes: 30,
                 condition: { variableAtLeast: { name: "money", value: 80 } },
                 effects: [
@@ -28,6 +29,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "ramen_tea",
                 label: "Выпить чаю",
                 hint: "20 ¥ · снимает жажду",
+                iconImage: "assets/images/actions/coffee.png",
                 minutes: 10,
                 condition: { variableAtLeast: { name: "money", value: 20 } },
                 effects: [
