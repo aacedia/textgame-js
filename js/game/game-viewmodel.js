@@ -276,12 +276,10 @@ window.Game = window.Game || {};
     const classDoneToday = state.variables.lastClassDay === state.variables.day;
     const notebookDone = Rules.hasItem(state, "notebook");
     const pending = Number(state.variables.pendingStipend) || 0;
-    // Суббота (5) и воскресенье (6) — занятий нет.
     const date = Rules.formatDate(state.variables.day, GAME_DATA);
     const isWeekend = date.weekdayIndex === 5 || date.weekdayIndex === 6;
     const quests = [];
 
-    // Стипендия — только если можно забрать (≥ 1000).
     if (pending >= 1000) {
       quests.push({
         done: false,
@@ -292,7 +290,6 @@ window.Game = window.Game || {};
       });
     }
 
-    // Блокнот — пока его нет. Как только куплен — квест исчезает.
     if (!notebookDone) {
       quests.push({
         done: false,
@@ -302,7 +299,6 @@ window.Game = window.Game || {};
         hint: "Магазин · 100 ¥"
       });
     }
-    // Занятие — раз в день, кроме выходных.
     if (isWeekend) {
       quests.push({
         done: true,
@@ -322,6 +318,14 @@ window.Game = window.Game || {};
         hint: classDoneToday ? "Готово" : "Университет · один раз в день"
       });
     }
+
+    // Иконка для заданий: активным — info, выполненным — done.
+    quests.forEach(q => {
+      q.iconImage = q.done
+        ? "assets/images/ui/done.png"
+        : "assets/images/ui/info.png";
+    });
+
     return { type: "quests", quests };
   }
 

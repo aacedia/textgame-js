@@ -299,9 +299,25 @@
   line-height: 1;
 }
 
+.quest__mark--icon{
+  background:transparent;
+  border-radius:0;
+}
+.quest__mark-icon{
+  width:20px;
+  height:20px;
+  object-fit:contain;
+  display:block;
+}
+
 .quest--done .quest__mark {
   background: #d6ecdc;
   color: #3f6b4f;
+}
+
+.quest--done .quest__mark.quest__mark--icon{
+  background:transparent;
+  color:inherit;
 }
 
 .quest__body {

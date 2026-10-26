@@ -138,7 +138,20 @@
       const mark = document.createElement("span");
       mark.className = "quest__mark";
       mark.setAttribute("aria-hidden", "true");
-      mark.textContent = q.done ? "✓" : "";
+      if (q.iconImage) {
+        const img = document.createElement("img");
+        img.src = q.iconImage;
+        img.alt = "";
+        img.className = "quest__mark-icon";
+        img.onerror = () => {
+          mark.classList.remove("quest__mark--icon");
+          mark.textContent = q.done ? "✓" : "";
+        };
+        mark.classList.add("quest__mark--icon");
+        mark.appendChild(img);
+      } else {
+        mark.textContent = q.done ? "✓" : "";
+      }
       li.appendChild(mark);
 
       const body = document.createElement("div");
