@@ -269,7 +269,10 @@ window.Game = window.Game || {};
     if (pending >= 1000) {
       quests.push({
         done: false,
-        text: `Получи стипендию в офисе администрации (накоплено ${pending} ¥).`
+        active: true,
+        title: "Стипендия",
+        text: `Забери накопленное в офисе администрации (${pending} ¥).`,
+        hint: "Университет · офис администрации"
       });
     }
 
@@ -277,21 +280,30 @@ window.Game = window.Game || {};
     if (!notebookDone) {
       quests.push({
         done: false,
-        text: "Блокнот обязателен для занятий. Купи его в магазине за 100 ¥."
+        active: true,
+        title: "Блокнот",
+        text: "Купи блокнот в магазине — без него не пустят на занятие.",
+        hint: "Магазин · 100 ¥"
       });
     }
     // Занятие — раз в день, кроме выходных.
     if (isWeekend) {
       quests.push({
         done: true,
-        text: "Сегодня занятий нет."
+        active: false,
+        title: "Занятие",
+        text: "Сегодня занятий нет.",
+        hint: "Выходной"
       });
     } else {
       quests.push({
         done: classDoneToday,
+        active: !classDoneToday,
+        title: "Занятие",
         text: classDoneToday
           ? "Занятие на сегодня посещено."
-          : "Посети занятие в университете (один раз в день)."
+          : "Посети занятие в университете.",
+        hint: classDoneToday ? "Готово" : "Университет · один раз в день"
       });
     }
     return { type: "quests", quests };

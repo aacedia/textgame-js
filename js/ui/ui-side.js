@@ -106,9 +106,57 @@
   /* ---------- вкладка «Задания» ---------- */
 
   function renderQuests(root, quests) {
-    root.innerHTML = quests
-      .map(q => `<p>${q.done ? "✓" : "○"} ${escapeHtml(q.text)}</p>`)
-      .join("");
+    root.replaceChildren();
+    if (!quests || !quests.length) {
+      const p = document.createElement("p");
+      p.className = "empty";
+      p.textContent = "Пока заданий нет.";
+      root.appendChild(p);
+      return;
+    }
+
+    const ul = document.createElement("ul");
+    ul.className = "quests";
+
+    quests.forEach(q => {
+      const li = document.createElement("li");
+      li.className = "quest";
+      if (q.done) li.classList.add("quest--done");
+      else if (q.active) li.classList.add("quest--active");
+
+      const mark = document.createElement("span");
+      mark.className = "quest__mark";
+      mark.setAttribute("aria-hidden", "true");
+      mark.textContent = q.done ? "✓" : "";
+      li.appendChild(mark);
+
+      const body = document.createElement("div");
+      body.className = "quest__body";
+
+      if (q.title) {
+        const title = document.createElement("div");
+        title.className = "quest__title";
+        title.textContent = q.title;
+        body.appendChild(title);
+      }
+
+      const text = document.createElement("div");
+      text.className = "quest__text";
+      text.textContent = q.text || "";
+      body.appendChild(text);
+
+      if (q.hint) {
+        const hint = document.createElement("div");
+        hint.className = "quest__hint";
+        hint.textContent = q.hint;
+        body.appendChild(hint);
+      }
+
+      li.appendChild(body);
+      ul.appendChild(li);
+    });
+
+    root.appendChild(ul);
   }
 
   /* ---------- панель «Персонаж» ---------- */
