@@ -30,7 +30,7 @@ Object.assign(window.GAME_DATA.locations, {
             },
             {
                 id: "buy_food",
-                label: "Купить продукты",
+                label: "Купить продукты домой",
                 hint: "100 ¥ · +5 порций еды",
                 minutes: 1,
                 condition: { variableAtLeast: { name: "money", value: 100 } },
