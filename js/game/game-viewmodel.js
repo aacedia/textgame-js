@@ -271,6 +271,8 @@ window.Game = window.Game || {};
 
   /* ---------- задания ---------- */
 
+  /* ---------- задания ---------- */
+
   function buildQuestsVM() {
     const state = Game.getState();
     const classDoneToday = state.variables.lastClassDay === state.variables.day;
@@ -288,6 +290,24 @@ window.Game = window.Game || {};
         text: `Забери накопленное в офисе администрации (${pending} ¥).`,
         hint: "Университет · офис администрации"
       });
+    }
+
+    const orderType = state.variables.orderType;
+    if (orderType) {
+      const orderInfo = {
+        easy: { title: "Заказ: реферат", text: "Выполни обычный заказ в библиотеке (300 ¥).", hint: "Библиотека · 1 час" },
+        hard: { title: "Заказ: срочная курсовая", text: "Выполни срочный заказ в библиотеке (800 ¥).", hint: "Библиотека · 2 часа · риск" },
+        creative: { title: "Заказ: музыка для клуба", text: "Подбери музыку для вечеринки в библиотеке (400 ¥).", hint: "Библиотека · 1 час" }
+      }[orderType];
+      if (orderInfo) {
+        quests.push({
+          done: false,
+          active: true,
+          title: orderInfo.title,
+          text: orderInfo.text,
+          hint: orderInfo.hint
+        });
+      }
     }
 
     if (!notebookDone) {

@@ -22,6 +22,18 @@ Object.assign(window.GAME_DATA.locations, {
                     { link: { action: "ritsu_talk", text: "Рицу" } },
                     { text: " с блокнотом — кажется, он пишет." }
                 ]
+            },
+            {
+                condition: { variableEquals: { name: "orderType", value: "easy" } },
+                text: "У тебя висит обычный заказ на реферат — можно сесть за работу."
+            },
+            {
+                condition: { variableEquals: { name: "orderType", value: "hard" } },
+                text: "У тебя срочный заказ на курсовую. Работы на 2 часа, и лучше не откладывать."
+            },
+            {
+                condition: { variableEquals: { name: "orderType", value: "creative" } },
+                text: "У тебя заказ от студенческого клуба — подобрать музыку для вечеринки."
             }
         ],
         actions: [
@@ -33,23 +45,62 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "university" }]
             },
             {
-                id: "work_on_order",
-                label: "Выполнить заказ",
+                id: "work_easy",
+                label: "Написать реферат",
                 hint: "1 час · +300 ¥ · −10 выносливости",
                 iconImage: "assets/images/actions/money.png",
                 minutes: 60,
-                condition: {
-                    all: [
-                        { flag: "hasActiveOrder" },
-                        { variableAtLeast: { name: "stamina", value: 10 } }
-                    ]
-                },
+                hiddenWhen: { not: { variableEquals: { name: "orderType", value: "easy" } } },
+                condition: { variableAtLeast: { name: "stamina", value: 10 } },
                 effects: [
                     { type: "changeVariable", name: "stamina", amount: -10 },
                     { type: "changeVariable", name: "money", amount: 300 },
-                    { type: "setFlag", flag: "hasActiveOrder", value: false }
+                    { type: "setVariable", name: "orderType", value: null }
                 ],
-                text: "Ты садишься за стол, раскладываешь материалы и работаешь над заказом. Когда всё готово, ты получаешь оплату."
+                text: "Ты садишься за стол, раскладываешь материалы и работаешь над рефератом. Когда всё готово, ты получаешь оплату."
+            },
+            {
+                id: "work_hard",
+                label: "Сверстать курсовую",
+                hint: "2 часа · +800 ¥ · −40 выносливости · риск для здоровья",
+                iconImage: "assets/images/actions/money.png",
+                minutes: 120,
+                hiddenWhen: { not: { variableEquals: { name: "orderType", value: "hard" } } },
+                condition: { variableAtLeast: { name: "stamina", value: 40 } },
+                effects: [
+                    { type: "changeVariable", name: "stamina", amount: -40 },
+                    { type: "changeVariable", name: "money", amount: 800 },
+                    { type: "setVariable", name: "orderType", value: null }
+                ],
+                reduceAfterTime: { fatigue: 15 },
+                variants: [
+                    {
+                        condition: { variableAtLeast: { name: "fatigue", value: 60 } },
+                        effects: [
+                            { type: "changeVariable", name: "health", amount: -10 }
+                        ],
+                        text: "Ты садишься за курсовую, но глаза слипаются. К концу второго часа ты едва держишься — работа готова, но здоровье подводит. Заказчик платит, ты получаешь 800 ¥, но чувствуешь себя разбитым."
+                    },
+                    {
+                        text: "Ты садишься за курсовую. Два часа напряжённой работы — и всё готово. Заказчик доволен, ты получаешь 800 ¥."
+                    }
+                ]
+            },
+            {
+                id: "work_creative",
+                label: "Подобрать музыку",
+                hint: "1 час · +400 ¥ · −10 выносливости · +5 настроения",
+                iconImage: "assets/images/actions/money.png",
+                minutes: 60,
+                hiddenWhen: { not: { variableEquals: { name: "orderType", value: "creative" } } },
+                condition: { variableAtLeast: { name: "stamina", value: 10 } },
+                effects: [
+                    { type: "changeVariable", name: "stamina", amount: -10 },
+                    { type: "changeVariable", name: "money", amount: 400 },
+                    { type: "changeVariable", name: "mood", amount: 5 },
+                    { type: "setVariable", name: "orderType", value: null }
+                ],
+                text: "Ты листаешь треки, подбираешь подходящие под настроение вечеринки, собираешь плейлист. Работа в радость — клуб платит 400 ¥ и обещает позвать на вечеринку."
             },
             {
                 id: "ritsu_talk",
@@ -74,7 +125,7 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 30,
                 text: "Ты берёшь с полки книгу и неспешно читаешь.",
                 image: "assets/images/locations/library-books.jpg",
-                effects: [{ type: "changeVariable", name: "mood", amount: 5 },]
+                effects: [{ type: "changeVariable", name: "mood", amount: 5 }]
             }
         ]
     }

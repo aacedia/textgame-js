@@ -13,8 +13,7 @@ window.GAME_DATA = {
     dialogue: null,
     flags: {
       hasInspectedTable: false,
-      tvAtHome: false,
-      hasActiveOrder: false
+      tvAtHome: false
     },
     variables: {
       day: 1,
@@ -50,7 +49,8 @@ window.GAME_DATA = {
       lastHitoriDay: 0,
       relationship_hitori: 0,
       lastRitsuDay: 0,
-      relationship_ritsu: 0
+      relationship_ritsu: 0,
+      orderType: null
     },
     uiTab: "quests",
     inventoryFilter: "all",

@@ -38,6 +38,24 @@ Object.assign(window.GAME_DATA.locations, {
                     { link: { action: "go_office", text: "офис администрации" } },
                     { text: "." }
                 ]
+            },
+            {
+                condition: {
+                    all: [
+                        { variableEquals: { name: "orderType", value: "easy" } },
+                        { not: { locationOpen: "library" } }
+                    ]
+                },
+                text: "У тебя висит обычный заказ, а библиотека уже закрыта. Придётся ждать до завтра."
+            },
+            {
+                condition: {
+                    all: [
+                        { variableEquals: { name: "orderType", value: "hard" } },
+                        { not: { locationOpen: "library" } }
+                    ]
+                },
+                text: "Срочный заказ горит, а библиотека закрыта. Заказчик будет недоволен."
             }
         ],
         actions: [
@@ -110,7 +128,7 @@ Object.assign(window.GAME_DATA.locations, {
                 condition: {
                     all: [
                         { variableDiffers: { name: "lastOrderDay", other: "day" } },
-                        { not: { flag: "hasActiveOrder" } }
+                        { variableEquals: { name: "orderType", value: null } }
                     ]
                 },
                 effects: [
@@ -122,9 +140,23 @@ Object.assign(window.GAME_DATA.locations, {
                     },
                     {
                         effects: [
-                            { type: "setFlag", flag: "hasActiveOrder", value: true }
+                            { type: "setVariable", name: "orderType", value: "easy" }
                         ],
-                        text: "Тебе попадается заказ на реферат. Работы на час — заплатить обещают 300 ¥. Выполнить можно в библиотеке."
+                        text: "Тебе попадается обычный заказ: реферат на 1 час работы. Заплатят 300 ¥. Выполнить можно в библиотеке."
+                    },
+                    {
+                        condition: { variableAtLeast: { name: "stamina", value: 40 } },
+                        effects: [
+                            { type: "setVariable", name: "orderType", value: "hard" }
+                        ],
+                        text: "Срочный заказ: нужно сверстать курсовую к утру. Работы на 2 часа, но платят 800 ¥. Если не хватит сил — придётся доплатить здоровьем. Выполнить можно в библиотеке."
+                    },
+                    {
+                        condition: { item: "mp3_player" },
+                        effects: [
+                            { type: "setVariable", name: "orderType", value: "creative" }
+                        ],
+                        text: "Необычный заказ: студенческий клуб ищет того, кто подберёт музыку для вечеринки. У тебя как раз есть плеер — работы на 1 час, платят 400 ¥. Выполнить можно в библиотеке."
                     }
                 ]
             },
