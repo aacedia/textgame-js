@@ -99,6 +99,9 @@ Object.assign(window.GAME_DATA.items, {
         electronics: true,
         use: {
             minutes: 3,
+            effects: [
+                { type: "changeVariable", name: "mood", amount: 1 }
+            ],
             randomTexts: (window.GAME_DATA.tracks || []).map(track => ({
                 text: "Ты включаешь плеер. Играет ",
                 link: { text: track.title, href: track.href },
