@@ -45,6 +45,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "walk_park",
                 label: "Прогуляться по парку",
                 hint: "Проходит 30 минут · +5 настроения",
+                iconImage: "assets/images/actions/walk.png",
                 minutes: 30,
                 effects: [
                     { type: "changeVariable", name: "mood", amount: 5 }

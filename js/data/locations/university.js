@@ -85,6 +85,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "attend_class",
                 label: "Посетить занятие",
                 hint: "Один раз в день · нужен блокнот",
+                iconImage: "assets/images/items/notebook.png",
                 minutes: 90,
                 condition: {
                     all: [

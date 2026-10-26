@@ -54,6 +54,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "computer_club_play",
                 label: "Поиграть час",
                 hint: "100 ¥ · +15 настроения",
+                iconImage: "assets/images/actions/computer.png",
                 minutes: 60,
                 condition: { variableAtLeast: { name: "money", value: 100 } },
                 effects: [

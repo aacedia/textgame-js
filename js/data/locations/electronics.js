@@ -21,6 +21,7 @@ Object.assign(window.GAME_DATA.locations, {
                 id: "look_electronics",
                 label: "Осмотреть витрины",
                 hint: "Изучить ассортимент",
+                iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "lookedAtElectronics", value: true }],
                 text: "На витринах — смартфоны, ноутбуки, наушники и большие телевизоры. Глаза разбегаются."
             },
