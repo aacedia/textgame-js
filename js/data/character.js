@@ -38,6 +38,12 @@ Object.assign(window.GAME_DATA.character, {
             avatar: "assets/images/characters/hitori.png",
             avatarAlt: "Портрет Хитори",
             description: "Сдержанный парень в тёмной толстовке. Увлекается технологиями."
+        },
+        ritsu: {
+            name: "Рицу",
+            avatar: "assets/images/characters/ritsu.png",
+            avatarAlt: "Портрет Рицу",
+            description: "Студент-поэт."
         }
     }
 });

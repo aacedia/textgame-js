@@ -9,6 +9,21 @@ Object.assign(window.GAME_DATA.locations, {
             "Просторный читальный зал университетской библиотеки. Вдоль стен — стеллажи с книгами, за столами тихо скрипят ручки.",
             "Здесь хорошо работается: никто не отвлекает, а нужные материалы всегда под рукой."
         ],
+        extraDescription: [
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 10 * 60, to: 20 * 60 } },
+                        { variableDiffers: { name: "lastRitsuDay", other: "day" } }
+                    ]
+                },
+                parts: [
+                    { text: "За дальним столом у окна сидит " },
+                    { link: { action: "ritsu_talk", text: "Рицу" } },
+                    { text: " с блокнотом — кажется, он пишет." }
+                ]
+            }
+        ],
         actions: [
             {
                 id: "library_return_university",
@@ -34,6 +49,22 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "setFlag", flag: "hasActiveOrder", value: false }
                 ],
                 text: "Ты садишься за стол, раскладываешь материалы и работаешь над заказом. Когда всё готово, ты получаешь оплату."
+            },
+            {
+                id: "ritsu_talk",
+                type: "link",
+                label: "Поговорить с Рицу",
+                hint: "Начать разговор",
+                condition: {
+                    all: [
+                        { timeBetween: { from: 10 * 60, to: 20 * 60 } },
+                        { variableDiffers: { name: "lastRitsuDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastRitsuDay", from: "day" }
+                ],
+                dialogue: "ritsu"
             },
             {
                 id: "read_books",
