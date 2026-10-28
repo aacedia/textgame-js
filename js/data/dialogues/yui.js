@@ -17,6 +17,17 @@ window.GAME_DATA.dialogues.yui = {
         topics: {
             text: "— Привет, сосед. Как дела? — спрашивает она, наматывая провод наушников на палец.",
             choices: [
+                {
+                    text: "Послушать музыку вместе",
+                    next: "listen_together",
+                    iconImage: "assets/images/ui/info.png",
+                    condition: {
+                        all: [
+                            { not: { flag: "yuiMusicAgreed" } },
+                            { variableAtLeast: { name: "relationship_yui", value: 20 } }
+                        ]
+                    }
+                },
                 { text: "Об учёбе", next: "study", condition: { not: { flag: "yui_study_done" } } },
                 { text: "О видеоиграх", next: "games", condition: { not: { flag: "yui_games_done" } } },
                 { text: "О музыке", next: "music", condition: { not: { flag: "yui_music_done" } } },
@@ -43,6 +54,29 @@ window.GAME_DATA.dialogues.yui = {
                 },
                 { text: "Попрощаться", close: true }
             ]
+        },
+
+        listen_together: {
+            text: "— Хочешь послушать вместе? — Юи снимает наушники совсем и протягивает тебе один. — У меня как раз новый плейлист. Правда, я болтаю под музыку, так что не обессудь.",
+            choices: [
+                {
+                    text: "С удовольствием",
+                    effects: [{ type: "setFlag", flag: "yuiMusicAgreed", value: true }],
+                    next: "listen_together_yes"
+                },
+                {
+                    text: "Как-нибудь в другой раз",
+                    next: "listen_together_later"
+                }
+            ]
+        },
+        listen_together_yes: {
+            text: "Юи улыбается и вставляет наушник обратно. — Тогда лови. — Она придвигается чуть ближе. — Теперь можешь подойти в любой день, когда я тут. Будем слушать вместе.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        listen_together_later: {
+            text: "Юи пожимает плечами. — Ладно. Если передумаешь — приходи, я тут часто.",
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Учёба ---------- */

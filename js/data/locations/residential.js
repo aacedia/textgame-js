@@ -73,13 +73,29 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "setVariableFromVariable", name: "lastYuiDay", from: "day" }
                 ],
                 dialogue: "yui"
+            },
+            {
+                id: "listen_music_yui",
+                label: "Послушать музыку с Юи",
+                hint: "30 минут · +10 настроения · +1 отношения с Юи",
+                icon: "🎵",
+                iconImage: "assets/images/items/mp3_player.png",
+                minutes: 30,
+                condition: {
+                    all: [
+                        { flag: "yuiMusicAgreed" },
+                        { timeBetween: { from: 16 * 60, to: 22 * 60 } },
+                        { variableDiffers: { name: "lastYuiMusicDay", other: "day" } }
+                    ]
+                },
+                hiddenWhen: { not: { flag: "yuiMusicAgreed" } },
+                effects: [
+                    { type: "changeVariable", name: "mood", amount: 10 },
+                    { type: "changeVariable", name: "relationship_yui", amount: 1 },
+                    { type: "setVariableFromVariable", name: "lastYuiMusicDay", from: "day" }
+                ],
+                text: "Юи вынимает один наушник и протягивает тебе. Вы сидите рядом на лавочке, слушаете музыку и болтаете о всяких мелочах. Полчаса проходят незаметно."
             }
-            // {
-            //     id: "residential_to_gloomy",
-            //     label: "Пойти на мрачную улицу",
-            //     hint: "К перекрёстку",
-            //     effects: [{ type: "move", to: "gloomy-street" }]
-            // }
         ]
     }
 });
