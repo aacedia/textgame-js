@@ -32,6 +32,17 @@ window.GAME_DATA.dialogues.niko = {
         topics: {
             text: "Нико убирает полотенце на плечо и улыбается. — Ну что, о чём поговорим?",
             choices: [
+                {
+                    text: "Попросить её помогать с тренировками",
+                    next: "ask_training",
+                    iconImage: "assets/images/ui/info.png",
+                    condition: {
+                        all: [
+                            { not: { flag: "nikoTrainingAgreed" } },
+                            { variableAtLeast: { name: "relationship_niko", value: 20 } }
+                        ]
+                    }
+                },
                 { text: "О спорте", next: "sport", condition: { not: { flag: "niko_sport_done" } } },
                 { text: "О любимых видах спорта", next: "favorites", condition: { not: { flag: "niko_favorites_done" } } },
                 { text: "О её мечте", next: "dream", condition: { not: { flag: "niko_dream_done" } } },
@@ -58,6 +69,29 @@ window.GAME_DATA.dialogues.niko = {
                 },
                 { text: "Попрощаться", close: true }
             ]
+        },
+
+        ask_training: {
+            text: "— Хочу спросить. — Ты немного сбиваешься. — Ты ведь много тренируешься. Можешь иногда помогать мне? Не как тренер, а просто показать, что делать.",
+            choices: [
+                {
+                    text: "Спасибо. Буду приходить.",
+                    effects: [{ type: "setFlag", flag: "nikoTrainingAgreed", value: true }],
+                    next: "ask_training_yes"
+                },
+                {
+                    text: "Ладно, как-нибудь в другой раз",
+                    next: "ask_training_later"
+                }
+            ]
+        },
+        ask_training_yes: {
+            text: "Нико кивает и улыбается. — Давай. Только слушай меня и не гонись за весом. Тридцать минут — и хватит. — Она поправляет полотенце на плече. — Приходи, когда будет время.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        ask_training_later: {
+            text: "Нико пожимает плечами. — Как хочешь. Если передумаешь — приходи.",
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Спорт ---------- */

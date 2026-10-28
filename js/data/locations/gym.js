@@ -59,6 +59,34 @@ Object.assign(window.GAME_DATA.locations, {
                 dialogue: "niko"
             },
             {
+                id: "train_with_niko",
+                label: "Тренироваться с Нико",
+                hint: "30 минут · +2 к максимуму выносливости · −10 выносливости",
+                iconImage: "assets/images/actions/training.png",
+                minutes: 30,
+                condition: {
+                    all: [
+                        { flag: "nikoTrainingAgreed" },
+                        { timeBetween: { from: 13 * 60, to: 21 * 60 } },
+                        { variableDiffers: { name: "lastNikoTrainDay", other: "day" } },
+                        { variableAtLeast: { name: "stamina", value: 10 } },
+                        { not: { variableAtLeast: { name: "staminaMax", value: 100 } } }
+                    ]
+                },
+                hiddenWhen: { not: { flag: "nikoTrainingAgreed" } },
+                effects: [
+                    { type: "changeVariable", name: "staminaMax", amount: 2 },
+                    { type: "changeVariable", name: "stamina", amount: -10 },
+                    { type: "changeVariable", name: "fatigue", amount: 8 },
+                    { type: "changeVariable", name: "hunger", amount: 8 },
+                    { type: "changeVariable", name: "thirst", amount: 8 },
+                    { type: "changeVariable", name: "relationship_niko", amount: 1 },
+                    { type: "setVariableFromVariable", name: "lastNikoTrainDay", from: "day" }
+                ],
+                text: "Нико показывает тебе несколько упражнений и следит за техникой. Полчаса проходят быстро: она подбадривает, поправляет, и к концу ты чувствуешь, что стал чуть выносливее.",
+                image: "assets/images/locations/gym-workout.jpg"
+            },
+            {
                 id: "train_at_gym",
                 label: "Тренироваться",
                 hint: "1 час · +4 к максимуму выносливости · −20 выносливости",
