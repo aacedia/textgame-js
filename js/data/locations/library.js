@@ -13,6 +13,28 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 condition: {
                     all: [
+                        { timeBetween: { from: 8 * 60, to: 20 * 60 } },
+                        { variableDiffers: { name: "lastHinakoDay", other: "day" } }
+                    ]
+                },
+                parts: [
+                    { text: "За первым столом у окна сидит " },
+                    { link: { action: "hinako_talk", text: "Хинако" } },
+                    { text: " с конспектами и книгами — она всегда приходит заранее." }
+                ]
+            },
+            {
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 20 * 60 } },
+                        { not: { variableDiffers: { name: "lastHinakoDay", other: "day" } } }
+                    ]
+                },
+                text: "За первым столом у окна сидит Хинако с конспектами. Ты уже говорил с ней сегодня."
+            },
+            {
+                condition: {
+                    all: [
                         { timeBetween: { from: 10 * 60, to: 20 * 60 } },
                         { variableDiffers: { name: "lastRitsuDay", other: "day" } }
                     ]
@@ -101,6 +123,22 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "setVariable", name: "orderType", value: null }
                 ],
                 text: "Ты листаешь треки, подбираешь подходящие под настроение вечеринки, собираешь плейлист. Работа в радость — клуб платит 100 ¥ и обещает позвать на вечеринку."
+            },
+            {
+                id: "hinako_talk",
+                type: "link",
+                label: "Поговорить с Хинако",
+                hint: "Начать разговор",
+                condition: {
+                    all: [
+                        { timeBetween: { from: 8 * 60, to: 20 * 60 } },
+                        { variableDiffers: { name: "lastHinakoDay", other: "day" } }
+                    ]
+                },
+                effects: [
+                    { type: "setVariableFromVariable", name: "lastHinakoDay", from: "day" }
+                ],
+                dialogue: "hinako"
             },
             {
                 id: "ritsu_talk",

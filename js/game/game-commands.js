@@ -199,11 +199,36 @@ window.Game = window.Game || {};
     const text = String(raw || "").trim();
     if (!text) return;
 
+    // time.add <минуты>
+    const timeAdd = text.match(/^time\.add\s+(-?\d+)$/i);
+    if (timeAdd) {
+      const minutes = Number(timeAdd[1]) || 0;
+      const before = Number(state.variables.minutes) || 0;
+      const total = before + minutes;
+      const daysPassed = Math.floor(total / 1440);
+      const nextMinutes = ((total % 1440) + 1440) % 1440;
+      const next = {
+        ...state,
+        variables: {
+          ...state.variables,
+          minutes: nextMinutes,
+          day: daysPassed > 0
+            ? (Number(state.variables.day) || 1) + daysPassed
+            : state.variables.day
+        }
+      };
+      Game.setState(next);
+      Game.pushLog([`Чит: время +${minutes} мин.`]);
+      Game.render();
+      UI.showDialog("Чит-код", `Время сдвинуто на ${minutes} мин.`, [{ label: "ОК", primary: true }]);
+      return;
+    }
+
     const addMatch = text.match(/^player\.additem\s+(\S+)\s+(\d+)$/i);
     if (!addMatch) {
       UI.showDialog(
         "Чит-код",
-        `Неизвестная команда. Поддерживается только: player.additem <id> <amount>`,
+        `Неизвестная команда. Поддерживается: player.additem <id> <amount>, time.add <минуты>`,
         [{ label: "Закрыть", primary: true }]
       );
       return;
