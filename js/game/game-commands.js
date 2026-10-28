@@ -224,11 +224,31 @@ window.Game = window.Game || {};
       return;
     }
 
+    // relation.set <npcId> <value>
+    const relSet = text.match(/^relation\.set\s+(\w+)\s+(-?\d+)$/i);
+    if (relSet) {
+      const npcId = relSet[1];
+      const value = Math.max(0, Math.min(100, Number(relSet[2]) || 0));
+      const key = `relationship_${npcId}`;
+      const npcs = (GAME_DATA.character && GAME_DATA.character.npcs) || {};
+      if (!npcs[npcId]) {
+        UI.showDialog("Чит-код", `Неизвестный NPC: ${npcId}`, [{ label: "Закрыть", primary: true }]);
+        return;
+      }
+      Game.patchState({
+        variables: { ...state.variables, [key]: value }
+      });
+      Game.pushLog([`Чит: отношение с ${npcs[npcId].name} = ${value}`]);
+      UI.showDialog("Чит-код", `Отношение с ${npcs[npcId].name} установлено на ${value}.`, [{ label: "ОК", primary: true }]);
+      Game.render();
+      return;
+    }
+
     const addMatch = text.match(/^player\.additem\s+(\S+)\s+(\d+)$/i);
     if (!addMatch) {
       UI.showDialog(
         "Чит-код",
-        `Неизвестная команда. Поддерживается: player.additem <id> <amount>, time.add <минуты>`,
+        "Неизвестная команда.",
         [{ label: "Закрыть", primary: true }]
       );
       return;
