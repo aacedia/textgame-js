@@ -25,8 +25,7 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "changeVariable", name: "money", amount: -100 },
                     { type: "giveItem", item: "notebook" }
                 ],
-                text: "Ты покупаешь блокнот и убираешь его в сумку.",
-                image: "assets/images/items/notebook.jpg"
+                text: "Ты покупаешь блокнот и убираешь его в сумку."
             },
             {
                 id: "buy_food",
