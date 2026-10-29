@@ -230,20 +230,38 @@ window.UI = (() => {
     const figure = $("location-image");
     const img = $("location-image-img");
     const caption = $("location-image-caption");
-    if (!figure || !img || !caption) return;
 
-    if (loc.image) {
-      img.src = loc.image;
+    if (!loc.image) {
+      img.removeAttribute("src");
+      img.removeAttribute("alt");
+      figure.hidden = true;
+      return;
+    }
+
+    // Сбрасываем текущую картинку и прячем, пока не загрузится новая
+    figure.hidden = true;
+    img.removeAttribute("src");
+    img.alt = "";
+    caption.textContent = "";
+    caption.hidden = true;
+
+    const nextSrc = loc.image;
+    const loader = new Image();
+    loader.onload = () => {
+      // Проверяем, что локация не сменилась, пока грузили
+      const cur = Game.getState();
+      const curLoc = window.GAME_DATA.locations[cur.location];
+      if (!curLoc || curLoc.image !== nextSrc) return;
+      img.src = nextSrc;
       img.alt = loc.imageAlt || `Изображение локации: ${loc.name}`;
       caption.textContent = loc.imageCaption || "";
       caption.hidden = !loc.imageCaption;
       figure.hidden = false;
-    } else {
-      img.removeAttribute("src");
-      img.alt = "";
-      caption.textContent = "";
+    };
+    loader.onerror = () => {
       figure.hidden = true;
-    }
+    };
+    loader.src = nextSrc;
   }
 
   /* ---------- информация ---------- */
