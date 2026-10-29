@@ -1,6 +1,54 @@
 /*
   Панель «Информация»: результат последнего осмысленного действия.
+  Теперь — полупрозрачный оверлей внизу панели описания локации
+  (position: absolute внутри .panel). Картинка под ним видна.
 */
+
+/* Панель локации должна быть relative-контейнером для оверлея. */
+.main-top .panel {
+  position: relative;
+}
+
+.info-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+  /* полупрозрачный фон, чтобы была видна картинка под ним */
+  background: rgba(255, 247, 238, 0.78);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 10px 10px;
+
+  max-height: 45%;
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.info-overlay[hidden] {
+  display: none;
+}
+
+.info-overlay::-webkit-scrollbar {
+  width: 6px;
+}
+.info-overlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+.info-overlay::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+.info-overlay::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-2);
+}
+
 .info {
   padding: 12px 18px 16px;
   display: grid;
@@ -19,7 +67,8 @@
   padding-left: 11px;
 }
 
-/* Картинка: ограниченная ширина, фиксированные пропорции */
+/* Картинка: ограниченная ширина, фиксированные пропорции.
+   На практике в оверлей не попадает (уходит наверх), но оставляем на случай. */
 .infoentry--image {
   display: block;
   margin: 0 auto;
