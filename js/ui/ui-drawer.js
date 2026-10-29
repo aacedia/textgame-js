@@ -68,38 +68,51 @@
         const sideRight = getSideRight();
         if (!layout || !side || !sideRight) return;
 
-        let active = null; // { side: "left"|"right", startX, startTime, el, width, mode }
+        // Минимальное смещение, после которого жест считается свайпом, а не тапом.
+        const SWIPE_MIN_PX = 8;
+
+        let active = null; // { side, startX, startTime, el, width, mode, capture }
 
         function drawerWidth(el) {
             return el.getBoundingClientRect().width || 0;
         }
 
+        // Кнопки, ссылки, поля и прочие интерактивные элементы — не начинаем свайп.
+        function isInteractive(target) {
+            if (!target || !target.closest) return false;
+            return !!target.closest(
+                "button, a, input, select, textarea, label, " +
+                ".tab, .item-use, .inv-filter, #controls-toggle, #log-toggle, [data-command]"
+            );
+        }
+
         function onPointerDown(e) {
             if (!isMobile()) return;
             if (e.pointerType === "mouse" && e.button !== 0) return;
+            if (isInteractive(e.target)) return; // тап по кнопке — не свайп
 
             const w = window.innerWidth;
             const x = e.clientX;
 
-            // Левый край и левая шторка закрыта → начинаем открывать
+            // Левый край и левая шторка закрыта → открываем
             if (x <= EDGE && !layout.classList.contains("side-open")) {
-                active = { side: "left", startX: x, startTime: performance.now(), el: side, width: drawerWidth(side), mode: "open" };
+                active = { side: "left", startX: x, startTime: performance.now(), el: side, width: drawerWidth(side), mode: "open", capture: false };
             }
-            // Правый край и правая шторка закрыта → начинаем открывать
+            // Правый край и правая шторка закрыта → открываем
             else if (x >= w - EDGE && !layout.classList.contains("side-right-open")) {
-                active = { side: "right", startX: x, startTime: performance.now(), el: sideRight, width: drawerWidth(sideRight), mode: "open" };
+                active = { side: "right", startX: x, startTime: performance.now(), el: sideRight, width: drawerWidth(sideRight), mode: "open", capture: false };
             }
-            // Потянули по открытой шторке в сторону закрытия
+            // Тянем по открытой левой шторке → закрываем
             else if (layout.classList.contains("side-open") && x <= drawerWidth(side)) {
-                active = { side: "left", startX: x, startTime: performance.now(), el: side, width: drawerWidth(side), mode: "close" };
+                active = { side: "left", startX: x, startTime: performance.now(), el: side, width: drawerWidth(side), mode: "close", capture: false };
             }
+            // Тянем по открытой правой шторке → закрываем
             else if (layout.classList.contains("side-right-open") && x >= w - drawerWidth(sideRight)) {
-                active = { side: "right", startX: x, startTime: performance.now(), el: sideRight, width: drawerWidth(sideRight), mode: "close" };
+                active = { side: "right", startX: x, startTime: performance.now(), el: sideRight, width: drawerWidth(sideRight), mode: "close", capture: false };
             }
 
             if (active) {
                 active.el.style.transition = "none";
-                active.el.setPointerCapture?.(e.pointerId);
             }
         }
 
@@ -107,7 +120,16 @@
             if (!active) return;
             const dx = e.clientX - active.startX;
 
-            let offset; // translateX для шторки
+            // До порога — не трогаем шторку и не захватываем указатель.
+            if (!active.capture && Math.abs(dx) < SWIPE_MIN_PX) return;
+
+            // Начался настоящий свайп: захватываем указатель и дальше ведём жест.
+            if (!active.capture) {
+                active.capture = true;
+                active.el.setPointerCapture?.(e.pointerId);
+            }
+
+            let offset;
             if (active.side === "left") {
                 offset = active.mode === "open"
                     ? Math.min(0, -active.width + Math.max(0, dx))
@@ -118,7 +140,6 @@
                     : Math.max(0, Math.max(0, dx));
             }
 
-            // Затемнение пропорционально прогрессу
             const progress = 1 - Math.abs(offset) / active.width;
             layout.classList.add(active.side === "left" ? "side-swipe-left" : "side-swipe-right");
             layout.style.setProperty("--swipe-progress", String(Math.max(0, Math.min(1, progress))));
@@ -128,11 +149,12 @@
 
         function onPointerUp(e) {
             if (!active) return;
+
             const dx = e.clientX - active.startX;
             const dt = Math.max(1, performance.now() - active.startTime);
             const velocity = dx / dt;
             const moved = Math.abs(dx);
-            const enough = moved > active.width * THRESHOLD || Math.abs(velocity) > VELOCITY;
+            const wasSwipe = active.capture;
 
             const el = active.el;
             const sideName = active.side;
@@ -141,6 +163,14 @@
             el.style.transform = "";
             layout.classList.remove("side-swipe-left", "side-swipe-right");
             layout.style.removeProperty("--swipe-progress");
+
+            // Тап без движения — ничего не переключаем.
+            if (!wasSwipe && moved < SWIPE_MIN_PX) {
+                active = null;
+                return;
+            }
+
+            const enough = moved > active.width * THRESHOLD || Math.abs(velocity) > VELOCITY;
 
             if (active.mode === "open") {
                 if (enough) {
