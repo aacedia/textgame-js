@@ -105,8 +105,109 @@ window.Game = window.Game || {};
       description,
       image,
       imageAlt,
-      imageCaption
+      imageCaption,
+      survivalIcons: buildSurvivalIconsVM(state)
     };
+  }
+
+  /* ---------- иконки выживания ---------- */
+
+  function buildSurvivalIconsVM(state) {
+    const v = state.variables;
+    const needsMax = Number(GAME_DATA.needsMax ?? 100);
+    const moodMax = Number(GAME_DATA.moodMax ?? 100);
+    const healthMax = Number(v.healthMax ?? GAME_DATA.healthMax ?? 100);
+
+    // direction: "high" — плохо при высоких значениях (потребности);
+    //            "low"  — плохо при низких значениях (health, mood).
+    function level(value, max, direction) {
+      if (!max || max <= 0) return "normal";
+      const pct = (Number(value) || 0) / max * 100;
+
+      if (direction === "high") {
+        if (pct >= 90) return "crit";
+        if (pct >= 60) return "warn";
+        return "normal";
+      }
+      // "low": критично при низком значении
+      if (pct <= 10) return "crit";
+      if (pct <= 30) return "warn";
+      return "normal";
+    }
+
+    const icons = [];
+
+    // 1. health
+    {
+      const lvl = level(v.health, healthMax, "low");
+      if (lvl !== "normal") {
+        icons.push({
+          key: "health",
+          src: "assets/images/ui/survival_health.png",
+          alt: "Здоровье",
+          title: `Здоровье: ${Math.round(Number(v.health) || 0)}/${healthMax}`,
+          level: lvl
+        });
+      }
+    }
+
+    // 2. mood
+    {
+      const lvl = level(v.mood, moodMax, "low");
+      if (lvl !== "normal") {
+        icons.push({
+          key: "mood",
+          src: "assets/images/ui/survival_mood.png",
+          alt: "Настроение",
+          title: `Настроение: ${Math.round(Number(v.mood) || 0)}/${moodMax}`,
+          level: lvl
+        });
+      }
+    }
+
+    // 3. hunger
+    {
+      const lvl = level(v.hunger, needsMax, "high");
+      if (lvl !== "normal") {
+        icons.push({
+          key: "hunger",
+          src: "assets/images/ui/survival_hunger.png",
+          alt: "Голод",
+          title: `Голод: ${Math.round(Number(v.hunger) || 0)}/${needsMax}`,
+          level: lvl
+        });
+      }
+    }
+
+    // 4. thirst
+    {
+      const lvl = level(v.thirst, needsMax, "high");
+      if (lvl !== "normal") {
+        icons.push({
+          key: "thirst",
+          src: "assets/images/ui/survival_thirst.png",
+          alt: "Жажда",
+          title: `Жажда: ${Math.round(Number(v.thirst) || 0)}/${needsMax}`,
+          level: lvl
+        });
+      }
+    }
+
+    // 5. fatigue
+    {
+      const lvl = level(v.fatigue, needsMax, "high");
+      if (lvl !== "normal") {
+        icons.push({
+          key: "fatigue",
+          src: "assets/images/ui/survival_sleep.png",
+          alt: "Усталость",
+          title: `Усталость: ${Math.round(Number(v.fatigue) || 0)}/${needsMax}`,
+          level: lvl
+        });
+      }
+    }
+
+    return icons;
   }
 
   /* ---------- информация ---------- */

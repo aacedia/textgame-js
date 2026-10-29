@@ -1,10 +1,14 @@
 /*
   Панель «Описание локации»: шапка с названием, notice, описание, картинка.
+  В шапке справа от названия — иконки выживания (по умолчанию скрыты).
 */
 
 .location-title {
   position: relative;
   justify-content: center;
+  /* симметричные отступы, чтобы центр названия не смещался под бургеры */
+  padding-left: 70px;
+  padding-right: 70px;
 }
 
 .locname {
@@ -19,7 +23,46 @@
   letter-spacing: -.02em;
 }
 
-/* Бургеры вынесены из потока по краям, чтобы не сдвигать название */
+/* ---------- Иконки выживания ---------- */
+
+.survival-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  position: absolute;
+  right: 58px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.survival-icons[hidden] {
+  display: none;
+}
+
+.survival-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+  flex: 0 0 auto;
+  /* по умолчанию — белые */
+  filter: brightness(0) invert(1);
+}
+
+/* warning — жёлтый */
+.survival-icon--warn {
+  filter: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(700%) hue-rotate(0deg) brightness(0.8);
+}
+
+/* critical — красный */
+.survival-icon--crit {
+  filter: brightness(0) saturate(100%) invert(28%) sepia(85%) saturate(900%) hue-rotate(340deg) brightness(0.95);
+}
+
+/* ---------- Бургеры ---------- */
+
 .location-title .drawer-toggle {
   position: absolute;
   top: 50%;
@@ -39,6 +82,8 @@
   right: 15px;
 }
 
+/* ---------- Notice ---------- */
+
 .location-notice {
   margin: 12px 18px 0;
   padding: 8px 12px;
@@ -52,6 +97,8 @@
 .location-notice[hidden] {
   display: none
 }
+
+/* ---------- Описание ---------- */
 
 .description {
   padding: 12px 18px 20px;
@@ -86,6 +133,8 @@
 .description p:last-child {
   margin: 0
 }
+
+/* ---------- Картинка локации ---------- */
 
 .location-image {
   margin: 0 auto 18px;

@@ -148,6 +148,42 @@ window.UI = (() => {
   function renderLocation(loc) {
     $("location-name").textContent = loc.name;
 
+    // --- Иконки выживания в шапке локации ---
+    let iconsRoot = $("survival-icons");
+    if (!iconsRoot) {
+      iconsRoot = document.createElement("div");
+      iconsRoot.id = "survival-icons";
+      iconsRoot.className = "survival-icons";
+      iconsRoot.hidden = true;
+
+      // Вставляем после названия локации, но до правого бургера
+      const title = document.querySelector(".location-title");
+      const nameEl = $("location-name");
+      if (title && nameEl && nameEl.parentElement === title) {
+        title.insertBefore(iconsRoot, nameEl.nextSibling);
+      } else if (nameEl && nameEl.parentElement) {
+        nameEl.parentElement.appendChild(iconsRoot);
+      }
+    }
+
+    iconsRoot.replaceChildren();
+    const icons = Array.isArray(loc.survivalIcons) ? loc.survivalIcons : [];
+    if (icons.length) {
+      icons.forEach(icon => {
+        const img = document.createElement("img");
+        img.className = "survival-icon" + (icon.level && icon.level !== "normal" ? " survival-icon--" + icon.level : "");
+        img.src = icon.src;
+        img.alt = icon.alt || icon.key || "";
+        img.title = icon.title || img.alt;
+        img.onerror = () => img.remove();
+        iconsRoot.appendChild(img);
+      });
+      iconsRoot.hidden = false;
+    } else {
+      iconsRoot.hidden = true;
+    }
+
+    // --- Notice ---
     const noticeEl = $("location-notice");
     if (loc.notice) {
       noticeEl.textContent = loc.notice;
@@ -157,6 +193,7 @@ window.UI = (() => {
       noticeEl.hidden = true;
     }
 
+    // --- Описание ---
     const descRoot = $("description");
     descRoot.replaceChildren();
     (loc.description || []).forEach(item => {
