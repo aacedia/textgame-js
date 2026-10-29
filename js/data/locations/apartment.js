@@ -8,7 +8,7 @@ Object.assign(window.GAME_DATA.locations, {
         extraDescription: [
             {
                 condition: { variableAtLeast: { name: "foodPortions", value: 1 } },
-                text: "В шкафу есть продукты. Хватит ещё на {foodPortions} приёмов пищи."
+                text: "Дома есть продукты. Хватит ещё на {foodPortions} приёмов пищи."
             },
             {
                 condition: { variableEquals: { name: "foodPortions", value: 0 } },
@@ -118,8 +118,7 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "changeVariable", name: "foodPortions", amount: -1 }
                 ],
                 reduceAfterTime: { hunger: 60 },
-                text: "Ты готовишь простой ужин и ешь. Голод отступает.",
-                image: "assets/images/locations/apartment-rest.jpg"
+                text: "Ты готовишь простую еду и ешь."
             },
             {
                 id: "drink_at_home",
@@ -129,8 +128,7 @@ Object.assign(window.GAME_DATA.locations, {
                 minutes: 5,
                 effects: [],
                 restoreAfterTime: { thirst: 0 },
-                text: "Ты выпиваешь стакан воды.",
-                image: "assets/images/locations/apartment-rest.jpg"
+                text: "Ты выпиваешь стакан воды."
             }
         ]
     }
