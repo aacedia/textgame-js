@@ -3,5 +3,6 @@
 */
 .menubuttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .menubuttons button{text-align:center;font-size:13px}
-.menubuttons button:last-child{grid-column:1/-1}
+/* «Начать заново» — всегда на всю ширину, независимо от числа кнопок */
+.menubuttons button[data-command="restart"]{grid-column:1/-1}
 #controls-content[hidden]{display:none}

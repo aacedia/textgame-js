@@ -39,17 +39,43 @@ window.UI = (() => {
   function init(opts) {
     handlers = Object.assign(handlers, opts || {});
 
-    // Кнопки панели «Управление»: сохранить, загрузить, справка, чит-код, рестарт.
+    // Кнопки панели «Управление»: сохранить, загрузить, экспорт, импорт,
+    // справка, чит-код, рестарт.
     document.querySelectorAll("[data-command]").forEach(btn => {
       btn.addEventListener("click", () => {
         const cmd = btn.dataset.command;
         if (cmd === "cheat") {
           openCheatDialog();
+        } else if (cmd === "import") {
+          // Импорт из файла: кликаем по скрытому input.
+          // Если input отсутствует — падаем обратно на команду.
+          const input = $("import-file-input");
+          if (input) {
+            input.click();
+          } else {
+            handlers.onCommand(cmd);
+          }
         } else {
           handlers.onCommand(cmd);
         }
       });
     });
+
+    // Импорт из файла: change на скрытом input.
+    const importInput = $("import-file-input");
+    if (importInput) {
+      importInput.addEventListener("change", () => {
+        const file = importInput.files && importInput.files[0];
+        // Сброс, чтобы можно было выбрать тот же файл снова.
+        importInput.value = "";
+        if (!file) return;
+        if (typeof Game !== "undefined" && typeof Game.importSaveFromFile === "function") {
+          Game.importSaveFromFile(file);
+        } else {
+          console.warn("ui-core.js: Game.importSaveFromFile не найден.");
+        }
+      });
+    }
 
     // Заголовок «Управление» — сворачивание/разворачивание.
     const controlsToggle = $("controls-toggle");
@@ -69,7 +95,7 @@ window.UI = (() => {
       gameOverRestart.addEventListener("click", () => handlers.onCommand("restart"));
     }
 
-    // Закрытие диалога с Химари по Esc: сообщаем наружу.
+    // Закрытие диалога с NPC по Esc: сообщаем наружу.
     const dlg = $("dialogue-dialog");
     if (dlg) {
       dlg.addEventListener("close", () => handlers.onCommand("dialogue:close"));

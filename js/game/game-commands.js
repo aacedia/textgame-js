@@ -1,7 +1,7 @@
 /*
   Команды UI: сохранение/загрузка/рестарт/справка, переключение вкладок,
   сворачивание панелей, фильтр инвентаря, чит-код, выбор в диалоге,
-  закрытие диалога, получение стипендии.
+  закрытие диалога, получение стипендии, экспорт/импорт сохранения в файл.
 
   Публичный API:
     Game.onCommand(command)
@@ -14,6 +14,10 @@
     Game.chooseDialogue(index)
     Game.closeDialogue()
     Game.claimStipend()
+    Game.exportSave()
+    Game.importSave()
+    Game.importSaveFromFile(file)
+    Game.applyLoadedSnapshot(data)
 
   Команды, которые обрабатывает onCommand:
     "tab:<id>"                   — переключить вкладку боковой панели
@@ -22,6 +26,8 @@
     "log:toggle"                 — свернуть/развернуть «Историю событий»
     "save"                       — сохранить
     "load"                       — загрузить
+    "export"                     — экспорт сохранения в файл
+    "import"                     — импорт сохранения из файла
     "restart"                    — начать заново
     "help"                       — справка
     "cheat:apply:<command>"      — чит-код
@@ -105,6 +111,8 @@ window.Game = window.Game || {};
     switch (command) {
       case "save": saveGame(); break;
       case "load": loadGame(); break;
+      case "export": exportSave(); break;
+      case "import": importSave(); break;
       case "restart": restart(); break;
       case "help": showHelp(); break;
     }
@@ -338,6 +346,15 @@ window.Game = window.Game || {};
     return { ok: true, data: { state: merged, logEntries: logs, infoEntries: infos } };
   }
 
+  // Применяет провалидированный снимок к игре.
+  // Используется и loadGame(), и импортом из файла.
+  function applyLoadedSnapshot(data) {
+    Game.setState(data.state);
+    Game.resetLog(data.logEntries);
+    Game.setInfo(data.infoEntries);
+    Game.render();
+  }
+
   /* ---------- сохранение ---------- */
 
   function saveGame() {
@@ -376,13 +393,81 @@ window.Game = window.Game || {};
       return;
     }
 
-    Game.setState(validation.data.state);
-    Game.resetLog(validation.data.logEntries);
-    Game.setInfo(validation.data.infoEntries);
-    Game.render();
+    applyLoadedSnapshot(validation.data);
     UI.showDialog("Загрузка", "Сохранение успешно загружено.", [
       { label: "Продолжить", primary: true }
     ]);
+  }
+
+  /* ---------- экспорт в файл ---------- */
+
+  function exportSave() {
+    const result = Save.download(buildSnapshot());
+    if (result.ok) {
+      UI.showDialog("Экспорт", "Сохранение скачано как файл.", [
+        { label: "Продолжить", primary: true }
+      ]);
+      return;
+    }
+    UI.showDialog(
+      "Ошибка экспорта",
+      "Не удалось создать файл сохранения. Возможно, браузер блокирует скачивание.",
+      [{ label: "Закрыть", primary: true }]
+    );
+  }
+
+  /* ---------- импорт из файла ---------- */
+
+  // Вызывается UI, когда пользователь выбрал файл.
+  // file — File из <input type="file">.
+  function importSaveFromFile(file) {
+    Save.readFile(file).then(result => {
+      if (!result.ok) {
+        UI.showDialog(
+          "Не удалось прочитать файл",
+          messageForLoadError(result.error),
+          [{ label: "Понятно", primary: true }]
+        );
+        return;
+      }
+
+      const validation = validateSnapshot(result.snapshot);
+      if (!validation.ok) {
+        UI.showDialog(
+          "Несовместимое сохранение",
+          messageForValidationError(validation.reason),
+          [{ label: "Закрыть", primary: true }]
+        );
+        return;
+      }
+
+      // Подтверждение перед перезаписью текущего прогресса.
+      UI.showDialog(
+        "Загрузить сохранение из файла?",
+        "Текущий прогресс будет заменён содержимым файла. Сохранение в браузере останется без изменений.",
+        [
+          { label: "Отмена" },
+          {
+            label: "Загрузить", primary: true, action: () => {
+              applyLoadedSnapshot(validation.data);
+              UI.showDialog("Загрузка", "Сохранение из файла успешно загружено.", [
+                { label: "Продолжить", primary: true }
+              ]);
+            }
+          }
+        ]
+      );
+    });
+  }
+
+  // Импорт через системный диалог выбора файла.
+  // Если в index.html есть статический #import-file-input, UI может
+  // кликнуть по нему сам и вызвать importSaveFromFile напрямую.
+  function importSave() {
+    Save.pickFile(file => {
+      if (!file) return; // пользователь отменил
+      importSaveFromFile(file);
+    }, "application/json,.json");
   }
 
   /* ---------- рестарт ---------- */
@@ -410,7 +495,7 @@ window.Game = window.Game || {};
   function showHelp() {
     UI.showDialog(
       "Справка",
-      "Выбирай действия в центральном окне. Серые действия пока недоступны: обычно не выполнены условия или не хватает предмета. В правом окне — персонаж и вкладки с заданиями и инвентарём. В инвентаре можно фильтровать предметы по типу. Сохранение хранится в localStorage этого браузера.",
+      "Выбирай действия в центральном окне. Серые действия пока недоступны: обычно не выполнены условия или не хватает предмета. В правом окне — персонаж и вкладки с заданиями и инвентарём. В инвентаре можно фильтровать предметы по типу. Сохранение хранится в localStorage этого браузера. Кнопки «Экспорт в файл» и «Импорт из файла» позволяют сохранить прогресс в файл и загрузить его обратно.",
       [{ label: "Понятно", primary: true }]
     );
   }
@@ -446,6 +531,10 @@ window.Game = window.Game || {};
     validateSnapshot,
     chooseDialogue,
     closeDialogue,
-    claimStipend
+    claimStipend,
+    exportSave,
+    importSave,
+    importSaveFromFile,
+    applyLoadedSnapshot
   });
 })();

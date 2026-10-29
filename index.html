@@ -42,6 +42,8 @@
               <div class="sidecontent menubuttons">
                 <button data-command="save">Сохранить</button>
                 <button data-command="load">Загрузить</button>
+                <button data-command="export">Экспорт в файл</button>
+                <button data-command="import">Импорт из файла</button>
                 <button data-command="help">Справка</button>
                 <button data-command="cheat">Чит-код</button>
                 <button data-command="restart">Начать заново</button>
@@ -113,6 +115,8 @@
       <button id="game-over-restart">Начать заново</button>
     </div>
   </div>
+  <!-- Скрытый input для импорта сохранения из файла -->
+  <input type="file" id="import-file-input" accept="application/json,.json" hidden>
   <dialog id="dialog">
     <div class="dialoghead" id="dialog-title"></div>
     <div class="dialogbody" id="dialog-body"></div>
