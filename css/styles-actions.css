@@ -18,6 +18,36 @@
 .actions::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 .actions::-webkit-scrollbar-thumb:hover{background:var(--accent-2)}
 
+/* Заголовок панели действий: текст слева, статус справа */
+.actions-heading{
+  justify-content:space-between;
+}
+.status-slot{
+  display:inline-flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px 8px;
+  margin-left:auto;
+  /* возвращаем «статусный» шрифт вместо шрифта заголовка */
+  font-family: system-ui, -apple-system, "Times New Roman", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+/* Фиксируем размеры бейджей внутри слота (не наследуем от заголовка) */
+.status-slot .badge{
+  font-size: 13px;
+  font-weight: 650;
+}
+.status-slot .badge__main{
+  font-size: 13px;
+}
+.status-slot .badge__sub{
+  font-size: 10px;
+  font-weight: 500;
+}
+
 .action-title{display:block;font-weight:650;color:var(--text)}
 .hint{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 

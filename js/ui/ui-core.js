@@ -108,7 +108,8 @@ window.UI = (() => {
   /* ---------- статус ---------- */
 
   function renderStatus(status) {
-    const root = $("status");
+    const root = $("actions-status");
+    if (!root) return;
     root.replaceChildren();
 
     const dateText = status.date && status.date.text ? status.date.text : `день ${status.day}`;
