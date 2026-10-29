@@ -42,7 +42,7 @@ window.GAME_DATA = {
       pendingStipend: 1000,
       lastSkatingDay: 0,
       lastRinDay: 0,
-      relationship_Rin: 0,
+      relationship_rin: 0,
       lastYuiDay: 0,
       relationship_yui: 10,
       lastHinakoDay: 0,
