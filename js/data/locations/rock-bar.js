@@ -1,14 +1,12 @@
 Object.assign(window.GAME_DATA.locations, {
     "rock-bar": {
         name: "Рок-бар",
-        hours: { from: 18 * 60, to: 6 * 60 },
-        closedWeekdays: [0, 1, 2, 3, 4],
         defaultExit: "glitch-street",
         image: "assets/images/locations/rock-bar.jpg",
         imageAlt: "Тёмный бар со сценой и неоновой вывеской",
         description: [
-            "Полутёмный бар на Глитч-стрит. На сцене — усилители и барабанная установка, у стойки — пара посетителей. По выходным здесь играют рок-концерты.",
-            "Вход на концерт — 150 ¥. Выступают NEON REQUIEM, IRON LOTUS, PAPER TIGERS и LUNAR DRIFT."
+            "Полутёмный бар на Глитч-стрит. На сцене — усилители и барабанная установка, у стойки — пара посетителей.",
+            "По пятницам, субботам и воскресеньям здесь играют рок-концерты. Вход — 150 ¥. Выступают NEON REQUIEM, IRON LOTUS, PAPER TIGERS и LUNAR DRIFT."
         ],
         actions: [
             {
@@ -24,7 +22,18 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "150 ¥ · 2 часа · +45 настроения · −5 выносливости · +10 усталости",
                 iconImage: "assets/images/actions/rock.png",
                 minutes: 120,
-                condition: { variableAtLeast: { name: "money", value: 150 } },
+                condition: {
+                    all: [
+                        { variableAtLeast: { name: "money", value: 150 } },
+                        {
+                            weekdayIn: [4, 5, 6],
+                            reason: "Концерты проходят по пятницам, субботам и воскресеньям"
+                        }
+                    ]
+                },
+                // fallback, если вариант почему-то не выбран
+                text: "Ты приходишь в рок-бар и слушаешь живую музыку. Вечер проходит отлично.",
+                image: "assets/images/locations/rock-bar.jpg",
                 effects: [
                     { type: "changeVariable", name: "money", amount: -150 },
                     { type: "changeVariable", name: "mood", amount: 45 },
@@ -62,7 +71,7 @@ Object.assign(window.GAME_DATA.locations, {
                 hint: "Понаблюдать за публикой",
                 iconImage: "assets/images/actions/look.png",
                 effects: [{ type: "setFlag", flag: "lookedAroundRockBar", value: true }],
-                text: "У стойки пара обсуждает вчерашний концерт, у сцены техник проверяет кабели. На стене — афиши прошедших групп.",
+                text: "У стойки пара обсуждает какую-то группу. На стене афиши предстоящих концертов.",
                 image: "assets/images/locations/rock-bar-inside.jpg"
             }
         ]

@@ -41,6 +41,10 @@
         if (condition.locationOpen) {
             return isLocationOpen(gameData, condition.locationOpen, state.variables.minutes, state.variables.day);
         }
+        if (condition.weekdayIn) {
+            const date = formatDate(state.variables.day, gameData);
+            return condition.weekdayIn.includes(date.weekdayIndex);
+        }
         if (condition.timeBetween) {
             const { from, to } = condition.timeBetween;
             const t = ((Number(state.variables.minutes) || 0) % 1440 + 1440) % 1440;
@@ -133,6 +137,9 @@
             }
             if (loc && loc.hours) return `Откроется в ${formatTime(loc.hours.from)}`;
             return "Сейчас закрыто";
+        }
+        if (condition.weekdayIn) {
+            return "Сегодня недоступно";
         }
         if (condition.timeBetween) {
             const { from, to } = condition.timeBetween;
