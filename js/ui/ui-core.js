@@ -439,21 +439,70 @@ window.UI = (() => {
     // Шапка с аватаром и отношением.
     if (dialogue.npc) {
       if (nameEl) nameEl.textContent = dialogue.npc.name || "";
+
       if (avatarWrap && avatarImg) {
-        if (dialogue.npc.avatar) {
-          avatarImg.src = dialogue.npc.avatar;
-          avatarImg.alt = dialogue.npc.avatarAlt || dialogue.npc.name || "";
-          avatarImg.style.display = "";
-          avatarWrap.replaceChildren(avatarImg);
-          avatarWrap.classList.remove("dialogue-avatar--empty");
-        } else {
+        const src = dialogue.npc.avatar || "";
+        const alt = dialogue.npc.avatarAlt || dialogue.npc.name || "";
+
+        if (!src) {
           avatarImg.removeAttribute("src");
           avatarImg.alt = "";
           avatarImg.style.display = "none";
+          avatarImg.dataset.loaded = "";
           avatarWrap.classList.add("dialogue-avatar--empty");
           avatarWrap.replaceChildren(document.createTextNode("?"));
+        } else {
+          avatarWrap.classList.remove("dialogue-avatar--empty");
+
+          // Если это тот же аватар и он уже показан — не мигаем.
+          const alreadyShown =
+            avatarImg.getAttribute("src") === src &&
+            avatarImg.style.display !== "none" &&
+            avatarImg.dataset.loaded === "1";
+
+          if (!alreadyShown) {
+            // Показываем заглушку, пока грузится настоящий аватар.
+            const placeholder = document.createElement("img");
+            placeholder.className = "dialogue-avatar__loading";
+            placeholder.src = "assets/images/ui/loading.gif";
+            placeholder.alt = "";
+            avatarWrap.replaceChildren(placeholder);
+
+            const loader = new Image();
+            loader.onload = () => {
+              // Диалог мог уже смениться/закрыться — проверяем актуальность.
+              const state = Game.getState();
+              const cur = state.dialogue;
+              if (!cur) return;
+              const curData = (window.GAME_DATA.dialogues || {})[cur.id];
+              const curNpcId = curData && curData.npc ? curData.npc : cur.id;
+              const curNpc = window.GAME_DATA.character &&
+                window.GAME_DATA.character.npcs &&
+                window.GAME_DATA.character.npcs[curNpcId];
+              if (!curNpc || curNpc.avatar !== src) return;
+
+              avatarImg.src = src;
+              avatarImg.alt = alt;
+              avatarImg.style.display = "";
+              avatarImg.dataset.loaded = "1";
+              avatarWrap.classList.remove("dialogue-avatar--empty");
+              avatarWrap.replaceChildren(avatarImg);
+            };
+            loader.onerror = () => {
+              avatarImg.removeAttribute("src");
+              avatarImg.alt = "";
+              avatarImg.style.display = "none";
+              avatarImg.dataset.loaded = "";
+              avatarWrap.classList.add("dialogue-avatar--empty");
+              avatarWrap.replaceChildren(document.createTextNode("?"));
+            };
+            loader.src = src;
+          } else {
+            avatarImg.alt = alt;
+          }
         }
       }
+
       if (relationValue && dialogue.relationship) {
         relationValue.textContent = `${dialogue.relationship.value}/${dialogue.relationship.max}`;
       }
