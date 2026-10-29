@@ -294,8 +294,24 @@ window.Game = window.Game || {};
 
     const use = item.use;
 
-    // Дневной лимит использования (например, MP3-плеер — 3 раза в день).
     let working = state;
+
+    // Книги: не больше 3 использований за один «взятый» экземпляр.
+    if (item.book) {
+      const usedToday = Number(working.variables.bookUsesToday) || 0;
+      if (usedToday >= 3) {
+        Game.pushLog([`${item.name}: больше не читается сегодня.`]);
+        Game.setInfo([{ kind: "text", text: "Книга уже прочитана до конца. Возьми другую у Рицу." }]);
+        Game.render();
+        return;
+      }
+      working = {
+        ...working,
+        variables: { ...working.variables, bookUsesToday: usedToday + 1 }
+      };
+    }
+
+    // Дневной лимит использования (например, MP3-плеер — 3 раза в день).
     if (use.dailyLimit && use.dailyCounter && use.dailyDay) {
       const day = Number(working.variables.day) || 0;
       const sameDay = Number(working.variables[use.dailyDay]) === day;

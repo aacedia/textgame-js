@@ -86,7 +86,7 @@
         : escapeHtml(item.icon || "◆");
 
       const useHtml = item.usable
-        ? `<button class="item-use" data-item="${escapeHtml(item.id)}">${item.consumable ? "Использовать" : "Включить"}</button>`
+        ? `<button class="item-use" data-item="${escapeHtml(item.id)}"${item.useBlocked ? ' disabled title="' + escapeHtml(item.blockReason || "") + '"' : ""}>Использовать</button>`
         : "";
 
       li.innerHTML =

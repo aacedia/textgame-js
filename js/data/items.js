@@ -142,5 +142,50 @@ Object.assign(window.GAME_DATA.items, {
                 after: "."
             }))
         }
+    },
+    zarathustra: {
+        name: "Так говорил Заратустра",
+        iconImage: "assets/images/items/book.png",
+        description: "Восстанавливает выносливость.",
+        book: true,
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "stamina", amount: 20 }
+            ],
+            text: "Ты открываешь книгу и читаешь несколько страниц. Слова будто встряхивают изнутри — выносливость возвращается."
+        }
+    },
+    meditations: {
+        name: "Наедине с собой",
+        iconImage: "assets/images/items/book.png",
+        description: "Повышает настроение, уменьшает усталость.",
+        book: true,
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "mood", amount: 10 },
+                { type: "changeVariable", name: "fatigue", amount: -10 }
+            ],
+            text: "Ты читаешь несколько страниц Марка Аврелия. Спокойный ритм фраз успокаивает и снимает усталость."
+        }
+    },
+    conspiracy: {
+        name: "Заговор против рода человеческого",
+        iconImage: "assets/images/items/book.png",
+        description: "Понижает настроение, но сильно снижает голод и жажду.",
+        book: true,
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "mood", amount: -10 },
+                { type: "changeVariable", name: "hunger", amount: -20 },
+                { type: "changeVariable", name: "thirst", amount: -20 }
+            ],
+            text: "Ты открываешь Лиготти. Тяжёлые, вязкие фразы неприятно ложатся на сознание. Настроение падает, зато думать о еде и питье почему-то больше не хочется."
+        }
     }
 });

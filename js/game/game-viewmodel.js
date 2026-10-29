@@ -230,10 +230,20 @@ window.Game = window.Game || {};
       counts[id] = (counts[id] || 0) + 1;
     });
 
+    const bookUses = Number(state.variables.bookUsesToday) || 0;
+
     const items = Object.entries(counts)
       .map(([id, count]) => {
         const item = GAME_DATA.items[id];
         if (!item) return null;
+
+        let useBlocked = false;
+        let blockReason = "";
+        if (item.book && bookUses >= 3) {
+          useBlocked = true;
+          blockReason = "Книга уже прочитана. Возьми другую у Рицу.";
+        }
+
         return {
           id,
           name: item.name,
@@ -243,6 +253,8 @@ window.Game = window.Game || {};
           count,
           consumable: !!item.consumable,
           usable: !!(item.consumable || item.use),
+          useBlocked,
+          blockReason,
           electronics: !!item.electronics
         };
       })

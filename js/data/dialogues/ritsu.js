@@ -23,6 +23,17 @@ window.GAME_DATA.dialogues.ritsu = {
                     next: "about_writing",
                     condition: { not: { flag: "ritsu_about_writing" } }
                 },
+                {
+                    text: "Взять почитать книгу",
+                    next: "ask_book",
+                    iconImage: "assets/images/ui/info.png",
+                    condition: {
+                        all: [
+                            { not: { flag: "ritsuBooksAgreed" } },
+                            { variableAtLeast: { name: "relationship_ritsu", value: 20 } }
+                        ]
+                    }
+                },
                 { text: "О Дадзае", next: "dazai", condition: { not: { flag: "ritsu_dazai_done" } } },
                 { text: "О «Мартине Идене»", next: "martin", condition: { not: { flag: "ritsu_martin_done" } } },
                 { text: "О пустоте", next: "emptiness", condition: { not: { flag: "ritsu_empty_done" } } },
@@ -69,8 +80,6 @@ window.GAME_DATA.dialogues.ritsu = {
 
         /* ---------- О чём он пишет ---------- */
 
-        /* ---------- О чём он пишет ---------- */
-
         about_writing: {
             text: "Рицу на секунду задумывается, потом закрывает блокнот, но не убирает его. — О честных чувствах, скрывающихся за теми, которые обычно принято показывать.",
             choices: [
@@ -98,6 +107,31 @@ window.GAME_DATA.dialogues.ritsu = {
         },
         about_writing_bad: {
             text: "Рицу не спорит. — Может быть. — Он откидывается на спинку стула. — Но если открыться, начнут лезть с советами. Я пока не готов к этому.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Взять книгу ---------- */
+
+        ask_book: {
+            text: "— Хочешь почитать что-нибудь из моего? — Рицу кивает на блокнот, потом на полку. — Бери. Только возвращай в целости. У меня мало вещей, которые я берегу.",
+            choices: [
+                {
+                    text: "Спасибо. Возьму.",
+                    effects: [{ type: "setFlag", flag: "ritsuBooksAgreed", value: true }],
+                    next: "ask_book_yes"
+                },
+                {
+                    text: "Как-нибудь в другой раз",
+                    next: "ask_book_later"
+                }
+            ]
+        },
+        ask_book_yes: {
+            text: "Рицу кивает. — Тогда заходи в библиотеку, когда будет время. Что-нибудь подберём.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        ask_book_later: {
+            text: "Рицу пожимает плечами. — Как хочешь. Если передумаешь — я тут.",
             choices: [{ text: "Попрощаться", close: true }]
         },
 

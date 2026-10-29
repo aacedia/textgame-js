@@ -69,12 +69,13 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "study_for_class",
                 label: "Готовиться к занятиям",
-                hint: "1 час",
+                hint: "1 час · +100 очков знаний",
                 iconImage: "assets/images/actions/study.png",
                 minutes: 60,
                 condition: { not: { variableAtLeast: { name: "knowledge", value: 100 } } },
+                hiddenWhen: { variableAtLeast: { name: "knowledge", value: 100 } },
                 effects: [
-                    { type: "changeVariable", name: "knowledge", amount: 50 },
+                    { type: "changeVariable", name: "knowledge", amount: 100 },
                     { type: "changeVariable", name: "fatigue", amount: 5 }
                 ],
                 text: "Ты садишься за конспекты и методично разбираешь материал. Час проходит спокойно и продуктивно.",
@@ -83,7 +84,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "study_with_hinako",
                 label: "Позаниматься с Хинако",
-                hint: "20 минут",
+                hint: "20 минут · +200 очков знаний",
                 iconImage: "assets/images/ui/info.png",
                 minutes: 20,
                 condition: {
@@ -95,12 +96,48 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 hiddenWhen: { not: { flag: "hinakoStudyAgreed" } },
                 effects: [
-                    { type: "changeVariable", name: "knowledge", amount: 100 },
+                    { type: "changeVariable", name: "knowledge", amount: 200 },
                     { type: "changeVariable", name: "relationship_hinako", amount: 1 },
                     { type: "setVariableFromVariable", name: "lastHinakoStudyDay", from: "day" }
                 ],
                 text: "Хинако объясняет тему по-своему, коротко и по делу. Двадцать минут — и в голове становится яснее, чем после часа самостоятельного чтения.",
                 image: "assets/images/locations/library-books.jpg"
+            },
+            {
+                id: "borrow_book_ritsu",
+                label: "Взять книгу у Рицу",
+                hint: "Раз в день · одна из книг · 3 прочтения",
+                iconImage: "assets/images/items/book.png",
+                minutes: 5,
+                condition: {
+                    all: [
+                        { flag: "ritsuBooksAgreed" },
+                        { timeBetween: { from: 10 * 60, to: 20 * 60 } },
+                        { variableDiffers: { name: "lastRitsuBookDay", other: "day" } }
+                    ]
+                },
+                hiddenWhen: { not: { flag: "ritsuBooksAgreed" } },
+                effects: [
+                    { type: "setVariable", name: "bookUsesToday", value: 0 },
+                    { type: "setVariableFromVariable", name: "lastRitsuBookDay", from: "day" },
+                    { type: "removeItem", item: "zarathustra" },
+                    { type: "removeItem", item: "meditations" },
+                    { type: "removeItem", item: "conspiracy" }
+                ],
+                variants: [
+                    {
+                        effects: [{ type: "giveItem", item: "zarathustra" }],
+                        text: "Рицу достаёт с полки потрёпанный том. — «Так говорил Заратустра». Возьми, если ещё не читал."
+                    },
+                    {
+                        effects: [{ type: "giveItem", item: "meditations" }],
+                        text: "Рицу протягивает тонкую книжку в мягкой обложке. — «Наедине с собой». Марк Аврелий. Не спеши с ней."
+                    },
+                    {
+                        effects: [{ type: "giveItem", item: "conspiracy" }],
+                        text: "Рицу задумывается, потом достаёт книгу. — «Заговор против рода человеческого». Предупреждаю: тяжёлая. Но ты сам просил."
+                    }
+                ]
             },
             {
                 id: "work_easy",
