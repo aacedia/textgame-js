@@ -85,7 +85,7 @@ Object.assign(window.GAME_DATA.locations, {
                 iconImage: "assets/images/actions/rest.png",
                 minutes: 15,
                 effects: [],
-                reduceAfterTime: { fatigue: 3, hunger: 2, thirst: 1 },
+                reduceAfterTime: { fatigue: 3, hunger: 1, thirst: 1 },
                 text: "Ты ненадолго присаживаешься и собираешься с мыслями.",
                 image: "assets/images/locations/apartment-rest.jpg"
             },
