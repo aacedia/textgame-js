@@ -19,5 +19,45 @@
     return;
   }
 
+  // Drawer-режим для боковых панелей на узких экранах
+  function initDrawers() {
+    const layout = document.querySelector(".layout");
+    const btnSide = document.getElementById("toggle-side");
+    const btnRight = document.getElementById("toggle-side-right");
+    if (!layout || !btnSide || !btnRight) return;
+
+    const closeAll = () => {
+      layout.classList.remove("side-open", "side-right-open");
+    };
+
+    btnSide.addEventListener("click", e => {
+      e.stopPropagation();
+      layout.classList.toggle("side-open");
+      layout.classList.remove("side-right-open");
+    });
+
+    btnRight.addEventListener("click", e => {
+      e.stopPropagation();
+      layout.classList.toggle("side-right-open");
+      layout.classList.remove("side-open");
+    });
+
+    // Клик по затемнению / вне шторки — закрыть
+    layout.addEventListener("click", e => {
+      if (e.target === layout) closeAll();
+    });
+
+    // Esc — закрыть
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeAll();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initDrawers);
+  } else {
+    initDrawers();
+  }
+
   window.UI.__ready = true;
 })();
