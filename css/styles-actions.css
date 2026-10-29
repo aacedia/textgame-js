@@ -1,7 +1,23 @@
 /*
   Панель «Доступные действия»: сетка кнопок и их внутренняя структура.
 */
-.actions{padding:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.actions{
+  padding:13px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  max-height:340px;
+  overflow-y:auto;
+  padding-right:8px;
+
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.actions::-webkit-scrollbar{width:6px}
+.actions::-webkit-scrollbar-track{background:transparent}
+.actions::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+.actions::-webkit-scrollbar-thumb:hover{background:var(--accent-2)}
+
 .action-title{display:block;font-weight:650;color:var(--text)}
 .hint{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 

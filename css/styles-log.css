@@ -6,6 +6,23 @@
   padding:14px 18px;
   display:grid;
   gap:10px;
+  max-height:280px;
+
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.log::-webkit-scrollbar{
+  width:6px;
+}
+.log::-webkit-scrollbar-track{
+  background:transparent;
+}
+.log::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:99px;
+}
+.log::-webkit-scrollbar-thumb:hover{
+  background:var(--accent-2);
 }
 .logentry{
   color:var(--muted);

@@ -48,6 +48,24 @@
   font-size: 16px;
   line-height: 1.5;
   max-width: 78ch;
+  max-height: 320px;
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.description::-webkit-scrollbar {
+  width: 6px;
+}
+.description::-webkit-scrollbar-track {
+  background: transparent;
+}
+.description::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+.description::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-2);
 }
 
 .description p {
