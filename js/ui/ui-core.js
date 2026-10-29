@@ -230,28 +230,31 @@ window.UI = (() => {
     const figure = $("location-image");
     const img = $("location-image-img");
     const caption = $("location-image-caption");
+    if (!figure || !img || !caption) return;
 
-    if (!loc.image) {
+    const nextSrc = loc.image || "";
+
+    // Ничего не изменилось — не трогаем DOM (убирает мигание при повторных рендерах).
+    if (figure.dataset.src === nextSrc) return;
+
+    figure.dataset.src = nextSrc;
+
+    if (!nextSrc) {
       img.removeAttribute("src");
-      img.removeAttribute("alt");
+      img.alt = "";
+      caption.textContent = "";
+      caption.hidden = true;
       figure.hidden = true;
       return;
     }
 
-    // Сбрасываем текущую картинку и прячем, пока не загрузится новая
+    // Прячем, пока грузится новая.
     figure.hidden = true;
-    img.removeAttribute("src");
-    img.alt = "";
-    caption.textContent = "";
-    caption.hidden = true;
 
-    const nextSrc = loc.image;
     const loader = new Image();
     loader.onload = () => {
-      // Проверяем, что локация не сменилась, пока грузили
-      const cur = Game.getState();
-      const curLoc = window.GAME_DATA.locations[cur.location];
-      if (!curLoc || curLoc.image !== nextSrc) return;
+      // Проверяем, что всё ещё нужна эта картинка.
+      if (figure.dataset.src !== nextSrc) return;
       img.src = nextSrc;
       img.alt = loc.imageAlt || `Изображение локации: ${loc.name}`;
       caption.textContent = loc.imageCaption || "";
@@ -259,6 +262,9 @@ window.UI = (() => {
       figure.hidden = false;
     };
     loader.onerror = () => {
+      if (figure.dataset.src !== nextSrc) return;
+      img.removeAttribute("src");
+      caption.hidden = true;
       figure.hidden = true;
     };
     loader.src = nextSrc;
