@@ -37,8 +37,7 @@ Object.assign(window.GAME_DATA.locations, {
                     { type: "giveItem", item: "keys" }
                 ],
                 once: true,
-                text: "На столе лежат ключи. Ты убираешь их в карман.",
-                image: "assets/images/locations/apartment-table.jpg"
+                text: "На столе лежат ключи. Ты убираешь их в карман."
             },
             {
                 id: "watch_tv",
