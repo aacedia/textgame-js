@@ -4,7 +4,7 @@
   Два режима:
     - десктоп (> 1000px): три колонки, как в базовых стилях;
     - мобильный (<= 1000px): боковые панели — выдвижные шторки,
-      бургеры встроены в шапку локации.
+      бургеры встроены в шапку локации, свайп от края.
 */
 
 /* ---------- Кнопки-бургеры (по умолчанию скрыты) ---------- */
@@ -59,6 +59,7 @@
     font-size: 18px;
     line-height: 1;
     border: 1px solid var(--border);
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Кнопка-аватар для правой шторки */
@@ -100,6 +101,12 @@
     display: block;
     grid-template-columns: none;
     grid-template-rows: none;
+
+    /* Не выделяем текст и не вызываем системное меню долгого тапа */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .side > *,
@@ -145,6 +152,21 @@
   .layout.side-right-open::after {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* Во время свайпа шторка следует за пальцем, затемнение — за прогрессом.
+     transition у шторки отключается в JS, opacity затемнения привязана к --swipe-progress. */
+  .layout.side-swipe-left::after,
+  .layout.side-swipe-right::after {
+    opacity: var(--swipe-progress, 0);
+    pointer-events: none;
+  }
+
+  /* Пока идёт свайп — отключаем выделение по всей странице */
+  body.drawer-swiping,
+  body.drawer-swiping * {
+    user-select: none !important;
+    -webkit-user-select: none !important;
   }
 
   /* В шторке внутренние панели не создают двойной скролл */
