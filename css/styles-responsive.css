@@ -24,30 +24,8 @@
     height: auto;
   }
 
-  /* ---------- Шапка локации: бургеры по краям, название по центру ---------- */
+  /* ---------- Кнопки-бургеры ---------- */
 
-  .location-title {
-    display: grid;
-    grid-template-columns: 44px 1fr 44px;
-    align-items: center;
-    gap: 8px;
-    justify-content: initial;
-  }
-
-  .location-title .locname {
-    text-align: center;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Тег в мобильном режиме скрыт */
-  .location-title .tag {
-    display: none;
-  }
-
-  /* Кнопки-бургеры */
   .drawer-toggle {
     display: grid;
     place-items: center;

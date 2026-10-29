@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     shop: {
-        name: "Магазин", tag: "Покупки",
+        name: "Магазин",
         hours: { from: 8 * 60, to: 22 * 60 },
         defaultExit: "residential",
         image: "assets/images/locations/shop.jpg",

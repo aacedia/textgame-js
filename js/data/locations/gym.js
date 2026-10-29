@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     gym: {
-        name: "Спортзал", tag: "Тренировки",
+        name: "Спортзал",
         hours: { from: 8 * 60, to: 20 * 60 },
         closedWeekdays: [5, 6],
         defaultExit: "center",

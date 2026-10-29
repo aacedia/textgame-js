@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     apartment: {
-        name: "Квартира", tag: "Безопасное место",
+        name: "Квартира",
         image: "assets/images/locations/apartment.jpg",
         description: [
             "Небольшая, но уютная квартира."

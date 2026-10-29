@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     residential: {
-        name: "Спальный район", tag: "Жилой район",
+        name: "Спальный район",
         image: "assets/images/locations/residential.jpg",
         description: [
             "Тихий район. Здесь находятся твой дом, продуктовый магазин и небольшой парк."

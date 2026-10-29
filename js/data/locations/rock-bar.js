@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     "rock-bar": {
-        name: "Рок-бар", tag: "Живая музыка",
+        name: "Рок-бар",
         hours: { from: 18 * 60, to: 6 * 60 },
         closedWeekdays: [0, 1, 2, 3, 4],
         defaultExit: "glitch-street",

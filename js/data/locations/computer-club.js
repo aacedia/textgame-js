@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     "computer-club": {
-        name: "Компьютерный клуб", tag: "Игровая зона",
+        name: "Компьютерный клуб",
         hours: { from: 18 * 60, to: 6 * 60 },
         defaultExit: "glitch-street",
         image: "assets/images/locations/computer-club.jpg",

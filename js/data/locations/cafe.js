@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     cafe: {
-        name: "Кафе", tag: "Уютное место",
+        name: "Кафе",
         hours: { from: 8 * 60, to: 23 * 60 },
         defaultExit: "center",
         image: "assets/images/locations/cafe.jpg",

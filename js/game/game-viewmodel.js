@@ -59,15 +59,6 @@ window.Game = window.Game || {};
   function buildLocationVM(loc) {
     const state = Game.getState();
     const openNow = Rules.isLocationOpen(GAME_DATA, state.location, state.variables.minutes, state.variables.day);
-    const hoursText = loc.hours ? Rules.describeHours(loc.hours) : "";
-
-    let tagText = loc.tag || "";
-    let tagClass = "";
-    if (loc.hours && !openNow) {
-      tagText = `Закрыто · ${hoursText}`;
-      tagClass = "closed";
-    }
-
     let notice = "";
     if (loc.hours && !openNow) {
       notice = `${loc.name} закрыт. Откроется в ${Rules.formatTime(loc.hours.from)}.`;
@@ -110,9 +101,6 @@ window.Game = window.Game || {};
 
     return {
       name: loc.name,
-      tag: loc.tag,
-      tagText,
-      tagClass,
       notice,
       description,
       image,

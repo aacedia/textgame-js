@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     park: {
-        name: "Парк", tag: "Зелёная зона",
+        name: "Парк",
         hours: { from: 6 * 60, to: 23 * 60 },
         defaultExit: "residential",
         image: "assets/images/locations/park.jpg",

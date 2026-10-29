@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     center: {
-        name: "Центр", tag: "Деловой район",
+        name: "Центр",
         image: "assets/images/locations/center.jpg",
         imageAlt: "Центр города: высотки, магазины, кафе",
         description: [

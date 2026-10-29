@@ -16,7 +16,7 @@
   viewModel:
     {
       status: { day, time, money, date, timeOfDay, timeIcon },
-      location: { name, tag, tagText?, tagClass?, notice?, description[], image?, imageAlt?, imageCaption? },
+      location: { name, notice?, description[], image?, imageAlt?, imageCaption? },
       info: { visible, entries: [{ kind: "text" | "image", ... }] },
       actions: [{ id, label, hint, available, unavailableReason?, accent?, recent?, count?, type?, choices? }],
       log: [ "строка", ... ],
@@ -147,10 +147,6 @@ window.UI = (() => {
 
   function renderLocation(loc) {
     $("location-name").textContent = loc.name;
-
-    const tagEl = $("location-tag");
-    tagEl.textContent = loc.tagText || loc.tag || "";
-    tagEl.className = "tag" + (loc.tagClass ? " " + loc.tagClass : "");
 
     const noticeEl = $("location-notice");
     if (loc.notice) {

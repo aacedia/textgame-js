@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     "gloomy-street": {
-        name: "Мрачная улица", tag: "Переулок",
+        name: "Мрачная улица",
         image: "assets/images/locations/gloomy-street.jpg",
         imageAlt: "Мрачная улица между домами",
         description: [

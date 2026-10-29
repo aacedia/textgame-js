@@ -1,31 +1,42 @@
 /*
-  Панель «Описание локации»: шапка с названием и тегом, notice, описание, картинка.
+  Панель «Описание локации»: шапка с названием, notice, описание, картинка.
 */
 
 .location-title {
-  justify-content: space-between;
+  position: relative;
+  justify-content: center;
 }
 
 .locname {
+  text-align: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: inherit;
   font-weight: inherit;
   letter-spacing: -.02em;
 }
 
-.tag {
-  border: 1px solid var(--accent);
-  color: var(--accent-3);
-  background: var(--accent-2);
-  padding: 3px 8px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 500;
+/* Бургеры вынесены из потока по краям, чтобы не сдвигать название */
+.location-title .drawer-toggle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
 }
 
-.tag.closed {
-  border-color: var(--notice-border);
-  color: var(--notice-text);
-  background: var(--notice-bg);
+.location-title .drawer-toggle:hover:not(:disabled) {
+  transform: translateY(-50%);
+}
+
+.location-title #toggle-side {
+  left: 15px;
+}
+
+.location-title #toggle-side-right {
+  right: 15px;
 }
 
 .location-notice {

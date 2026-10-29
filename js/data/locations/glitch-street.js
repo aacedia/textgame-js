@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     "glitch-street": {
-        name: "Глитч-стрит", tag: "Неоновая улица",
+        name: "Глитч-стрит",
         image: "assets/images/locations/glitch-street.jpg",
         imageAlt: "Улица в неоновых огнях, вывески и провода",
         description: [

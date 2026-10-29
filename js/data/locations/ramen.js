@@ -1,6 +1,6 @@
 Object.assign(window.GAME_DATA.locations, {
     ramen: {
-        name: "Раменная", tag: "Горячая лапша",
+        name: "Раменная",
         hours: { from: 18 * 60, to: 6 * 60 },
         defaultExit: "glitch-street",
         image: "assets/images/locations/ramen.jpg",
