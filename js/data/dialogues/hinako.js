@@ -17,6 +17,17 @@ window.GAME_DATA.dialogues.hinako = {
         topics: {
             text: "— Привет. Ты тоже пришёл заниматься? — спрашивает она, придерживая страницу пальцем.",
             choices: [
+                {
+                    text: "Попросить её заниматься с тобой",
+                    next: "ask_study",
+                    iconImage: "assets/images/ui/info.png",
+                    condition: {
+                        all: [
+                            { not: { flag: "hinakoStudyAgreed" } },
+                            { variableAtLeast: { name: "relationship_hinako", value: 20 } }
+                        ]
+                    }
+                },
                 { text: "Об учёбе", next: "study", condition: { not: { flag: "hinako_study_done" } } },
                 { text: "О книгах по управлению", next: "books", condition: { not: { flag: "hinako_books_done" } } },
                 { text: "О её мечте", next: "dream", condition: { not: { flag: "hinako_dream_done" } } },
@@ -63,6 +74,31 @@ window.GAME_DATA.dialogues.hinako = {
                 },
                 { text: "Попрощаться", close: true }
             ]
+        },
+
+        /* ---------- Совместные занятия ---------- */
+
+        ask_study: {
+            text: "— Хорошо, давай будем иногда готовиться к занятиям вместе. Только приходи подготовленным!",
+            choices: [
+                {
+                    text: "Спасибо. Буду приходить.",
+                    effects: [{ type: "setFlag", flag: "hinakoStudyAgreed", value: true }],
+                    next: "ask_study_yes"
+                },
+                {
+                    text: "Ладно, как-нибудь в другой раз",
+                    next: "ask_study_later"
+                }
+            ]
+        },
+        ask_study_yes: {
+            text: "Хинако кивает и снова берётся за конспект. — Тогда до встречи.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        ask_study_later: {
+            text: "Хинако пожимает плечами. — Как хочешь. Если передумаешь — я в библиотеке.",
+            choices: [{ text: "Попрощаться", close: true }]
         },
 
         /* ---------- Учёба ---------- */
@@ -326,13 +362,30 @@ window.GAME_DATA.dialogues.hinako = {
                         { type: "changeVariable", name: "relationship_hinako", amount: 6 },
                         { type: "changeVariable", name: "mood", amount: 2 }
                     ],
-                    next: "mistakes_deep_good"
+                    next: "mistakes_deep_cold"
                 },
-                { text: "Попрощаться", close: true }
+                {
+                    text: "Может, и есть. Только ты сама её от себя прячешь.",
+                    effects: [{ type: "changeVariable", name: "relationship_hinako", amount: 4 }],
+                    next: "mistakes_deep_warm"
+                },
+                {
+                    text: "А если бы кто-то винил тебя за его ошибки — ты бы что сказала?",
+                    effects: [{ type: "changeVariable", name: "relationship_hinako", amount: 5 }],
+                    next: "mistakes_deep_mirror"
+                }
             ]
         },
-        mistakes_deep_good: {
+        mistakes_deep_cold: {
             text: "Хинако кивает медленно. — Да. Наверное, ты прав. — Она впервые за разговор смотрит в окно, а не в конспект.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        mistakes_deep_warm: {
+            text: "Хинако задумывается. — Прячу? — Она поправляет очки. — Может быть. Просто так проще — не жалеть себя лишний раз. — Она пожимает плечами. — Хотя ты, кажется, прав.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        mistakes_deep_mirror: {
+            text: "Хинако долго молчит. — Сказала бы, что это глупо. — Она смотрит на тебя. — Что человек не отвечает за чужие ошибки. — Она делает паузу. — А потом поняла бы, что говорю это не себе.",
             choices: [{ text: "Попрощаться", close: true }]
         },
         mistakes_good: {

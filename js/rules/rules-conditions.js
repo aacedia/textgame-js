@@ -180,9 +180,13 @@
                                 name === "fatigue" ? " усталости" :
                                     name === "foodPortions" ? " порций еды" :
                                         name === "staminaMax" ? " выносливости (макс.)" :
-                                            name === "healthMax" ? " здоровья (макс.)" : "";
+                                            name === "healthMax" ? " здоровья (макс.)" :
+                                                name === "knowledge" ? " знаний" : "";
         const label = describeVariableName(name);
         if (forNot) {
+            if (name === "knowledge") {
+                return "Полностью подготовлен";
+            }
             return label
                 ? `Уже достигнуто: ${label} ${value}${suffix}`
                 : `Уже достигнуто: ${value}`;

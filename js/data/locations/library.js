@@ -67,6 +67,42 @@ Object.assign(window.GAME_DATA.locations, {
                 effects: [{ type: "move", to: "university" }]
             },
             {
+                id: "study_for_class",
+                label: "Готовиться к занятиям",
+                hint: "1 час",
+                iconImage: "assets/images/actions/study.png",
+                minutes: 60,
+                condition: { not: { variableAtLeast: { name: "knowledge", value: 100 } } },
+                effects: [
+                    { type: "changeVariable", name: "knowledge", amount: 50 },
+                    { type: "changeVariable", name: "fatigue", amount: 5 }
+                ],
+                text: "Ты садишься за конспекты и методично разбираешь материал. Час проходит спокойно и продуктивно.",
+                image: "assets/images/locations/library-books.jpg"
+            },
+            {
+                id: "study_with_hinako",
+                label: "Позаниматься с Хинако",
+                hint: "20 минут",
+                iconImage: "assets/images/ui/info.png",
+                minutes: 20,
+                condition: {
+                    all: [
+                        { flag: "hinakoStudyAgreed" },
+                        { variableDiffers: { name: "lastHinakoStudyDay", other: "day" } },
+                        { timeBetween: { from: 8 * 60, to: 20 * 60 } }
+                    ]
+                },
+                hiddenWhen: { not: { flag: "hinakoStudyAgreed" } },
+                effects: [
+                    { type: "changeVariable", name: "knowledge", amount: 100 },
+                    { type: "changeVariable", name: "relationship_hinako", amount: 1 },
+                    { type: "setVariableFromVariable", name: "lastHinakoStudyDay", from: "day" }
+                ],
+                text: "Хинако объясняет тему по-своему, коротко и по делу. Двадцать минут — и в голове становится яснее, чем после часа самостоятельного чтения.",
+                image: "assets/images/locations/library-books.jpg"
+            },
+            {
                 id: "work_easy",
                 label: "Написать реферат",
                 hint: "1 час · +60 ¥ · −10 выносливости",

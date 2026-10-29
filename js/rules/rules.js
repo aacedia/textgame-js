@@ -191,6 +191,8 @@ window.Rules = (() => {
           return false;
         }
         return true;
+      case "gradeClass":
+        return true;
       default:
         warn(`неизвестный тип эффекта "${effect.type}"`, effect);
         return false;

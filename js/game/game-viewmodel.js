@@ -282,6 +282,10 @@ window.Game = window.Game || {};
     const isWeekend = date.weekdayIndex === 5 || date.weekdayIndex === 6;
     const quests = [];
 
+    const knowledge = Number(state.variables.knowledge) || 0;
+    const previewGrade = Math.min(5, 3 + Math.floor(knowledge / 50));
+    const lastGrade = Number(state.variables.lastGrade) || 0;
+
     if (pending >= 500) {
       quests.push({
         done: false,
@@ -319,13 +323,14 @@ window.Game = window.Game || {};
         hint: "Магазин · 100 ¥"
       });
     }
+
     if (isWeekend) {
       quests.push({
         done: true,
         active: false,
         title: "Занятие",
         text: "Сегодня занятий нет.",
-        hint: "Выходной"
+        hint: `Ооценка знаний: ${previewGrade}`
       });
     } else {
       quests.push({
@@ -333,9 +338,11 @@ window.Game = window.Game || {};
         active: !classDoneToday,
         title: "Занятие",
         text: classDoneToday
-          ? "Занятие на сегодня посещено."
+          ? `Занятие посещено. Оценка: ${lastGrade || "—"}.`
           : "Посети занятие в университете.",
-        hint: classDoneToday ? "Готово" : "Университет · один раз в день"
+        hint: classDoneToday
+          ? "Готово"
+          : `Университет · один раз в день · оценка знаний: ${previewGrade}`
       });
     }
 

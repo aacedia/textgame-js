@@ -177,6 +177,9 @@
                 if (effect.name.startsWith("relationship_")) {
                     after = Math.max(0, Math.min(100, after));
                 }
+                if (effect.name === "knowledge") {
+                    after = Math.max(0, Math.min(100, after));
+                }
                 if (effect.name === "stamina") {
                     const max = Number(next.variables.staminaMax ?? gameData.staminaMax ?? 100);
                     after = Math.max(0, Math.min(max, after));
@@ -272,6 +275,17 @@
                 } else {
                     messages.push({ kind: "infoExtra", text: `${label}: нет.` });
                 }
+                break;
+            }
+
+            case "gradeClass": {
+                const knowledge = Math.max(0, Number(next.variables.knowledge) || 0);
+                const grade = Math.min(5, 3 + Math.floor(knowledge / 50));
+                next.variables.knowledge = 0;
+                next.variables.lastGrade = grade;
+                const stipend = grade === 5 ? 200 : grade === 4 ? 100 : 50;
+                next.variables.pendingStipend = (Number(next.variables.pendingStipend) || 0) + stipend;
+                messages.push({ kind: "infoExtra", text: `Оценка: ${grade}. Накопленная стипендия: +${stipend} ¥.` });
                 break;
             }
         }
