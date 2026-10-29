@@ -69,13 +69,13 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "study_for_class",
                 label: "Готовиться к занятиям",
-                hint: "1 час · +100 очков знаний",
+                hint: "1 час · повышает оценку",
                 iconImage: "assets/images/actions/study.png",
                 minutes: 60,
                 condition: { not: { variableAtLeast: { name: "knowledge", value: 100 } } },
                 hiddenWhen: { variableAtLeast: { name: "knowledge", value: 100 } },
                 effects: [
-                    { type: "changeVariable", name: "knowledge", amount: 100 },
+                    { type: "changeVariable", name: "knowledge", amount: 50 },
                     { type: "changeVariable", name: "fatigue", amount: 5 }
                 ],
                 text: "Ты садишься за конспекты и методично разбираешь материал. Час проходит спокойно и продуктивно.",
@@ -84,7 +84,7 @@ Object.assign(window.GAME_DATA.locations, {
             {
                 id: "study_with_hinako",
                 label: "Позаниматься с Хинако",
-                hint: "20 минут · +200 очков знаний",
+                hint: "20 минут · максимальная оценка",
                 iconImage: "assets/images/ui/info.png",
                 minutes: 20,
                 condition: {
@@ -96,7 +96,7 @@ Object.assign(window.GAME_DATA.locations, {
                 },
                 hiddenWhen: { not: { flag: "hinakoStudyAgreed" } },
                 effects: [
-                    { type: "changeVariable", name: "knowledge", amount: 200 },
+                    { type: "changeVariable", name: "knowledge", amount: 100 },
                     { type: "changeVariable", name: "relationship_hinako", amount: 1 },
                     { type: "setVariableFromVariable", name: "lastHinakoStudyDay", from: "day" }
                 ],
