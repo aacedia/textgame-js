@@ -284,6 +284,8 @@ window.Game = window.Game || {};
 
   /* ---------- использование расходника ---------- */
 
+  /* ---------- использование расходника ---------- */
+
   function handleUse(itemId) {
     const state = Game.getState();
     if (state.gameOver) return;
@@ -296,18 +298,20 @@ window.Game = window.Game || {};
 
     let working = state;
 
-    // Книги: не больше 3 использований за один «взятый» экземпляр.
+    // CHANGED: книги используют свой счётчик (bookCounter), чтобы книги Рицу
+    // и книги Рин не делили один лимит.
     if (item.book) {
-      const usedToday = Number(working.variables.bookUsesToday) || 0;
+      const counter = item.bookCounter || "bookUsesToday";
+      const usedToday = Number(working.variables[counter]) || 0;
       if (usedToday >= 3) {
         Game.pushLog([`${item.name}: больше не читается сегодня.`]);
-        Game.setInfo([{ kind: "text", text: "Книга уже прочитана до конца. Возьми другую у Рицу." }]);
+        Game.setInfo([{ kind: "text", text: "Книга уже прочитана до конца. Возьми другую." }]);
         Game.render();
         return;
       }
       working = {
         ...working,
-        variables: { ...working.variables, bookUsesToday: usedToday + 1 }
+        variables: { ...working.variables, [counter]: usedToday + 1 }
       };
     }
 

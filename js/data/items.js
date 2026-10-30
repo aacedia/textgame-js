@@ -187,5 +187,75 @@ Object.assign(window.GAME_DATA.items, {
             ],
             text: "Ты открываешь Лиготти. Тяжёлые, вязкие фразы неприятно ложатся на сознание. Настроение падает, зато думать о еде и питье почему-то больше не хочется."
         }
+    },
+    rin_ebook_hpmor: {
+        name: "Электронная книга Рин",
+        icon: "📖",
+        iconImage: "assets/images/items/ebook.png",
+        description: "«Гарри Поттер и методы рационального мышления». +12 настроения, +5 усталости.",
+        book: true,
+        bookCounter: "rinBookUsesToday",
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "mood", amount: 12 },
+                { type: "changeVariable", name: "fatigue", amount: 5 }
+            ],
+            text: "Ты открываешь «Гарри Поттер и методы рационального мышления». Гарри вырос среди книг и разбирает магию по косточкам. Оторваться невозможно — настроение поднимается, но и усталость даёт о себе знать."
+        }
+    },
+    rin_ebook_worm: {
+        name: "Электронная книга Рин",
+        icon: "📖",
+        iconImage: "assets/images/items/ebook.png",
+        description: "«Червь». +10 настроения, +10 выносливости, −2 здоровья.",
+        book: true,
+        bookCounter: "rinBookUsesToday",
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "mood", amount: 10 },
+                { type: "changeVariable", name: "stamina", amount: 10 },
+                { type: "changeVariable", name: "health", amount: -2 }
+            ],
+            text: "Ты погружаешься в «Червь». Мир, где суперспособности делят людей на героев и злодеев, а хрупкий мир держится на конфликтах. Мир жестокий, но оторваться невозможно — настроение поднимается, силы откуда-то берутся, правда, спать потом тяжелее."
+        }
+    },
+    rin_ebook_perfect_run: {
+        name: "Электронная книга Рин",
+        icon: "📖",
+        iconImage: "assets/images/items/ebook.png",
+        description: "«Идеальный забег». −15 усталости, +15 выносливости, +5 голода.",
+        book: true,
+        bookCounter: "rinBookUsesToday",
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "fatigue", amount: -15 },
+                { type: "changeVariable", name: "stamina", amount: 15 },
+                { type: "changeVariable", name: "hunger", amount: 5 }
+            ],
+            text: "Ты читаешь «Идеальный забег». Райан «Квиксейв» Романо прибывает в Новый Рим — город, где герои, злодеи и корпорации делят власть. И у него есть странная сила. Голова проясняется, усталость отступает, тело снова готово двигаться — правда, есть хочется сильнее."
+        }
+    },
+    rin_ebook_mother_of_learning: {
+        name: "Электронная книга Рин",
+        icon: "📖",
+        iconImage: "assets/images/items/ebook.png",
+        description: "«Мать ученья». −10 усталости, +5 настроения.",
+        book: true,
+        bookCounter: "rinBookUsesToday",
+        consumable: false,
+        use: {
+            minutes: 10,
+            effects: [
+                { type: "changeVariable", name: "fatigue", amount: -10 },
+                { type: "changeVariable", name: "mood", amount: 5 }
+            ],
+            text: "Ты открываешь «Мать ученья». Зориан — студент магической академии, у которого своих забот хватает. А времени, как выясняется, предостаточно. Сухие объяснения внезапно затягивают — усталость отступает, настроение чуть поднимается."
+        }
     }
 });

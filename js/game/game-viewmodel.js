@@ -319,7 +319,9 @@ window.Game = window.Game || {};
       counts[id] = (counts[id] || 0) + 1;
     });
 
+    // CHANGED: отдельные счётчики для книг Рицу и книг Рин.
     const bookUses = Number(state.variables.bookUsesToday) || 0;
+    const rinBookUses = Number(state.variables.rinBookUsesToday) || 0;
 
     const items = Object.entries(counts)
       .map(([id, count]) => {
@@ -328,9 +330,15 @@ window.Game = window.Game || {};
 
         let useBlocked = false;
         let blockReason = "";
-        if (item.book && bookUses >= 3) {
-          useBlocked = true;
-          blockReason = "Книга уже прочитана. Возьми другую у Рицу.";
+        if (item.book) {
+          const counter = item.bookCounter || "bookUsesToday";
+          const used = counter === "rinBookUsesToday" ? rinBookUses : bookUses;
+          if (used >= 3) {
+            useBlocked = true;
+            blockReason = counter === "rinBookUsesToday"
+              ? "Книга Рин уже прочитана сегодня. Возьми другую у неё."
+              : "Книга уже прочитана. Возьми другую у Рицу.";
+          }
         }
 
         return {
@@ -369,8 +377,6 @@ window.Game = window.Game || {};
     }
     return String(description || "");
   }
-
-  /* ---------- задания ---------- */
 
   /* ---------- задания ---------- */
 

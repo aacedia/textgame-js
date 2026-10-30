@@ -22,6 +22,17 @@ window.GAME_DATA.dialogues.rin = {
                     next: "about_writing",
                     condition: { not: { flag: "rin_about_writing" } }
                 },
+                {
+                    text: "Взять почитать электронную книгу",
+                    next: "ask_ebook",
+                    iconImage: "assets/images/ui/info.png",
+                    condition: {
+                        all: [
+                            { not: { flag: "rinBooksAgreed" } },
+                            { variableAtLeast: { name: "relationship_rin", value: 20 } }
+                        ]
+                    }
+                },
                 { text: "О сетевой литературе", next: "webnovels", condition: { not: { flag: "rin_webnovels_done" } } },
                 { text: "Об издательствах", next: "publishers", condition: { not: { flag: "rin_publishers_done" } } },
                 { text: "О курении", next: "smoking", condition: { not: { flag: "rin_smoking_done" } } },
@@ -451,6 +462,31 @@ window.GAME_DATA.dialogues.rin = {
         },
         sleep_bad: {
             text: "Рин поджимает губы. — Спасибо, я знаю, как выгляжу. — Она возвращается к экрану.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+
+        /* ---------- Электронная книга ---------- */
+
+        ask_ebook: {
+            text: "— Хочешь почитать? — Рин кивает на старую электронную книгу на столе. — Забирай на время. Только не потеряй: это память.",
+            choices: [
+                {
+                    text: "Спасибо. Возьму.",
+                    effects: [{ type: "setFlag", flag: "rinBooksAgreed", value: true }],
+                    next: "ask_ebook_yes"
+                },
+                {
+                    text: "Как-нибудь в другой раз",
+                    next: "ask_ebook_later"
+                }
+            ]
+        },
+        ask_ebook_yes: {
+            text: "Рин кивает. — Тогда заходи, когда будет время. Я в кафе или в парке.",
+            choices: [{ text: "Попрощаться", close: true }]
+        },
+        ask_ebook_later: {
+            text: "Рин пожимает плечами. — Как хочешь. Если передумаешь — я тут.",
             choices: [{ text: "Попрощаться", close: true }]
         },
 

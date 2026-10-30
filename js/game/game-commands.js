@@ -202,13 +202,15 @@ window.Game = window.Game || {};
 
   /* ---------- чит-код ---------- */
 
+  /* ---------- чит-код ---------- */
+
   function applyCheat(raw) {
     const state = Game.getState();
     const text = String(raw || "").trim();
     if (!text) return;
 
-    // time.add <минуты>
-    const timeAdd = text.match(/^time\.add\s+(-?\d+)$/i);
+    // time <минуты>
+    const timeAdd = text.match(/^time\s+(-?\d+)$/i);
     if (timeAdd) {
       const minutes = Number(timeAdd[1]) || 0;
       const before = Number(state.variables.minutes) || 0;
@@ -232,8 +234,8 @@ window.Game = window.Game || {};
       return;
     }
 
-    // relation.set <npcId> <value>
-    const relSet = text.match(/^relation\.set\s+(\w+)\s+(-?\d+)$/i);
+    // relation <npcId> <value>
+    const relSet = text.match(/^relation\s+(\w+)\s+(-?\d+)$/i);
     if (relSet) {
       const npcId = relSet[1];
       const value = Math.max(0, Math.min(100, Number(relSet[2]) || 0));
@@ -252,7 +254,8 @@ window.Game = window.Game || {};
       return;
     }
 
-    const addMatch = text.match(/^player\.additem\s+(\S+)\s+(\d+)$/i);
+    // additem <itemId|F> <amount>
+    const addMatch = text.match(/^additem\s+(\S+)\s+(\d+)$/i);
     if (!addMatch) {
       UI.showDialog(
         "Чит-код",

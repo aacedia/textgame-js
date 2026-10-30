@@ -97,6 +97,48 @@ Object.assign(window.GAME_DATA.locations, {
                 ],
                 dialogue: "rin"
             },
+            // NEW: выдача электронной книги Рин (аналог borrow_book_ritsu).
+            {
+                id: "borrow_ebook_rin",
+                label: "Взять электронную книгу у Рин",
+                hint: "Раз в день · одна из книг · 3 прочтения",
+                iconImage: "assets/images/items/ebook.png",
+                minutes: 5,
+                condition: {
+                    all: [
+                        { flag: "rinBooksAgreed" },
+                        { timeBetween: { from: 14 * 60, to: 18 * 60 } },
+                        { variableDiffers: { name: "lastRinBookDay", other: "day" } }
+                    ]
+                },
+                hiddenWhen: { not: { flag: "rinBooksAgreed" } },
+                effects: [
+                    { type: "setVariable", name: "rinBookUsesToday", value: 0 },
+                    { type: "setVariableFromVariable", name: "lastRinBookDay", from: "day" },
+                    { type: "removeItem", item: "rin_ebook_hpmor" },
+                    { type: "removeItem", item: "rin_ebook_worm" },
+                    { type: "removeItem", item: "rin_ebook_perfect_run" },
+                    { type: "removeItem", item: "rin_ebook_mother_of_learning" }
+                ],
+                variants: [
+                    {
+                        effects: [{ type: "giveItem", item: "rin_ebook_hpmor" }],
+                        text: "Рин достаёт из сумки старую электронную книгу. — «Гарри Поттер и методы рационального мышления». Возьми, если ещё не читал."
+                    },
+                    {
+                        effects: [{ type: "giveItem", item: "rin_ebook_worm" }],
+                        text: "Рин протягивает книгу. — «Червь». Мрачно. Но затягивает."
+                    },
+                    {
+                        effects: [{ type: "giveItem", item: "rin_ebook_perfect_run" }],
+                        text: "Рин задумывается, потом достаёт книгу. — «Идеальный забег». Про дисциплину. Тебе, может, зайдёт."
+                    },
+                    {
+                        effects: [{ type: "giveItem", item: "rin_ebook_mother_of_learning" }],
+                        text: "Рин усмехается. — «Мать ученья». Суховато, но полезно."
+                    }
+                ]
+            },
             {
                 id: "park_look_around",
                 label: "Осмотреться",

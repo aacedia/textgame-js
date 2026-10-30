@@ -30,6 +30,8 @@ window.GAME_DATA = {
       knowledge: 0,
       lastGrade: 0,
       bookUsesToday: 0,
+      rinBookUsesToday: 0,
+      lastRinBookDay: 0,
       health: 50,
       healthMax: 50,
       stamina: 50,
