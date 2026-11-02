@@ -20,4 +20,4 @@ Object.assign(window.GAME_DATA.locations, {
 
 Object.assign(window.GAME_DATA.links, {
     "gloomy-street": ["residential"]
-}); 
+});

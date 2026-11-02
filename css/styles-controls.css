@@ -1,8 +1,18 @@
 /*
   Панель «Управление»: сетка кнопок и сворачиваемый заголовок.
 */
-.menubuttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.menubuttons button{text-align:center;font-size:13px}
-/* «Начать заново» — всегда на всю ширину, независимо от числа кнопок */
-.menubuttons button[data-command="restart"]{grid-column:1/-1}
-#controls-content[hidden]{display:none}
+.menubuttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.menubuttons button {
+  text-align: center;
+  font-size: 13px;
+}
+
+/* «Начать заново» — всегда на всю ширину. */
+.menubuttons button[data-command="restart"] {
+  grid-column: 1 / -1;
+}

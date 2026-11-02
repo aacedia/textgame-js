@@ -77,19 +77,21 @@ window.Game = window.Game || {};
 
   /* ---------- вспомогательные ---------- */
 
-  function applyRestore(vars, spec) {
-    if (!spec || typeof spec !== "object") return;
-    Object.entries(spec).forEach(([key, value]) => {
-      vars[key] = value;
-    });
-  }
+  // Применяет восстановление, затем уменьшение переменных.
+  // Порядок важен: reduce должен учитывать уже восстановленное значение.
+  function applyVariableAdjustments(vars, restoreSpec, reduceSpec) {
+    if (restoreSpec && typeof restoreSpec === "object") {
+      Object.entries(restoreSpec).forEach(([key, value]) => {
+        vars[key] = value;
+      });
+    }
 
-  function applyReduce(vars, spec) {
-    if (!spec || typeof spec !== "object") return;
-    Object.entries(spec).forEach(([key, value]) => {
-      const current = Number(vars[key]) || 0;
-      vars[key] = Math.max(0, current - Number(value));
-    });
+    if (reduceSpec && typeof reduceSpec === "object") {
+      Object.entries(reduceSpec).forEach(([key, value]) => {
+        const current = Number(vars[key]) || 0;
+        vars[key] = Math.max(0, current - Number(value));
+      });
+    }
   }
 
   // Склонение числительных: 1 час, 2 часа, 5 часов.
@@ -206,8 +208,11 @@ window.Game = window.Game || {};
     // restore/reduce до времени.
     if (action.restoreBeforeTime || action.reduceBeforeTime) {
       working = { ...working, variables: { ...working.variables } };
-      applyRestore(working.variables, action.restoreBeforeTime);
-      applyReduce(working.variables, action.reduceBeforeTime);
+      applyVariableAdjustments(
+        working.variables,
+        action.restoreBeforeTime,
+        action.reduceBeforeTime
+      );
     }
 
     if (action.sleep) {
@@ -232,8 +237,11 @@ window.Game = window.Game || {};
     // restore/reduce после времени и эффектов.
     if (action.restoreAfterTime || action.reduceAfterTime || nextState.sleeping) {
       const after = { ...nextState, variables: { ...nextState.variables } };
-      applyRestore(after.variables, action.restoreAfterTime);
-      applyReduce(after.variables, action.reduceAfterTime);
+      applyVariableAdjustments(
+        after.variables,
+        action.restoreAfterTime,
+        action.reduceAfterTime
+      );
       after.sleeping = false;
       Game.setState(after);
     }
@@ -279,10 +287,6 @@ window.Game = window.Game || {};
 
     Game.render();
   }
-
-  /* ---------- использование расходника ---------- */
-
-  /* ---------- использование расходника ---------- */
 
   /* ---------- использование расходника ---------- */
 
@@ -347,8 +351,11 @@ window.Game = window.Game || {};
 
     if (use.restoreBeforeTime || use.reduceBeforeTime) {
       working = { ...working, variables: { ...working.variables } };
-      applyRestore(working.variables, use.restoreBeforeTime);
-      applyReduce(working.variables, use.reduceBeforeTime);
+      applyVariableAdjustments(
+        working.variables,
+        use.restoreBeforeTime,
+        use.reduceBeforeTime
+      );
     }
 
     if (use.sleep) {
@@ -367,8 +374,11 @@ window.Game = window.Game || {};
 
     if (use.restoreAfterTime || use.reduceAfterTime || nextState.sleeping) {
       const after = { ...nextState, variables: { ...nextState.variables } };
-      applyRestore(after.variables, use.restoreAfterTime);
-      applyReduce(after.variables, use.reduceAfterTime);
+      applyVariableAdjustments(
+        after.variables,
+        use.restoreAfterTime,
+        use.reduceAfterTime
+      );
       after.sleeping = false;
       Game.setState(after);
     }
@@ -423,8 +433,6 @@ window.Game = window.Game || {};
 
     Game.render();
   }
-
-  /* ---------- сон ---------- */
 
   /* ---------- сон ---------- */
 

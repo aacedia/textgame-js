@@ -84,6 +84,10 @@ window.DataValidation = (() => {
                 }
             }
 
+            if (action.dialogue && !(gameData.dialogues || {})[action.dialogue]) {
+                pushError(errors, `${where}.dialogue`, `диалог "${action.dialogue}" не существует`);
+            }
+
             if (action.effects !== undefined && !Array.isArray(action.effects)) {
                 pushError(errors, where, `effects должен быть массивом`);
                 return;
@@ -165,6 +169,65 @@ window.DataValidation = (() => {
         }
     }
 
+    function validateDialogues(gameData, errors) {
+        const dialogues = gameData.dialogues || {};
+        const locations = gameData.locations || {};
+
+        Object.entries(dialogues).forEach(([dialogueId, dialogue]) => {
+            const where = `dialogues.${dialogueId}`;
+            if (!dialogue || typeof dialogue !== "object") {
+                pushError(errors, where, "диалог должен быть объектом");
+                return;
+            }
+
+            if (!dialogue.nodes || typeof dialogue.nodes !== "object") {
+                pushError(errors, `${where}.nodes`, "nodes должен быть объектом");
+                return;
+            }
+
+            if (!dialogue.start || !dialogue.nodes[dialogue.start]) {
+                pushError(errors, `${where}.start`, `стартовый узел "${dialogue.start}" не существует`);
+            }
+
+            Object.entries(dialogue.nodes).forEach(([nodeId, node]) => {
+                const nodePath = `${where}.nodes.${nodeId}`;
+                if (!node || typeof node !== "object") {
+                    pushError(errors, nodePath, "узел должен быть объектом");
+                    return;
+                }
+                if (node.choices !== undefined && !Array.isArray(node.choices)) {
+                    pushError(errors, `${nodePath}.choices`, "choices должен быть массивом");
+                    return;
+                }
+
+                (node.choices || []).forEach((choice, index) => {
+                    const choicePath = `${nodePath}.choices[${index}]`;
+                    if (!choice || typeof choice !== "object") {
+                        pushError(errors, choicePath, "вариант ответа должен быть объектом");
+                        return;
+                    }
+                    if (choice.next && !dialogue.nodes[choice.next]) {
+                        pushError(errors, `${choicePath}.next`, `узел "${choice.next}" не существует`);
+                    }
+                    if (choice.effects !== undefined && !Array.isArray(choice.effects)) {
+                        pushError(errors, `${choicePath}.effects`, "effects должен быть массивом");
+                    } else {
+                        (choice.effects || []).forEach((effect, effectIndex) => {
+                            validateEffectRefs(`${choicePath}.effects[${effectIndex}]`, effect, gameData, errors);
+                        });
+                    }
+                    if (choice.condition) {
+                        validateConditionRefs(`${choicePath}.condition`, choice.condition, gameData, errors);
+                    }
+                    if (choice.next && choice.close) {
+                        pushError(errors, choicePath, "нельзя одновременно указывать next и close");
+                    }
+                });
+            });
+        });
+
+    }
+
     function validateCharacter(gameData, errors) {
         const ch = gameData.character;
         if (!ch || typeof ch !== "object") {
@@ -211,6 +274,7 @@ window.DataValidation = (() => {
         }
 
         validateLocations(gameData, errors);
+        validateDialogues(gameData, errors);
         validateCharacter(gameData, errors);
         validateInitialState(gameData, errors);
         validateStart(gameData, errors);

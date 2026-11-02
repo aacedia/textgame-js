@@ -202,8 +202,6 @@ window.Game = window.Game || {};
 
   /* ---------- чит-код ---------- */
 
-  /* ---------- чит-код ---------- */
-
   function applyCheat(raw) {
     const state = Game.getState();
     const text = String(raw || "").trim();

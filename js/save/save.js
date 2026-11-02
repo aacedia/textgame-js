@@ -134,6 +134,4 @@ window.Save = (() => {
   }
 
   return { write, read, clear, exists, download, readFile, pickFile, defaultFilename, SAVE_KEY };
-
-  return { write, read, clear, exists, SAVE_KEY };
 })();
