@@ -16,9 +16,11 @@
   <link rel="stylesheet" href="css/styles-dialog.css">
   <link rel="stylesheet" href="css/styles-footer.css">
   <link rel="stylesheet" href="css/styles-responsive.css">
+  <link rel="stylesheet" href="css/styles-mainmenu.css">
 </head>
 
 <body>
+  <div id="mainmenu-root"></div>
   <div class="game">
     <div class="layout">
       <!-- Левая колонка: вкладки (задания/инвентарь) и управление -->
@@ -46,7 +48,7 @@
                 <button data-command="import">Импорт из файла</button>
                 <button data-command="help">Справка</button>
                 <button data-command="cheat">Чит-код</button>
-                <button data-command="restart">Начать заново</button>
+                <button data-command="menu">Выйти в меню</button>
               </div>
             </div>
           </section>
@@ -112,7 +114,7 @@
     <div class="game-over__card">
       <h2>Игра окончена</h2>
       <p>Ты потерял сознание. Здоровье на нуле.</p>
-      <button id="game-over-restart">Начать заново</button>
+      <button id="game-over-restart">В главное меню</button>
     </div>
   </div>
   <!-- Скрытый input для импорта сохранения из файла -->
@@ -191,6 +193,7 @@
   <script src="js/ui/ui-side.js"></script>
   <script src="js/ui/ui-controls.js"></script>
   <script src="js/ui/ui-drawer.js"></script>
+  <script src="js/ui/ui-mainmenu.js"></script>
   <script src="js/ui/ui.js"></script>
   <script src="js/game/game-state.js"></script>
   <script src="js/game/game-viewmodel.js"></script>

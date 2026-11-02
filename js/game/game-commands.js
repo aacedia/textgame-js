@@ -113,7 +113,8 @@ window.Game = window.Game || {};
       case "load": loadGame(); break;
       case "export": exportSave(); break;
       case "import": importSave(); break;
-      case "restart": restart(); break;
+      case "menu": showMainMenu(); break;   // NEW
+      case "restart": restart(); break;     // оставляем для оверлея «Игра окончена»
       case "help": showHelp(); break;
     }
   }
@@ -520,6 +521,80 @@ window.Game = window.Game || {};
     }
   }
 
+  /* ---------- главное меню ---------- */
+
+  function showMainMenu() {
+    UI.setMainMenuHandlers({
+      onNew: () => {
+        Game.setState(Game.freshState());
+        Game.resetLog();
+        Game.clearInfo();
+        UI.hideMainMenu();
+        Game.render();
+      },
+      onLoad: () => {
+        const result = Save.read();
+        if (!result.ok) {
+          UI.showMainMenu({
+            ...mainMenuModel(),
+            message: messageForLoadError(result.error)
+          });
+          return;
+        }
+        const validation = validateSnapshot(result.snapshot);
+        if (!validation.ok) {
+          UI.showMainMenu({
+            ...mainMenuModel(),
+            message: messageForValidationError(validation.reason)
+          });
+          return;
+        }
+        applyLoadedSnapshot(validation.data);
+        UI.hideMainMenu();
+        Game.render();
+      },
+      onLoadFile: () => {
+        Save.pickFile(file => {
+          if (!file) return;
+          Save.readFile(file).then(read => {
+            if (!read.ok) {
+              UI.showMainMenu({
+                ...mainMenuModel(),
+                message: messageForLoadError(read.error)
+              });
+              return;
+            }
+            const validation = validateSnapshot(read.snapshot);
+            if (!validation.ok) {
+              UI.showMainMenu({
+                ...mainMenuModel(),
+                message: messageForValidationError(validation.reason)
+              });
+              return;
+            }
+            applyLoadedSnapshot(validation.data);
+            UI.hideMainMenu();
+            Game.render();
+          });
+        }, "application/json,.json");
+      }
+    });
+
+    // Пересобираем модель при каждом показе: состав сохранения мог измениться.
+    UI.showMainMenu(mainMenuModel());
+  }
+
+  // Модель для главного меню: есть ли сохранение, логотип, текст.
+  function mainMenuModel() {
+    return {
+      hasSave: Save.exists(),
+      message: "",
+      logo: "assets/images/menu/logo.png",
+      logoAlt: "Логотип игры",
+      title: "Жизнь студента"
+    };
+  }
+
   /* ---------- экспорт ---------- */
 
   Object.assign(window.Game, {
@@ -536,6 +611,8 @@ window.Game = window.Game || {};
     exportSave,
     importSave,
     importSaveFromFile,
-    applyLoadedSnapshot
+    applyLoadedSnapshot,
+    showMainMenu,
+    mainMenuModel
   });
 })();

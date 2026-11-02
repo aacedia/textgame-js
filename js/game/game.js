@@ -52,5 +52,10 @@ window.Game = window.Game || {};
   }
 
   UI.init({ onAction: Game.onAction, onCommand: Game.onCommand });
+
+  // Первый рендер — чтобы игра была готова под меню.
   render();
+
+  // Стартуем с главного меню, а не сразу в игру.
+  Game.showMainMenu();
 })();

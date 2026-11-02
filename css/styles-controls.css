@@ -12,7 +12,7 @@
   font-size: 13px;
 }
 
-/* «Начать заново» — всегда на всю ширину. */
-.menubuttons button[data-command="restart"] {
+/* «Выйти в меню» — всегда на всю ширину. */
+.menubuttons button[data-command="menu"] {
   grid-column: 1 / -1;
 }

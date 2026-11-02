@@ -92,7 +92,7 @@ window.UI = (() => {
     // Кнопка «Начать заново» в оверлее «Игра окончена».
     const gameOverRestart = $("game-over-restart");
     if (gameOverRestart) {
-      gameOverRestart.addEventListener("click", () => handlers.onCommand("restart"));
+      gameOverRestart.addEventListener("click", () => handlers.onCommand("menu"));
     }
 
     // Закрытие диалога с NPC по Esc: сообщаем наружу.
