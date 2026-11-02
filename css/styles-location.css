@@ -1,6 +1,7 @@
 /*
   Панель «Описание локации»: шапка с названием, notice, описание, картинка.
   В шапке справа от названия — иконки выживания (по умолчанию скрыты).
+  Тёмная тема: тёмные подложки, приглушённые акценты, глубокие тени.
 */
 
 .location-title {
@@ -47,18 +48,18 @@
   object-fit: contain;
   display: block;
   flex: 0 0 auto;
-  /* по умолчанию — белые */
-  filter: brightness(0) invert(1);
+  /* по умолчанию — приглушённо-светлые под тёмный фон */
+  filter: brightness(0) invert(0.85) sepia(0.15);
 }
 
-/* warning — жёлтый */
+/* warning — приглушённый жёлтый */
 .survival-icon--warn {
-  filter: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(700%) hue-rotate(0deg) brightness(0.8);
+  filter: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(500%) hue-rotate(0deg) brightness(0.75);
 }
 
-/* critical — красный */
+/* critical — приглушённый красный */
 .survival-icon--crit {
-  filter: brightness(0) saturate(100%) invert(28%) sepia(85%) saturate(900%) hue-rotate(340deg) brightness(0.95);
+  filter: brightness(0) saturate(100%) invert(40%) sepia(70%) saturate(600%) hue-rotate(340deg) brightness(0.85);
 }
 
 /* ---------- Бургеры ---------- */
@@ -95,14 +96,14 @@
 }
 
 .location-notice[hidden] {
-  display: none
+  display: none;
 }
 
 /* ---------- Описание ---------- */
 
 .description {
   padding: 12px 18px 20px;
-  color: #5c4b40;
+  color: var(--text);
   font-size: 16px;
   line-height: 1.5;
   max-width: 78ch;
@@ -112,26 +113,30 @@
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
+
 .description::-webkit-scrollbar {
   width: 6px;
 }
+
 .description::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .description::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 99px;
 }
+
 .description::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-2);
+  background: var(--accent);
 }
 
 .description p {
-  margin: 0 0 10px
+  margin: 0 0 10px;
 }
 
 .description p:last-child {
-  margin: 0
+  margin: 0;
 }
 
 /* ---------- Картинка локации ---------- */
@@ -150,6 +155,8 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  /* приглушаем яркость под тёмную тему */
+  filter: brightness(0.9);
 }
 
 .location-image figcaption {
@@ -157,18 +164,20 @@
   color: var(--muted);
   font-size: 12px;
   border-top: 1px solid var(--border);
+  background: var(--panel-2);
 }
 
 /* Инлайн-ссылка-действие в описании локации */
-.inline-action{
-  color:var(--accent-3);
-  text-decoration:underline;
-  text-decoration-color:var(--accent-2);
-  text-underline-offset:2px;
-  cursor:pointer;
-  font-weight:600;
+.inline-action {
+  color: var(--accent-3);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-2);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  font-weight: 600;
 }
-.inline-action:hover{
-  color:var(--accent);
-  text-decoration-color:var(--accent);
+
+.inline-action:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
 }

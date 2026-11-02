@@ -1,33 +1,48 @@
 /*
   Панель «Доступные действия»: сетка кнопок и их внутренняя структура.
+  Тёмная тема: приглушённые акцентные полосы, тёмный фон у «недавнего» действия.
 */
-.actions{
-  padding:13px;
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:9px;
-  max-height:340px;
-  overflow-y:auto;
-  padding-right:8px;
+.actions {
+  padding: 13px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 8px;
 
-  scrollbar-width:thin;
-  scrollbar-color:var(--border) transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
-.actions::-webkit-scrollbar{width:6px}
-.actions::-webkit-scrollbar-track{background:transparent}
-.actions::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
-.actions::-webkit-scrollbar-thumb:hover{background:var(--accent-2)}
+
+.actions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.actions::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.actions::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
+.actions::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
 
 /* Заголовок панели действий: текст слева, статус справа */
-.actions-heading{
-  justify-content:space-between;
+.actions-heading {
+  justify-content: space-between;
 }
-.status-slot{
-  display:inline-flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:6px 8px;
-  margin-left:auto;
+
+.status-slot {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-left: auto;
   /* возвращаем «статусный» шрифт вместо шрифта заголовка */
   font-family: system-ui, -apple-system, "Times New Roman", sans-serif;
   font-size: 13px;
@@ -35,90 +50,135 @@
   line-height: 1.4;
   letter-spacing: 0;
 }
+
 /* Фиксируем размеры бейджей внутри слота (не наследуем от заголовка) */
-.status-slot .badge{
+.status-slot .badge {
   font-size: 13px;
   font-weight: 650;
 }
-.status-slot .badge__main{
+
+.status-slot .badge__main {
   font-size: 13px;
 }
-.status-slot .badge__sub{
+
+.status-slot .badge__sub {
   font-size: 10px;
   font-weight: 500;
 }
 
-.action-title{display:block;font-weight:650;color:var(--text)}
-.hint{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.action-title {
+  display: block;
+  font-weight: 650;
+  color: var(--text);
+}
 
-/* Цветные полосы по категории действия */
-.action{border-left-width:4px;border-left-style:solid;border-left-color:var(--border)}
-.action--move  {border-left-color:#7fb6d9}
-.action--item  {border-left-color:#8fc7a3}
-.action--money {border-left-color:#d9a35b}
-.action--spend {border-left-color:#c97b8a}
-.action--time  {border-left-color:#a89ad9}
-.action--state {border-left-color:#b3a99c}
-.action--mixed {border-left-color:#e8956b}
+.hint {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* Цветные полосы по категории действия — приглушённые под тёмную тему */
+.action {
+  border-left-width: 4px;
+  border-left-style: solid;
+  border-left-color: var(--border);
+}
+
+.action--move {
+  border-left-color: #5a7a8a;
+}
+
+.action--item {
+  border-left-color: #5a7a5a;
+}
+
+.action--money {
+  border-left-color: #8a7a4a;
+}
+
+.action--spend {
+  border-left-color: #8a5a5a;
+}
+
+.action--time {
+  border-left-color: #6a5a8a;
+}
+
+.action--state {
+  border-left-color: #6a6258;
+}
+
+.action--mixed {
+  border-left-color: #8a6a4a;
+}
 
 /* Последнее действие в этой локации */
-.action--recent{
-  background:var(--accent-2);
-  border-color:var(--accent);
+.action--recent {
+  background: #221e18;
+  border-color: var(--accent);
 }
 
 /* Счётчик нажатий */
-.action-count{
-  display:inline-block;
-  margin-left:6px;
-  padding:1px 7px;
-  border-radius:99px;
-  background:rgba(0,0,0,0.06);
-  color:var(--muted);
-  font-size:12px;
-  font-weight:600;
-  line-height:1.35;
-  vertical-align:middle;
-  transform:translateY(-1px);
+.action-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  vertical-align: middle;
+  transform: translateY(-1px);
 }
-.action--recent .action-count{
-  background:rgba(0,0,0,0.10);
-  color:var(--accent-3);
+
+.action--recent .action-count {
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--accent-3);
 }
 
 /* Кнопка «назад» — на всю ширину, в общей цветовой гамме действий */
-.action--back{
-  grid-column:1 / -1;
-  padding:6px 12px;
-  text-align:center;
-  font-size:13px;
-  border-left-color:#7fb6d9;
+.action--back {
+  grid-column: 1 / -1;
+  padding: 6px 12px;
+  text-align: center;
+  font-size: 13px;
+  border-left-color: #5a7a8a;
 }
-.action--back .action-title{
-  font-weight:600;
-  color:var(--muted);
+
+.action--back .action-title {
+  font-weight: 600;
+  color: var(--muted);
 }
-.action--back:hover:not(:disabled){
-  background:var(--accent-2);
-  border-color:var(--accent);
+
+.action--back:hover:not(:disabled) {
+  background: var(--accent-2);
+  border-color: var(--accent);
 }
-.action--back:hover:not(:disabled) .action-title{
-  color:var(--accent-3);
+
+.action--back:hover:not(:disabled) .action-title {
+  color: var(--accent-3);
 }
+
 /* Иконка предмета на кнопке действия */
-.action-head{
-  display:flex;
-  align-items:center;
-  gap:7px;
+.action-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
-.action-icon-img{
-  width:20px;
-  height:20px;
-  object-fit:contain;
-  flex:0 0 auto;
+
+.action-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
-.action-icon-emoji{
-  font-size:16px;
-  line-height:1;
-  flex:0 0 auto;
+
+.action-icon-emoji {
+  font-size: 16px;
+  line-height: 1;
+  flex: 0 0 auto;
 }

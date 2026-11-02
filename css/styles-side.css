@@ -1,256 +1,314 @@
 /*
   Боковая панель: вкладки, инвентарь, задания, панель «Персонаж».
+  Тёмная тема: приглушённые акценты, тёмные подложки иконок и маркеров.
+  Маркер задания (.quest__mark) не имеет своей подложки — он сливается
+  с фоном строки задания, как в исходной светлой теме.
 */
 
 /* ---------- Контейнер вкладок ---------- */
 
-.sidecontent{padding:14px}
+.sidecontent {
+  padding: 14px;
+}
 
-.tabs{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  padding:12px 14px 0;
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 14px 0;
 }
-.tab{
-  font-size:12px;
-  padding:6px 9px;
-  text-align:center;
+
+.tab {
+  font-size: 12px;
+  padding: 6px 9px;
+  text-align: center;
 }
-.tab.active{
-  border-color:var(--accent);
-  background:var(--accent-2);
-  color:var(--accent-3);
-  font-weight:650;
+
+.tab.active {
+  border-color: var(--accent);
+  background: var(--accent-2);
+  color: var(--accent-3);
+  font-weight: 650;
 }
-.tabcontent{padding:12px 14px 14px}
+
+.tabcontent {
+  padding: 12px 14px 14px;
+}
 
 /* ---------- Вкладка «Инвентарь» ---------- */
 
 /* Панель фильтров инвентаря */
-.inv-filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-bottom:10px;
-}
-.inv-filter{
-  font-size:11px;
-  padding:4px 9px;
-  border-radius:99px;
-  text-align:center;
-  background:var(--panel);
-}
-.inv-filter.active{
-  background:var(--accent-2);
-  border-color:var(--accent);
-  color:var(--accent-3);
-  font-weight:650;
+.inv-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
-.inventory{
-  list-style:none;
-  padding:0;
-  margin:0;
-  display:grid;
-  gap:8px;
-  max-height:320px;
-  overflow-y:auto;
-  padding-right:4px;
+.inv-filter {
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 99px;
+  text-align: center;
+  background: var(--panel);
+}
+
+.inv-filter.active {
+  background: var(--accent-2);
+  border-color: var(--accent);
+  color: var(--accent-3);
+  font-weight: 650;
+}
+
+.inventory {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
 
   /* Firefox */
-  scrollbar-width:thin;
-  scrollbar-color:var(--border) transparent;
-}
-/* WebKit (Chrome, Safari, Edge) */
-.inventory::-webkit-scrollbar{
-  width:6px;
-}
-.inventory::-webkit-scrollbar-track{
-  background:transparent;
-}
-.inventory::-webkit-scrollbar-thumb{
-  background:var(--border);
-  border-radius:99px;
-}
-.inventory::-webkit-scrollbar-thumb:hover{
-  background:var(--accent-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 
-.item{
-  display:grid;
-  grid-template-columns:32px 1fr;
+/* WebKit (Chrome, Safari, Edge) */
+.inventory::-webkit-scrollbar {
+  width: 6px;
+}
+
+.inventory::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.inventory::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
+.inventory::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 32px 1fr;
   grid-template-areas:
     "icon body"
     "use  use";
-  gap:8px;
-  align-items:flex-start;
-  border:1px solid var(--border);
-  border-radius:7px;
-  padding:9px;
-  background:var(--panel);
+  gap: 8px;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px;
+  background: var(--panel);
 }
-.itemicon{
-  grid-area:icon;
-  display:grid;
-  place-items:center;
-  width:32px;
-  height:32px;
-  border-radius:6px;
-  background:var(--accent-2);
-  font-size:17px;
+
+.itemicon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #2a241c;
+  font-size: 17px;
 }
-.itemicon-img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
+
+.itemicon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
-.item-body{
-  grid-area:body;
-  min-width:0;
+
+.item-body {
+  grid-area: body;
+  min-width: 0;
 }
-.itemname{
-  font-size:13px;
-  font-weight:650;
-  color:var(--text);
+
+.itemname {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text);
 }
-.item-count{
-  margin-left:6px;
-  font-size:11px;
-  color:var(--muted);
-  font-weight:600;
+
+.item-count {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
 }
-.itemnote{
-  color:var(--muted);
-  font-size:11px;
+
+.itemnote {
+  color: var(--muted);
+  font-size: 11px;
 }
-.item-use{
-  grid-area:use;
-  justify-self:stretch;
-  padding:6px 10px;
-  font-size:12px;
-  text-align:center;
+
+.item-use {
+  grid-area: use;
+  justify-self: stretch;
+  padding: 6px 10px;
+  font-size: 12px;
+  text-align: center;
 }
 
 /* ---------- Вкладка «Задания» ---------- */
 
-.tabcontent p{margin:0 0 8px}
-.tabcontent p:last-child{margin-bottom:0}
+.tabcontent p {
+  margin: 0 0 8px;
+}
+
+.tabcontent p:last-child {
+  margin-bottom: 0;
+}
 
 /* ---------- Панель «Персонаж» ---------- */
 
-.character-panel{
-  display:grid;
-  justify-items:center;
-  gap:8px;
-  padding:14px 14px 16px;
+.character-panel {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 14px 14px 16px;
 }
 
-.character-avatar{
-  width:112px;
-  height:112px;
-  border-radius:50%;
-  overflow:hidden;
-  border:3px solid var(--accent-2);
-  background:var(--accent-2);
-  box-shadow:0 8px 20px rgba(232, 149, 107, 0.25);
-  display:grid;
-  place-items:center;
-}
-.character-avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.character-avatar--empty{
-  font-size:36px;
-  color:var(--accent-3);
-  font-weight:700;
+.character-avatar {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--accent-2);
+  background: var(--accent-2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
 }
 
-.character-name{
-  font-size:15px;
-  font-weight:700;
-  color:var(--text);
-  letter-spacing:-.01em;
+.character-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
-.character-desc{
-  margin:0;
-  font-size:12px;
-  color:var(--muted);
-  text-align:center;
-  max-width:34ch;
-  line-height:1.45;
+
+.character-avatar--empty {
+  font-size: 36px;
+  color: var(--accent-3);
+  font-weight: 700;
+}
+
+.character-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.01em;
+}
+
+.character-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  max-width: 34ch;
+  line-height: 1.45;
 }
 
 /* ---------- Полоски характеристик ---------- */
 
-.character-bars{
-  display:grid;
-  gap:6px;
-  width:100%;
-  margin-top:10px;
-}
-.char-bar{
-  display:grid;
-  grid-template-columns:88px 1fr 48px;
-  align-items:center;
-  gap:8px;
-  font-size:11px;
-  color:var(--muted);
-}
-.char-bar--with-tooltip{
-  cursor:help;
-}
-.char-bar__label{white-space:nowrap}
-.char-bar__track{
-  height:8px;
-  background:var(--panel-2);
-  border:1px solid var(--border);
-  border-radius:99px;
-  overflow:hidden;
-}
-.char-bar__fill{
-  height:100%;
-  width:0;
-  border-radius:99px;
-  transition:width .25s ease;
-  background:var(--border);
-}
-.char-bar__value{
-  text-align:right;
-  font-variant-numeric:tabular-nums;
+.character-bars {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  margin-top: 10px;
 }
 
-.char-bar--health  .char-bar__fill{background:#e07a6b}
-.char-bar--stamina .char-bar__fill{background:#8fc7a3}
-.char-bar--hunger  .char-bar__fill{background:#d9a35b}
-.char-bar--thirst  .char-bar__fill{background:#7fb6d9}
-.char-bar--fatigue .char-bar__fill{background:#a89ad9}
-.char-bar--mood    .char-bar__fill{background:#e8b86b}
+.char-bar {
+  display: grid;
+  grid-template-columns: 88px 1fr 48px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.char-bar--with-tooltip {
+  cursor: help;
+}
+
+.char-bar__label {
+  white-space: nowrap;
+}
+
+.char-bar__track {
+  height: 8px;
+  background: #0e0d0b;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.char-bar__fill {
+  height: 100%;
+  width: 0;
+  border-radius: 99px;
+  transition: width .25s ease;
+  background: var(--border);
+}
+
+.char-bar__value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.char-bar--health .char-bar__fill {
+  background: #b05a4a;
+}
+
+.char-bar--stamina .char-bar__fill {
+  background: #5a8a6a;
+}
+
+.char-bar--hunger .char-bar__fill {
+  background: #a07a3a;
+}
+
+.char-bar--thirst .char-bar__fill {
+  background: #4a7a9a;
+}
+
+.char-bar--fatigue .char-bar__fill {
+  background: #6a5a8a;
+}
+
+.char-bar--mood .char-bar__fill {
+  background: #b8955a;
+}
 
 /* ---------- Уровни полосок ---------- */
 
 /* warning — жёлтый */
-.char-bar--warning .char-bar__fill{
-  background:#e8c46b;
+.char-bar--warning .char-bar__fill {
+  background: #c9a45c;
 }
+
 .char-bar--warning .char-bar__label,
-.char-bar--warning .char-bar__value{
-  color:#a8832f;
-  font-weight:600;
+.char-bar--warning .char-bar__value {
+  color: #d9b87a;
+  font-weight: 600;
 }
 
 /* critical — красный */
-.char-bar--critical .char-bar__fill{
-  background:#e07a6b;
+.char-bar--critical .char-bar__fill {
+  background: #b05a4a;
 }
+
 .char-bar--critical .char-bar__label,
-.char-bar--critical .char-bar__value{
-  color:#b03f30;
-  font-weight:700;
+.char-bar--critical .char-bar__value {
+  color: #d98a7a;
+  font-weight: 700;
 }
 
 /* ---------- Вкладка «Задания» ---------- */
@@ -282,10 +340,14 @@
 }
 
 .quest--done {
-  border-left-color: #8fc7a3;
+  border-left-color: #5a8a6a;
   opacity: .75;
 }
 
+/*
+  Маркер задания: без собственной подложки — сливается с фоном строки.
+  Цвет задаётся только символу.
+*/
 .quest__mark {
   display: grid;
   place-items: center;
@@ -294,30 +356,32 @@
   border-radius: 50%;
   font-size: 13px;
   font-weight: 700;
-  background: var(--accent-2);
+  background: transparent;
   color: var(--accent-3);
   line-height: 1;
 }
 
-.quest__mark--icon{
-  background:transparent;
-  border-radius:0;
-}
-.quest__mark-icon{
-  width:20px;
-  height:20px;
-  object-fit:contain;
-  display:block;
+.quest__mark--icon {
+  background: transparent;
+  border-radius: 0;
 }
 
+.quest__mark-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+/* У выполненных — тоже без подложки, меняется только цвет символа. */
 .quest--done .quest__mark {
-  background: #d6ecdc;
-  color: #3f6b4f;
+  background: transparent;
+  color: #8fb89a;
 }
 
-.quest--done .quest__mark.quest__mark--icon{
-  background:transparent;
-  color:inherit;
+.quest--done .quest__mark.quest__mark--icon {
+  background: transparent;
+  color: inherit;
 }
 
 .quest__body {
@@ -333,14 +397,14 @@
 
 .quest__text {
   font-size: 12px;
-  color: #5c4b40;
+  color: var(--muted);
   line-height: 1.45;
 }
 
 .quest__hint {
   margin-top: 4px;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted-2);
 }
 
 .quest--done .quest__text {

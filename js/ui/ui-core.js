@@ -12,6 +12,9 @@
     UI.escapeHtml(value)
     UI.$(id)
     UI.getHandlers()
+    UI.getTheme()
+    UI.applyTheme(theme)
+    UI.updateThemeButton()
 
   viewModel:
     {
@@ -39,8 +42,14 @@ window.UI = (() => {
   function init(opts) {
     handlers = Object.assign(handlers, opts || {});
 
+    // Тема применяется до всего остального, чтобы не было мигания.
+    const savedTheme = (typeof window.Save !== "undefined" && window.Save.readTheme)
+      ? window.Save.readTheme()
+      : null;
+    applyTheme(savedTheme || "dark");
+
     // Кнопки панели «Управление»: сохранить, загрузить, экспорт, импорт,
-    // справка, чит-код, рестарт.
+    // справка, чит-код, тема, выход в меню.
     document.querySelectorAll("[data-command]").forEach(btn => {
       btn.addEventListener("click", () => {
         const cmd = btn.dataset.command;
@@ -54,6 +63,13 @@ window.UI = (() => {
             input.click();
           } else {
             handlers.onCommand(cmd);
+          }
+        } else if (cmd === "theme") {
+          // Переключение темы: UI-уровневое действие, не уходит в Game.
+          const next = getTheme() === "light" ? "dark" : "light";
+          applyTheme(next);
+          if (window.Save && window.Save.writeTheme) {
+            window.Save.writeTheme(next);
           }
         } else {
           handlers.onCommand(cmd);
@@ -89,7 +105,7 @@ window.UI = (() => {
       logToggle.addEventListener("click", () => handlers.onCommand("log:toggle"));
     }
 
-    // Кнопка «Начать заново» в оверлее «Игра окончена».
+    // Кнопка в оверлее «Игра окончена» — ведёт в главное меню.
     const gameOverRestart = $("game-over-restart");
     if (gameOverRestart) {
       gameOverRestart.addEventListener("click", () => handlers.onCommand("menu"));
@@ -107,6 +123,34 @@ window.UI = (() => {
   }
 
   function getHandlers() { return handlers; }
+
+  /* ---------- тема ---------- */
+
+  function getTheme() {
+    return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  }
+
+  function applyTheme(theme) {
+    if (theme === "light") {
+      document.documentElement.dataset.theme = "light";
+    } else {
+      delete document.documentElement.dataset.theme;
+    }
+    updateThemeButton();
+  }
+
+  // Обновляет подпись кнопки темы, если она есть в DOM.
+  function updateThemeButton() {
+    const btn = document.querySelector('[data-command="theme"]');
+    if (!btn) return;
+    const label = getTheme() === "light" ? "Тема: светлая" : "Тема: тёмная";
+    const span = btn.querySelector(".menubutton-theme__label");
+    if (span) {
+      span.textContent = label;
+    } else {
+      btn.textContent = label;
+    }
+  }
 
   /* ---------- утилиты ---------- */
 
@@ -695,6 +739,9 @@ window.UI = (() => {
     showDialog,
     escapeHtml,
     $,
-    getHandlers
+    getHandlers,
+    getTheme,
+    applyTheme,
+    updateThemeButton
   };
 })();

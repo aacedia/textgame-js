@@ -1,7 +1,8 @@
 /*
   Панель «Информация»: результат последнего осмысленного действия.
-  Теперь — полупрозрачный оверлей внизу панели описания локации
+  Полупрозрачный оверлей внизу панели описания локации
   (position: absolute внутри .panel). Картинка под ним видна.
+  Тёмная тема: тёмный полупрозрачный фон, приглушённый текст.
 */
 
 /* Панель локации должна быть relative-контейнером для оверлея. */
@@ -16,10 +17,10 @@
   bottom: 0;
   z-index: 2;
 
-  /* полупрозрачный фон, чтобы была видна картинка под ним */
-  background: rgba(255, 247, 238, 0.78);
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  /* полупрозрачный тёмный фон, чтобы была видна картинка под ним */
+  background: rgba(13, 12, 10, 0.82);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 
   border-top: 1px solid var(--border);
   border-radius: 0 0 10px 10px;
@@ -38,15 +39,18 @@
 .info-overlay::-webkit-scrollbar {
   width: 6px;
 }
+
 .info-overlay::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .info-overlay::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 99px;
 }
+
 .info-overlay::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-2);
+  background: var(--accent);
 }
 
 .info {
@@ -57,7 +61,7 @@
 
 .infoentry {
   margin: 0;
-  color: #5c4b40;
+  color: var(--text);
   font-size: 16px;
   line-height: 1.5;
 }
@@ -84,6 +88,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  filter: brightness(0.9);
 }
 
 .infoentry-caption {
@@ -91,5 +96,5 @@
   color: var(--muted);
   font-size: 12px;
   border-top: 1px solid var(--border);
-  background: var(--panel);
+  background: var(--panel-2);
 }

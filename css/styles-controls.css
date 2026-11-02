@@ -1,5 +1,6 @@
 /*
   Панель «Управление»: сетка кнопок и сворачиваемый заголовок.
+  Тёмная тема: кнопки наследуют базовые стили, здесь только раскладка.
 */
 .menubuttons {
   display: grid;
@@ -12,7 +13,29 @@
   font-size: 13px;
 }
 
-/* «Выйти в меню» — всегда на всю ширину. */
+/* «Тема» и «Выйти в меню» — всегда на всю ширину. */
+.menubuttons button[data-command="theme"],
 .menubuttons button[data-command="menu"] {
   grid-column: 1 / -1;
+}
+
+/* Кнопка темы: иконка + подпись, выровнены по центру. */
+.menubutton-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Иконка «день-ночь» используется как есть, без перекраски. */
+.menubutton-theme__icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.menubutton-theme__label {
+  /* небольшой сдвиг, чтобы оптически компенсировать иконку */
+  margin-right: 2px;
 }

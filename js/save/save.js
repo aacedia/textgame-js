@@ -9,11 +9,25 @@
     Save.clear()           -> { ok: true } | { ok: false, error }
     Save.exists()          -> boolean
     Save.SAVE_KEY          -> string
+
+  Тема оформления хранится отдельно от игрового сохранения:
+    Save.readTheme()       -> "light" | "dark" | null
+    Save.writeTheme(theme) -> { ok: true } | { ok: false, error }
+    Save.THEME_KEY         -> string
+
+  Файлы: экспорт/импорт
+    Save.download(snapshot, filename)  -> { ok: true } | { ok: false, error }
+    Save.readFile(file)                -> Promise<{ ok: true, snapshot } | { ok: false, error }>
+    Save.pickFile(onFile, accept)      -> void
+    Save.defaultFilename()             -> string
 */
 window.Save = (() => {
   "use strict";
 
   const SAVE_KEY = "text-adventure-save-v2";
+  const THEME_KEY = "textgame-theme";
+
+  /* ---------- localStorage: игровое сохранение ---------- */
 
   function write(snapshot) {
     try {
@@ -56,6 +70,30 @@ window.Save = (() => {
       return localStorage.getItem(SAVE_KEY) !== null;
     } catch (e) {
       return false;
+    }
+  }
+
+  /* ---------- localStorage: тема оформления ---------- */
+
+  function readTheme() {
+    try {
+      const value = localStorage.getItem(THEME_KEY);
+      return value === "light" || value === "dark" ? value : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeTheme(theme) {
+    try {
+      if (theme === "light" || theme === "dark") {
+        localStorage.setItem(THEME_KEY, theme);
+      } else {
+        localStorage.removeItem(THEME_KEY);
+      }
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: "unknown", cause: e };
     }
   }
 
@@ -133,5 +171,10 @@ window.Save = (() => {
     input.click();
   }
 
-  return { write, read, clear, exists, download, readFile, pickFile, defaultFilename, SAVE_KEY };
+  return {
+    write, read, clear, exists,
+    readTheme, writeTheme,
+    download, readFile, pickFile, defaultFilename,
+    SAVE_KEY, THEME_KEY
+  };
 })();

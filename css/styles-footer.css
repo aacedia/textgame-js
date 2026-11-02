@@ -1,4 +1,8 @@
 /*
   Общие утилиты.
 */
-.empty{color:var(--muted);font-size:13px;margin:0}
+.empty {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}

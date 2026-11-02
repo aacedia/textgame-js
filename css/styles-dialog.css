@@ -3,227 +3,264 @@
   Оверлей «Игра окончена».
   Диалог с NPC: шапка с аватаром и отношением, список вариантов ответа.
   Чит-диалог: поле ввода и подсказка.
+  Тёмная тема: тёмные фоны, приглушённые акценты, глубокие тени.
 */
 
 /* ---------- Общие стили <dialog> ---------- */
 
-dialog{
-  background:var(--panel);
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:12px;
-  max-width:440px;
-  width:calc(100% - 32px);
-  padding:0;
-  box-shadow:var(--shadow-strong);
+dialog {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  max-width: 440px;
+  width: calc(100% - 32px);
+  padding: 0;
+  box-shadow: var(--shadow-strong);
 }
-dialog::backdrop{background:var(--backdrop)}
 
-.dialoghead{
-  padding:14px 17px;
-  border-bottom:1px solid var(--border);
-  font-weight:700;
-  color:var(--text);
+dialog::backdrop {
+  background: var(--backdrop);
 }
-.dialogbody{padding:16px;color:#5c4b40}
-.dialogactions{
-  display:flex;justify-content:flex-end;gap:8px;
-  padding:0 16px 16px;
+
+.dialoghead {
+  padding: 14px 17px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--text);
 }
-.dialogactions button{min-width:90px;text-align:center}
+
+.dialogbody {
+  padding: 16px;
+  color: var(--muted);
+}
+
+.dialogactions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+
+.dialogactions button {
+  min-width: 90px;
+  text-align: center;
+}
 
 /* ---------- Оверлей «Игра окончена» ---------- */
 
-.game-over{
-  position:fixed;
-  inset:0;
-  background:var(--backdrop);
-  display:grid;
-  place-items:center;
-  z-index:50;
+.game-over {
+  position: fixed;
+  inset: 0;
+  background: var(--backdrop);
+  display: grid;
+  place-items: center;
+  z-index: 50;
 }
-.game-over[hidden]{display:none}
-.game-over__card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:12px;
-  box-shadow:var(--shadow-strong);
-  padding:24px 28px;
-  max-width:380px;
-  text-align:center;
+
+.game-over[hidden] {
+  display: none;
 }
-.game-over__card h2{
-  margin:0 0 8px;
-  color:var(--accent-3);
-  font-size:22px;
+
+.game-over__card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-strong);
+  padding: 24px 28px;
+  max-width: 380px;
+  text-align: center;
 }
-.game-over__card p{
-  margin:0 0 16px;
-  color:var(--muted);
+
+.game-over__card h2 {
+  margin: 0 0 8px;
+  color: var(--accent-3);
+  font-size: 22px;
 }
-.game-over__card button{
-  min-width:160px;
-  text-align:center;
+
+.game-over__card p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.game-over__card button {
+  min-width: 160px;
+  text-align: center;
 }
 
 /* ---------- Диалог с NPC ---------- */
 
-.dialogue-header{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:16px 18px;
-  border-bottom:1px solid var(--border);
-  background:rgba(255, 240, 225, 0.4);
+.dialogue-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(20, 18, 15, 0.6);
 }
 
-.dialogue-avatar{
-  width:88px;
-  height:88px;
-  border-radius:50%;
-  overflow:hidden;
-  border:3px solid var(--accent-2);
-  background:var(--accent-2);
-  display:grid;
-  place-items:center;
-  flex:0 0 auto;
-  font-size:34px;
-  color:var(--accent-3);
-  font-weight:700;
-}
-.dialogue-avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
+.dialogue-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--accent-2);
+  background: var(--accent-2);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  font-size: 34px;
+  color: var(--accent-3);
+  font-weight: 700;
 }
 
-.dialogue-info{
-  flex:1 1 auto;
-  min-width:0;
+.dialogue-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.dialogue-name{
-  font-size:18px;
-  font-weight:700;
-  color:var(--text);
-  margin-bottom:8px;
+.dialogue-info {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-.dialogue-relation{
-  font-size:12px;
-  color:var(--muted);
+.dialogue-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
 }
-.dialogue-relation__label{
-  margin-bottom:5px;
+
+.dialogue-relation {
+  font-size: 12px;
+  color: var(--muted);
 }
-.dialogue-relation__label span{
-  color:var(--text);
-  font-weight:600;
+
+.dialogue-relation__label {
+  margin-bottom: 5px;
 }
-.dialogue-relation__track{
-  height:8px;
-  background:var(--panel-2);
-  border:1px solid var(--border);
-  border-radius:99px;
-  overflow:hidden;
+
+.dialogue-relation__label span {
+  color: var(--text);
+  font-weight: 600;
 }
-.dialogue-relation__fill{
-  height:100%;
-  width:0;
-  background:#e8b86b;
-  border-radius:99px;
-  transition:width .25s ease;
+
+.dialogue-relation__track {
+  height: 8px;
+  background: #0e0d0b;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.dialogue-relation__fill {
+  height: 100%;
+  width: 0;
+  background: #a8844a;
+  border-radius: 99px;
+  transition: width .25s ease;
 }
 
 /* Список вариантов ответа */
-.dialogue-choices{
-  display:grid;
-  gap:8px;
-  justify-content:stretch;
-  padding:0 16px 16px;
+.dialogue-choices {
+  display: grid;
+  gap: 8px;
+  justify-content: stretch;
+  padding: 0 16px 16px;
 }
-.dialogue-choice{
-  text-align:left;
-  padding:10px 12px;
-  font-size:14px;
+
+.dialogue-choice {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 14px;
 }
 
 /* Иконка в варианте ответа — вписана в строку */
-.dialogue-choice{
-  display:flex;
-  align-items:center;
-  gap:8px;
+.dialogue-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.dialogue-choice__icon{
-  width:32px;
-  height:32px;
-  max-width:32px;
-  max-height:32px;
-  flex:0 0 32px;
-  object-fit:contain;
-  display:block;
+
+.dialogue-choice__icon {
+  width: 32px;
+  height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  flex: 0 0 32px;
+  object-fit: contain;
+  display: block;
 }
-.dialogue-choice__icon-emoji{
-  font-size:32px;
-  line-height:1;
-  flex:0 0 auto;
+
+.dialogue-choice__icon-emoji {
+  font-size: 32px;
+  line-height: 1;
+  flex: 0 0 auto;
 }
-.dialogue-choice__label{
-  flex:1 1 auto;
-  min-width:0;
+
+.dialogue-choice__label {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 /* ---------- Диалог выбора (сон и т.п.) ---------- */
 
-.choice-list{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+.choice-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
-.choice-item{
-  text-align:center;
-  padding:10px;
-  font-size:14px;
+
+.choice-item {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
 }
 
 /* ---------- Чит-диалог ---------- */
 
-#cheat-dialog{
-  max-width:480px;
+#cheat-dialog {
+  max-width: 480px;
 }
-.cheat-label{
-  display:block;
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:6px;
+
+.cheat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
 }
-.cheat-input{
-  width:100%;
-  font:inherit;
-  font-family:ui-monospace,Consolas,monospace;
-  font-size:14px;
-  padding:8px 10px;
-  border:1px solid var(--border);
-  border-radius:7px;
-  background:var(--panel);
-  color:var(--text);
-  box-sizing:border-box;
+
+.cheat-input {
+  width: 100%;
+  font: inherit;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--panel-2);
+  color: var(--text);
+  box-sizing: border-box;
 }
-.cheat-input:focus{
-  outline:2px solid var(--accent);
-  outline-offset:-2px;
+
+.cheat-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
-.cheat-hint{
-  margin:10px 0 0;
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.5;
+
+.cheat-hint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
 }
-.cheat-hint code{
-  background:var(--panel-2);
-  padding:1px 5px;
-  border-radius:4px;
-  font-family:ui-monospace,Consolas,monospace;
-  font-size:11px;
+
+.cheat-hint code {
+  background: var(--panel-2);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
 }

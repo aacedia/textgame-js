@@ -1,0 +1,267 @@
+/*
+  Светлая тема (опциональная). Активируется атрибутом
+  <html data-theme="light">. Подключается последним в <head>,
+  чтобы переопределения шли поверх базовых стилей.
+
+  Тёмная тема — дефолт (см. :root в styles-base.css).
+
+  Главное меню намеренно НЕ переопределяется: это заставка,
+  она всегда тёмная и не зависит от игровой темы.
+*/
+
+/* ---------- Палитра ---------- */
+
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #fdf3e7;
+    --bg-top: #ffe6d0;
+    --panel: #fff7ee;
+    --panel-2: #f8ebdc;
+    --border: #ecd6bf;
+
+    --text: #4a3a32;
+    --muted: #8a7263;
+    --muted-2: #a89383;
+
+    --accent: #e8956b;
+    --accent-2: #f7c9a8;
+    --accent-3: #b96a44;
+    --gold: #d9a35b;
+
+    --notice-bg: #fdeee0;
+    --notice-border: #e6bfa0;
+    --notice-text: #a05a3a;
+
+    --shadow: 0 12px 28px rgba(180, 130, 95, 0.18);
+    --shadow-strong: 0 25px 80px rgba(150, 100, 70, 0.25);
+    --backdrop: rgba(120, 80, 55, 0.35);
+}
+
+/* ---------- Заголовки панелей ---------- */
+
+:root[data-theme="light"] .heading-base {
+    background: rgba(255, 240, 225, 0.6);
+}
+
+/* ---------- Бейджи статуса ---------- */
+
+:root[data-theme="light"] .badge--time.badge--time--morning {
+    color: #a86a1f;
+    background: #fbe6c2;
+}
+
+:root[data-theme="light"] .badge--time.badge--time--day {
+    color: #3f6f93;
+    background: #d6eaf5;
+}
+
+:root[data-theme="light"] .badge--time.badge--time--evening {
+    color: #a8512e;
+    background: #f7d1b8;
+}
+
+:root[data-theme="light"] .badge--time.badge--time--night {
+    color: #4f4a7a;
+    background: #ddd8ef;
+}
+
+:root[data-theme="light"] .badge--money {
+    color: #8a6320;
+    background: #f6e3b8;
+}
+
+:root[data-theme="light"] .badge--location {
+    color: #3f6b4f;
+    background: #d6ecdc;
+}
+
+:root[data-theme="light"] .badge--inventory {
+    color: #5c4f7a;
+    background: #e2dcef;
+}
+
+/* ---------- Кнопки ---------- */
+
+:root[data-theme="light"] button:hover:not(:disabled) {
+    box-shadow: 0 6px 14px rgba(232, 149, 107, 0.25);
+}
+
+/* ---------- Действия ---------- */
+
+:root[data-theme="light"] .action--move {
+    border-left-color: #7fb6d9;
+}
+
+:root[data-theme="light"] .action--item {
+    border-left-color: #8fc7a3;
+}
+
+:root[data-theme="light"] .action--money {
+    border-left-color: #d9a35b;
+}
+
+:root[data-theme="light"] .action--spend {
+    border-left-color: #c97b8a;
+}
+
+:root[data-theme="light"] .action--time {
+    border-left-color: #a89ad9;
+}
+
+:root[data-theme="light"] .action--state {
+    border-left-color: #b3a99c;
+}
+
+:root[data-theme="light"] .action--mixed {
+    border-left-color: #e8956b;
+}
+
+:root[data-theme="light"] .action--back {
+    border-left-color: #7fb6d9;
+}
+
+:root[data-theme="light"] .action--recent {
+    background: var(--accent-2);
+}
+
+:root[data-theme="light"] .action-count {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--muted);
+}
+
+:root[data-theme="light"] .action--recent .action-count {
+    background: rgba(0, 0, 0, 0.10);
+    color: var(--accent-3);
+}
+
+/* ---------- Инвентарь и задания ---------- */
+
+:root[data-theme="light"] .itemicon {
+    background: var(--accent-2);
+}
+
+/* Маркер задания — без подложки и в светлой теме. */
+:root[data-theme="light"] .quest__mark {
+    background: transparent;
+    color: var(--accent-3);
+}
+
+:root[data-theme="light"] .quest--done {
+    border-left-color: #8fc7a3;
+}
+
+:root[data-theme="light"] .quest--done .quest__mark {
+    background: transparent;
+    color: #3f6b4f;
+}
+
+:root[data-theme="light"] .quest__text {
+    color: #5c4b40;
+}
+
+/* ---------- Полоски характеристик ---------- */
+
+:root[data-theme="light"] .char-bar__track {
+    background: var(--panel-2);
+}
+
+:root[data-theme="light"] .char-bar--health .char-bar__fill {
+    background: #e07a6b;
+}
+
+:root[data-theme="light"] .char-bar--stamina .char-bar__fill {
+    background: #8fc7a3;
+}
+
+:root[data-theme="light"] .char-bar--hunger .char-bar__fill {
+    background: #d9a35b;
+}
+
+:root[data-theme="light"] .char-bar--thirst .char-bar__fill {
+    background: #7fb6d9;
+}
+
+:root[data-theme="light"] .char-bar--fatigue .char-bar__fill {
+    background: #a89ad9;
+}
+
+:root[data-theme="light"] .char-bar--mood .char-bar__fill {
+    background: #e8b86b;
+}
+
+:root[data-theme="light"] .char-bar--warning .char-bar__fill {
+    background: #e8c46b;
+}
+
+:root[data-theme="light"] .char-bar--warning .char-bar__label,
+:root[data-theme="light"] .char-bar--warning .char-bar__value {
+    color: #a8832f;
+}
+
+:root[data-theme="light"] .char-bar--critical .char-bar__fill {
+    background: #e07a6b;
+}
+
+:root[data-theme="light"] .char-bar--critical .char-bar__label,
+:root[data-theme="light"] .char-bar--critical .char-bar__value {
+    color: #b03f30;
+}
+
+/* ---------- Локация ---------- */
+
+:root[data-theme="light"] .description {
+    color: #5c4b40;
+}
+
+:root[data-theme="light"] .location-image img {
+    filter: none;
+}
+
+:root[data-theme="light"] .survival-icon {
+    filter: brightness(0) invert(1);
+}
+
+:root[data-theme="light"] .survival-icon--warn {
+    filter: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(700%) hue-rotate(0deg) brightness(0.8);
+}
+
+:root[data-theme="light"] .survival-icon--crit {
+    filter: brightness(0) saturate(100%) invert(28%) sepia(85%) saturate(900%) hue-rotate(340deg) brightness(0.95);
+}
+
+/* ---------- Информация ---------- */
+
+:root[data-theme="light"] .info-overlay {
+    background: rgba(255, 247, 238, 0.78);
+}
+
+:root[data-theme="light"] .infoentry {
+    color: #5c4b40;
+}
+
+:root[data-theme="light"] .infoentry-img {
+    filter: none;
+}
+
+/* ---------- Диалоги ---------- */
+
+:root[data-theme="light"] .dialogbody {
+    color: #5c4b40;
+}
+
+:root[data-theme="light"] .dialogue-header {
+    background: rgba(255, 240, 225, 0.4);
+}
+
+:root[data-theme="light"] .dialogue-relation__track {
+    background: var(--panel-2);
+}
+
+:root[data-theme="light"] .dialogue-relation__fill {
+    background: #e8b86b;
+}
+
+:root[data-theme="light"] .cheat-input {
+    background: var(--panel);
+}
