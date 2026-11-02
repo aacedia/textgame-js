@@ -149,10 +149,6 @@
 
         // Не даём прокручивать игру под меню.
         document.body.classList.add("mainmenu-open");
-
-        // Фокус на первый активный пункт — для клавиатуры.
-        const first = root.querySelector(".mainmenu__item:not([disabled])");
-        if (first) first.focus({ preventScroll: true });
     }
 
     function hideMainMenu() {
