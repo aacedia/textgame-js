@@ -27,14 +27,14 @@
       <!-- Левая колонка: вкладки (задания/инвентарь) и управление -->
       <aside class="side">
         <!-- Верхняя часть: вкладки, растягивается и скроллится -->
-        <div class="side-top">
+        <div class="side-top" data-wheel-click>
           <section class="panel">
             <div class="tabs" id="tabs"></div>
             <div class="tabcontent" id="side-content"></div>
           </section>
         </div>
         <!-- Нижняя часть: управление, прижато к низу -->
-        <div class="side-bottom">
+        <div class="side-bottom" data-wheel-click>
           <section class="panel">
             <button type="button" class="heading-base heading--toggle" id="controls-toggle" aria-expanded="false"
               aria-controls="controls-content">
@@ -72,7 +72,7 @@
               </button>
             </div>
             <div class="location-notice" id="location-notice" hidden></div>
-            <div class="description" id="description" aria-live="polite"></div>
+            <div class="description" id="description" aria-live="polite" data-wheel-click></div>
             <figure class="location-image" id="location-image" hidden>
               <img id="location-image-img" alt="">
               <figcaption id="location-image-caption"></figcaption>
@@ -89,9 +89,9 @@
               <span class="heading-label">Доступные действия</span>
               <span class="status-slot" id="actions-status"></span>
             </div>
-            <div class="actions" id="actions"></div>
+            <div class="actions" id="actions" data-wheel-click></div>
           </section>
-          <section class="panel">
+          <section class="panel" data-wheel-click>
             <button type="button" class="heading-base heading--toggle" id="log-toggle" aria-expanded="false"
               aria-controls="log-body">
               <span class="heading-label">История событий</span>
@@ -124,7 +124,7 @@
   </div>
   <!-- Скрытый input для импорта сохранения из файла -->
   <input type="file" id="import-file-input" accept="application/json,.json" hidden>
-  <dialog id="dialog">
+  <dialog id="dialog" data-wheel-click>
     <div class="dialoghead" id="dialog-title"></div>
     <div class="dialogbody" id="dialog-body"></div>
     <div class="dialogactions" id="dialog-actions"></div>
@@ -158,7 +158,7 @@
       </div>
     </div>
     <div class="dialogbody" id="dialogue-body"></div>
-    <div class="dialogactions dialogue-choices" id="dialogue-actions"></div>
+    <div class="dialogactions dialogue-choices" id="dialogue-actions" data-wheel-click></div>
   </dialog>
   <script src="js/data/data.js"></script>
   <script src="js/data/character.js"></script>
@@ -198,6 +198,7 @@
   <script src="js/ui/ui-side.js"></script>
   <script src="js/ui/ui-controls.js"></script>
   <script src="js/ui/ui-drawer.js"></script>
+  <script src="js/ui/ui-wheel-click.js"></script>
   <script src="js/ui/ui-mainmenu.js"></script>
   <script src="js/ui/ui.js"></script>
   <script src="js/game/game-state.js"></script>
